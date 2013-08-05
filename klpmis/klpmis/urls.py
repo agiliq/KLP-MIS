@@ -7,9 +7,8 @@ admin.autodiscover()
 urlpatterns = patterns('',
     # Examples:
     url(r'^$', 'klprestApi.AuthenticationApi.KLP_Login'),
-    url(r'^home/', 'klprestApi.HomeApi.KLP_Home'),
     url(r'^admin/', include(admin.site.urls)),
-    
+
     (r'^static_media/(?P<path>.*)$', 'django.views.static.serve',
     {'document_root': 'static_media'}),
 
