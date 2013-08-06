@@ -3,6 +3,8 @@
 # Django settings for klp project.
 from django.core.exceptions import ImproperlyConfigured
 
+import os.path
+
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
@@ -15,7 +17,6 @@ IGNORABLE_404_ENDS = ('.css', '.html', 'favicon.ico')
 ADMINS = (('Sree', 'sree@mahiti.org'), ('RamaKrishna',
           'ramakrishna.marouthu@mahiti.org'), ('Shivangi',
           'shivangi@klp.org.in'), ('Megha', 'megha@klp.org.in'))  # ('Your Name', 'your_email@domain.com'),
-import os.path
 PROJECT_ROOT1 = os.path.realpath(os.path.dirname(__file__))
 PROJECT_ROOT = os.path.abspath(os.path.join(PROJECT_ROOT1,
                                os.path.pardir))
