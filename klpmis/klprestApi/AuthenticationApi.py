@@ -87,7 +87,7 @@ def klp_logout(request):
                   context)
 
 
-def KLP_User_Auth(request):
+def klp_user_auth(request):
     """ This method checks, user is authenticated or not """
     return HttpResponse(request.user.is_authenticated())
 
@@ -95,4 +95,4 @@ def KLP_User_Auth(request):
 urlpatterns = patterns('',
                        url(r'^login/?$', klp_login, name="login"),
                        url(r'^logout/?$', klp_logout, name="logout",
-                       url(r'^user/authentication/?$', KLP_User_Auth))
+                       url(r'^user/authentication/?$', klp_user_auth))
