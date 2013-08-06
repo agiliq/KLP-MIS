@@ -4,6 +4,8 @@ DB_NAME = get_env_variable('DB_NAME')
 DB_USER = get_env_variable('DB_USER')
 DB_PASSWORD = get_env_variable('DB_PASSWORD')
 
+SECRET_KEY = get_env_variable('SECRET_KEY')
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
