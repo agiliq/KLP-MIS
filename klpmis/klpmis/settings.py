@@ -41,12 +41,6 @@ DATABASES = {
     }
 }
 
-EMAIL_USE_TLS = True
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'ems@klp.org.in'
-EMAIL_HOST_PASSWORD = 'k1P3Ms854'
-EMAIL_PORT = 587
-
 # DEFAULT_FROM_EMAIL = 'support@mahiti.org'
 
 # Local time zone for this installation. Choices can be found here:
