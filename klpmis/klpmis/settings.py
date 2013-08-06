@@ -1,6 +1,3 @@
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
-# Django settings for klp project.
 from django.core.exceptions import ImproperlyConfigured
 
 import os.path
