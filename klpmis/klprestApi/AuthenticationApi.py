@@ -75,7 +75,7 @@ def klp_login(request):
                       context)
 
 
-def KLP_Logout_user(request):
+def klp_logout(request):
     """ This method is for user logout """
 
     logout(request)
@@ -94,5 +94,5 @@ def KLP_User_Auth(request):
 
 urlpatterns = patterns('',
                        url(r'^login/?$', klp_login, name="login"),
-                       url(r'^logout/?$', KLP_Logout_user),
+                       url(r'^logout/?$', klp_logout, name="logout",
                        url(r'^user/authentication/?$', KLP_User_Auth))
