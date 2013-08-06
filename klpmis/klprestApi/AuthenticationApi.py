@@ -18,8 +18,11 @@ from django_restapi.receiver import *
 
 from schools.models import *
 from schools.forms import *
+
+
 class Redirect_View(TemplateView):
     template_name = "login.html"
+
 
 def KLP_Login(request):
     """ This method is for user login """
