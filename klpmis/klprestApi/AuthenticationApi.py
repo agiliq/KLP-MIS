@@ -9,18 +9,15 @@ AuthenticationApi is used
 
 from django.conf.urls.defaults import *
 from django.shortcuts import render_to_response
-from django_restapi.resource import Resource
-from schools.models import *
-from schools.forms import *
-from django_restapi.model_resource import Collection, Entry
-from django_restapi.responder import *
-from django_restapi.receiver import *
-from klprestApi.BoundaryApi import ChoiceEntry
 from django.template import RequestContext
-from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect
-#from django.views.generic.simple import *
+
+from django_restapi.responder import *
+from django_restapi.receiver import *
+
+from schools.models import *
+from schools.forms import *
 class Redirect_View(TemplateView):
     template_name = "login.html"
 
