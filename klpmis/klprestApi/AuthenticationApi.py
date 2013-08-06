@@ -38,10 +38,13 @@ def klp_login(request):
                                                         'permissions')[0].name
                     return HttpResponseRedirect(usrUrl[userGroup])
             else:
-                context['message'] = 'Your account is not active, contact the administrator'
+                context['message'] = 'Your account is not active, \
+                                      contact the administrator'
         else:
             context['message'] = 'Please enter a correct username and password'
-    return render_to_response('login.html', context, context_instance=RequestContext(request))
+    return render(request,
+                  'login.html',
+                  context)
 
 
 def klp_logout(request):
