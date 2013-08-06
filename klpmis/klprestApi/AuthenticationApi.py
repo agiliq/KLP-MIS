@@ -24,9 +24,9 @@ def klp_login(request):
         if user is not None:
             if user.is_active:
                 login(request, user)
-                usrUrl = {'Data Entry Executive': '/home/',
-                          'Data Entry Operator': '/home/?respType=filter',
-                          'AdminGroup': '/home/?respType=userpermissions'}
+                user_url = {'Data Entry Executive': '/home/',
+                            'Data Entry Operator': '/home/?respType=filter',
+                            'AdminGroup': '/home/?respType=userpermissions'}
                 if user.is_superuser or user.is_staff:
                 # If user is super user or staff redirect
                 # to home page after login.
@@ -34,9 +34,9 @@ def klp_login(request):
                 else:
                 # else redirect to respective paths defined
                 # in usrUrl dictionary based on group.
-                    userGroup = user.groups.all().defer('user',
-                                                        'permissions')[0].name
-                    return HttpResponseRedirect(usrUrl[userGroup])
+                    user_group = user.groups.all().defer('user',
+                                                         'permissions')[0].name
+                    return HttpResponseRedirect(user_url[user_group])
             else:
                 context['message'] = 'Your account is not active, \
                                       contact the administrator'
@@ -67,5 +67,4 @@ def klp_user_auth(request):
 urlpatterns = patterns('',
                        url(r'^login/?$', klp_login, name="login"),
                        url(r'^logout/?$', klp_logout, name="logout"),
-                       url(r'^user/authentication/?$', klp_user_auth)
-                       )
+                       url(r'^user/authentication/?$', klp_user_auth))
