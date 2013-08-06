@@ -17,7 +17,7 @@ ADMINS = (('Sree', 'sree@mahiti.org'), ('RamaKrishna',
 PROJECT_ROOT1 = os.path.realpath(os.path.dirname(__file__))
 PROJECT_ROOT = os.path.abspath(os.path.join(PROJECT_ROOT1,
                                os.path.pardir))
-PYTHON_PATH = 'python'  # os.path.abspath(os.path.join(PROJECT_ROOT, os.path.pardir))+'/bin/python'
+PYTHON_PATH = 'python'
 PROJECT_NAME = os.path.basename(PROJECT_ROOT)
 
 MANAGERS = ADMINS
@@ -29,34 +29,17 @@ REPORTMAIL_RECEIVER = ['dev@klp.org.in', 'pushparanij@mahiti.org',
 SESSION_COOKIE_AGE = 3600
 SESSION_SAVE_EVERY_REQUEST = True
 
-DATABASES = {'default': {  # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-                           # Or path to database file if using sqlite3.
-                           # Not used with sqlite3.
-                           # Not used with sqlite3.
-                           # Set to empty string for localhost. Not used with sqlite3.
-                           # Set to empty string for default. Not used with sqlite3.
-    'ENGINE': 'django.db.backends.sqlite3',
-    'NAME': 'klpmis.db',
-    'USER': '',
-    'PASSWORD': '',
-    'HOST': '',
-    'PORT': '',
-    'OPTIONS': {'autocommit': True},
-    }}
-
-# DATABASES = {
-#    'default': {
-#        'ENGINE': 'postgresql_psycopg2', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-#        'NAME': 'klpmaster',                      # Or path to database file if using sqlite3.
-#        'USER': 'klpmaster',                      # Not used with sqlite3.
-#        'PASSWORD': 'TVwhUXxj3kriFyF9',                  # Not used with sqlite3.
-#        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
-#        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
-
-#    'OPTIONS': {
-#    'autocommit': True,
-# }
-#    }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'klpmis.db',
+        'USER': '',
+        'PASSWORD': '',
+        'HOST': '',
+        'PORT': '',
+        'OPTIONS': {'autocommit': True},
+    }
+}
 
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
