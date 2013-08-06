@@ -5,7 +5,7 @@ from django.conf import settings
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    url(r'^$', 'klprestApi.AuthenticationApi.KLP_Login'),
+    url(r'^$', 'klprestApi.AuthenticationApi.klp_login'),
     url(r'^admin/', include(admin.site.urls)),
     url(r'', include('klprestApi.HomeApi')),
     url(r'', include('klprestApi.TreeMenu')),
