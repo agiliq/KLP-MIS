@@ -27,7 +27,10 @@ class Redirect_View(TemplateView):
 def KLP_Login(request):
     """ This method is for user login """
 
-    user = request.user
+    context = {}
+    context['title'] = 'Karnataka Learning Partnership'
+    context['legend'] = 'Karnataka Learning Partnership'
+    context['entry'] = 'Add'
     if request.method == 'POST':
         user = authenticate(username=request.POST['username'],
                             password=request.POST['password'])
@@ -46,29 +49,13 @@ def KLP_Login(request):
                             'permissions')[0].name
                     return HttpResponseRedirect(usrUrl[userGroup])
             else:
-                return render_to_response( 'login.html', {
-                    'message': 'Please enter a correct username and password'
-                        ,
-                    'title': 'Karnataka Learning Partnership',
-                    'legend': 'Karnataka Learning Partnership',
-                    'entry': 'Add',
-                    }, context_instance=RequestContext(request))
+                context['message'] = 'Please enter a correct username and password'
+                return render_to_response( 'login.html', context, context_instance=RequestContext(request))
         else:
-            return render_to_response('login.html',
-            {
-                'message': 'Please enter a correct username and password'
-                    ,
-                'title': 'Karnataka Learning Partnership',
-                'legend': 'Karnataka Learning Partnership',
-                'entry': 'Add',
-                }, context_instance=RequestContext(request))
+            context['message'] = 'Please enter a correct username and password'
+            return render_to_response('login.html', context, context_instance=RequestContext(request))
     else:
-        return render_to_response('login.html', {
-            'user': user,
-            'title': 'Karnataka Learning Partnership',
-            'legend': 'Karnataka Learning Partnership',
-            'entry': 'Add',
-            }, context_instance=RequestContext(request))
+        return render_to_response('login.html', context, context_instance=RequestContext(request))
 
 
 def KLP_Logout_user(request):
