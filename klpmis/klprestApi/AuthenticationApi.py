@@ -29,42 +29,23 @@ def KLP_Login(request):
 
     user = request.user
     if request.method == 'POST':
-
-    # check method is post
-
         user = authenticate(username=request.POST['username'],
                             password=request.POST['password'])
-
-    # check user is logged in
-
         if user is not None:
-
-      # If user not logged in check user is active user
-
             if user.is_active:
                 login(request, user)
-
-        # success
-
                 usrUrl = {'Data Entry Executive': '/home/',
                           'Data Entry Operator': '/home/?respType=filter',
                           'AdminGroup': '/home/?respType=userpermissions'}
                 if user.is_superuser or user.is_staff:
-
             # If user is super user or staff redirect to home page after login.
-
                     return HttpResponseRedirect('/home/')
                 else:
-
             # else redirect to respective paths defined in usrUrl dictionary based on group.
-
                     userGroup = user.groups.all().defer('user',
                             'permissions')[0].name
                     return HttpResponseRedirect(usrUrl[userGroup])
             else:
-
-        # disabled account
-
                 return render_to_response( 'login.html', {
                     'message': 'Please enter a correct username and password'
                         ,
@@ -73,9 +54,6 @@ def KLP_Login(request):
                     'entry': 'Add',
                     }, context_instance=RequestContext(request))
         else:
-
-            # invalid login
-            
             return render_to_response('login.html',
             {
                 'message': 'Please enter a correct username and password'
@@ -84,17 +62,6 @@ def KLP_Login(request):
                 'legend': 'Karnataka Learning Partnership',
                 'entry': 'Add',
                 }, context_instance=RequestContext(request))
-            
-            #return Redirect_View.as_view() 
-            ''',extra_context={
-                'message': 'Please enter a correct username and password'
-                    ,
-                'title': 'Karnataka Learning Partnership',
-                'legend': 'Karnataka Learning Partnership',
-                'entry': 'Add',
-                })
-            '''
-
     else:
         return render_to_response('login.html', {
             'user': user,
