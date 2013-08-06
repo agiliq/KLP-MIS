@@ -24,7 +24,7 @@ class Redirect_View(TemplateView):
     template_name = "login.html"
 
 
-def KLP_Login(request):
+def klp_login(request):
     """ This method is for user login """
 
     user = request.user
@@ -92,6 +92,7 @@ def KLP_User_Auth(request):
     return HttpResponse(request.user.is_authenticated())
 
 
-urlpatterns = patterns('', url(r'^login/?$', KLP_Login),
+urlpatterns = patterns('',
+                       url(r'^login/?$', klp_login, name="login"),
                        url(r'^logout/?$', KLP_Logout_user),
                        url(r'^user/authentication/?$', KLP_User_Auth))
