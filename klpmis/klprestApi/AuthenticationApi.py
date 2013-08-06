@@ -1,5 +1,3 @@
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
 """
 AuthenticationApi is used
 1) To login
@@ -11,17 +9,15 @@ from django.conf.urls import patterns, url
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
-from django.views.generic.base import TemplateView
-
-
-class Redirect_View(TemplateView):
-    template_name = "login.html"
 
 
 def klp_login(request):
     """ This method is for user login """
 
-    user = request.user
+    context = {}
+    context['title'] = 'Karnataka Learning Partnership'
+    context['legend'] = 'Karnataka Learning Partnership'
+    context['entry'] = 'Add'
     if request.method == 'POST':
         user = authenticate(username=request.POST['username'],
                             password=request.POST['password'])
@@ -42,31 +38,10 @@ def klp_login(request):
                                                         'permissions')[0].name
                     return HttpResponseRedirect(usrUrl[userGroup])
             else:
-                context = {'message': 'Please enter a \
-                                     correct username and password',
-                           'title': 'Karnataka Learning Partnership',
-                           'legend': 'Karnataka Learning Partnership',
-                           'entry': 'Add'}
-                return render(request,
-                              'login.html',
-                              context)
+                context['message'] = 'Your account is not active, contact the administrator'
         else:
-            context = {'message': 'Please enter a \
-                                correct username and password',
-                       'title': 'Karnataka Learning Partnership',
-                       'legend': 'Karnataka Learning Partnership',
-                       'entry': 'Add'}
-            return render(request,
-                          'login.html',
-                          context)
-    else:
-        context = {'user': user,
-                   'title': 'Karnataka Learning Partnership',
-                   'legend': 'Karnataka Learning Partnership',
-                   'entry': 'Add'}
-        return render(request,
-                      'login.html',
-                      context)
+            context['message'] = 'Please enter a correct username and password'
+    return render_to_response('login.html', context, context_instance=RequestContext(request))
 
 
 def klp_logout(request):
