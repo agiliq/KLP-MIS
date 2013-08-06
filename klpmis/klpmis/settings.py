@@ -2,6 +2,8 @@ from django.core.exceptions import ImproperlyConfigured
 
 import os.path
 
+from unipath import Path
+
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
@@ -14,9 +16,7 @@ IGNORABLE_404_ENDS = ('.css', '.html', 'favicon.ico')
 ADMINS = (('Sree', 'sree@mahiti.org'), ('RamaKrishna',
           'ramakrishna.marouthu@mahiti.org'), ('Shivangi',
           'shivangi@klp.org.in'), ('Megha', 'megha@klp.org.in'))  # ('Your Name', 'your_email@domain.com'),
-PROJECT_ROOT1 = os.path.realpath(os.path.dirname(__file__))
-PROJECT_ROOT = os.path.abspath(os.path.join(PROJECT_ROOT1,
-                               os.path.pardir))
+PROJECT_ROOT = Path(__file__).ancestor(2)
 PYTHON_PATH = 'python'
 PROJECT_NAME = os.path.basename(PROJECT_ROOT)
 
@@ -118,8 +118,7 @@ TEMPLATE_CONTEXT_PROCESSORS = \
      'django.core.context_processors.media',
      'django.contrib.messages.context_processors.messages')
 
-TEMPLATE_DIRS = '/home/mahiti/Desktop/emsev3/schools/templates/'  # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".                                                        # Always use forward slashes, even on Windows.
-                                                          # Don't forget to use absolute paths, not relative paths.
+TEMPLATE_DIRS = '/home/mahiti/Desktop/emsev3/schools/templates/'
 
 INSTALLED_APPS = (  # Uncomment the next line to enable the admin:
                     # 'django_extensions',
