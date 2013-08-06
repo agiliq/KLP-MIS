@@ -7,17 +7,11 @@ AuthenticationApi is used
 3) To check user is logged in or not.
 """
 
-from django.conf.urls.defaults import *
-from django.shortcuts import render
-from django.template import RequestContext
+from django.conf.urls import patterns, url
 from django.contrib.auth import authenticate, login, logout
-from django.http import HttpResponseRedirect
-
-from django_restapi.responder import *
-from django_restapi.receiver import *
-
-from schools.models import *
-from schools.forms import *
+from django.http import HttpResponseRedirect, HttpResponse
+from django.shortcuts import render
+from django.views.generic.base import TemplateView
 
 
 class Redirect_View(TemplateView):
@@ -94,5 +88,6 @@ def klp_user_auth(request):
 
 urlpatterns = patterns('',
                        url(r'^login/?$', klp_login, name="login"),
-                       url(r'^logout/?$', klp_logout, name="logout",
-                       url(r'^user/authentication/?$', klp_user_auth))
+                       url(r'^logout/?$', klp_logout, name="logout"),
+                       url(r'^user/authentication/?$', klp_user_auth)
+                       )
