@@ -1,5 +1,3 @@
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
 from django.db import models
 import datetime
 from django.contrib.contenttypes.models import ContentType
