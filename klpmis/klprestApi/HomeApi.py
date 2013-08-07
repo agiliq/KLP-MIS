@@ -39,7 +39,6 @@ class KLP_Home(Resource):
                 'entry': 'Add',
                 'boundType_List': boundType_List,
                 'session_sch_typ': sessionVal,
-                'user': user,
                 'usergroups': user_GroupsList,
                 }
             if respType == None and (user.is_superuser
