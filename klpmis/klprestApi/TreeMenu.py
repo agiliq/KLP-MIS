@@ -186,9 +186,6 @@ def TreeClass(request):
      # user_GroupsList = ['%s' %(usergroup.name) for usergroup in klp_UserGroups]
 
     if typ == 'source':
-
-         # if type is source
-
         if data:
 
         # if home is true query for boundaries........
