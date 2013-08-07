@@ -4,18 +4,14 @@ HomeApi is used
 2) To set/change session value on change of boundary type.
 """
 
-from django.conf.urls.defaults import *
+from django.conf.urls.defaults import patterns, url
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from django.contrib.auth import logout
 from django.http import HttpResponseRedirect
 
 from django_restapi.resource import Resource
-from django_restapi.responder import *
-from django_restapi.receiver import *
-from django_restapi.authentication import *
-from schools.forms import *
-from schools.models import *
+from schools.models import Boundary_Type, Programme
 
 
 class KLP_Home(Resource):
@@ -23,22 +19,10 @@ class KLP_Home(Resource):
     """ To generate Home Page home/"""
 
     def read(self, request):
-        user = request.user  # Get logged In User
-        if user.id:
-            try:
-
-                # read session value
-
-                sessionVal = int(request.session['session_sch_typ'])
-            except:
-
-                # if session is not set default is 0
-
-                sessionVal = 0
-
-            # Get the Resp Type to show the view.
-
-            respType = request.GET.get('respType') or None
+        user = request.user
+        if user.is_authenticated():
+            sessionVal = int(request.session.get('session_sch_type', 0))
+            respType = request.GET.get('respType')
 
         # Get all Boundary Types
 
@@ -119,8 +103,7 @@ def KLP_Set_Session(request):
     return HttpResponse('Success')
 
 
-urlpatterns = patterns('', url(r'^home/$',
-                       KLP_Home(permitted_methods=('POST', 'GET'))),
-                       url(r'^$', KLP_Home(permitted_methods=('POST',
-                       'GET'))), url(r'^set/session/$',
-                       KLP_Set_Session))
+urlpatterns = patterns('',
+    url(r'^home/$', KLP_Home(permitted_methods=('GET',))),
+    url(r'^set/session/$', KLP_Set_Session)
+)
