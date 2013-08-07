@@ -11,11 +11,7 @@ from django.contrib.auth import logout
 from django.http import HttpResponseRedirect
 
 from django_restapi.resource import Resource
-from django_restapi.responder import *
-from django_restapi.receiver import *
-from django_restapi.authentication import *
-from schools.forms import *
-from schools.models import *
+from schools.models import Boundary_Type, Programme
 
 
 class KLP_Home(Resource):
