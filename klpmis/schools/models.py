@@ -42,10 +42,9 @@ Assessment_type = [(1, 'Institution'), (2, 'Student Group'), (3,
                    'Student')]
 
 Alpha_list = [('', 'No Section')]
-for typ in range(ord('a'), ord('z') + 1):
-    alph = chr(typ).upper()
-    typs = (alph, alph)
-    Alpha_list.append(typs)
+A_ASCII = 65
+Z_ASCII = 90
+[Alpha_list.append((chr(each), chr(each))) for each in range(A_ASCII, Z_ASCII+1)]
 
 
 class Institution_Category(models.Model):
