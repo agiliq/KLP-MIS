@@ -272,7 +272,7 @@ class Institution(models.Model):
             return False
 
     def get_all_mgmt(self):
-        return institution_Management.objects.all()
+        return Institution_Management.objects.all()
 
     def get_all_languages(self):
         return Moi_Type.objects.all()
