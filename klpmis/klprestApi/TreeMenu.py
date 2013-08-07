@@ -156,7 +156,7 @@ def KLP_assignedAssessmentInst(userId, assessmentId):
     return inst_list
 
 
-def TreeClass(request):
+def tree(request):
     model = request.GET['root']
     data = request.GET['home']
     filterBy = request.GET['filter']
@@ -534,4 +534,4 @@ def GetAssementList(programId,loguser,showflag=False):
             active__in=activelist).values_list('id', flat=True)
 
 
-urlpatterns = patterns('', url(r'^tree/$', TreeClass))
+urlpatterns = patterns('', url(r'^tree/$', tree))
