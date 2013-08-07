@@ -26,16 +26,16 @@ active_status = [
     (7, 'Completed'),
     ]
 
-Institution_Gender = [('boys', 'boys'), ('girls', 'girls'), ('co-ed',
+INSTITUTION_GENDER = [('boys', 'boys'), ('girls', 'girls'), ('co-ed',
                       'co-ed')]
 
-Gender = [('male', 'male'), ('female', 'female')]
+GENDER = [('male', 'male'), ('female', 'female')]
 
 Group_Type = [('Class', 'Class'), ('Center', 'Center')]
 
 QuestionType = [(1, 'Marks'), (2, 'Grade')]
 
-Relation_Type = [('Mother', 'Mother'), ('Father', 'Father'), ('Siblings'
+RELATION_TYPE = [('Mother', 'Mother'), ('Father', 'Father'), ('Siblings'
                  , 'Siblings')]
 
 Assessment_type = [(1, 'Institution'), (2, 'Student Group'), (3,
@@ -247,7 +247,7 @@ class Institution(models.Model):
     name = models.CharField(max_length=300)
     cat = models.ForeignKey(Institution_Category, blank=True, null=True)
     institution_gender = models.CharField(max_length=10,
-            choices=Institution_Gender, default='co-ed')
+            choices=INSTITUTION_GENDER, default='co-ed')
     languages = models.ManyToManyField(Moi_Type)
     mgmt = models.ForeignKey(Institution_Management, default='ed')
     inst_address = models.ForeignKey(Institution_address, blank=True,
@@ -385,7 +385,7 @@ class Child(models.Model):
     last_name = models.CharField(max_length=50, blank=True, null=True)
     uid = models.CharField(max_length=100, blank=True, null=True)
     dob = models.DateField(max_length=20)
-    gender = models.CharField(max_length=10, choices=Gender,
+    gender = models.CharField(max_length=10, choices=GENDER,
                               default='male')
     mt = models.ForeignKey(Moi_Type, default='kannada')
 
@@ -436,7 +436,7 @@ class Relations(models.Model):
     ''' This class stores relation information of the childrens'''
 
     relation_type = models.CharField(max_length=10,
-            choices=Relation_Type, default='Mother')
+            choices=RELATION_TYPE, default='Mother')
     first_name = models.CharField(max_length=100)
     middle_name = models.CharField(max_length=50, blank=True, null=True)
     last_name = models.CharField(max_length=50, blank=True, null=True)
@@ -618,7 +618,7 @@ class Staff(models.Model):
     last_name = models.CharField(max_length=50, blank=True, null=True)
     uid = models.CharField(max_length=100, blank=True, null=True)
     doj = models.DateField(max_length=20, blank=True, null=True)
-    gender = models.CharField(max_length=10, choices=Gender,
+    gender = models.CharField(max_length=10, choices=GENDER,
                               default='female')
     mt = models.ForeignKey(Moi_Type, default='kannada')
 
