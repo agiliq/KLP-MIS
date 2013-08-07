@@ -4,7 +4,7 @@ HomeApi is used
 2) To set/change session value on change of boundary type.
 """
 
-from django.conf.urls.defaults import *
+from django.conf.urls.defaults import patterns, url
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from django.contrib.auth import logout
