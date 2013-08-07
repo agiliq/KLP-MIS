@@ -13,9 +13,12 @@ SEND_BROKEN_LINK_EMAILS = True
 
 IGNORABLE_404_ENDS = ('.css', '.html', 'favicon.ico')
 
-ADMINS = (('Sree', 'sree@mahiti.org'), ('RamaKrishna',
-          'ramakrishna.marouthu@mahiti.org'), ('Shivangi',
-          'shivangi@klp.org.in'), ('Megha', 'megha@klp.org.in'))  # ('Your Name', 'your_email@domain.com'),
+ADMINS = (('Sree', 'sree@mahiti.org'),
+          ('RamaKrishna', 'ramakrishna.marouthu@mahiti.org'),
+          ('Shivangi', 'shivangi@klp.org.in'),
+          ('Megha', 'megha@klp.org.in'))
+          # ('Your Name', 'your_email@domain.com'),
+
 PROJECT_ROOT = Path(__file__).ancestor(2)
 PYTHON_PATH = 'python'
 PROJECT_NAME = os.path.basename(PROJECT_ROOT)
