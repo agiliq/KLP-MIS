@@ -22,7 +22,7 @@ class KLP_Home(Resource):
         user = request.user
         if user.is_authenticated():
             sessionVal = int(request.session.get('session_sch_type', 0))
-            respType = request.GET.get('respType') or None
+            respType = request.GET.get('respType')
 
         # Get all Boundary Types
 
