@@ -32,8 +32,6 @@ def hasChild(
     ):
     """ This method checks for child objects and get urls """
 
-    subboundary = 0
-    childtree = 0
     childDic = {}
     AlreadyAdded={}
     for i in query:
@@ -80,7 +78,6 @@ def hasChild(
                     else:
                         assemenperm = False
                 if assemenperm:
-                    hasC = i.getChild()
                     mapObj = ''
                     if Asstype == 3:
                         mapObj = \
@@ -106,7 +103,6 @@ def hasChild(
                                 institution__in=Instlist,
                                 active=2).defer('institution',
                                 'assessment')
-                        hasC = False
                         if Instlist[0] not in AlreadyAdded.get(secFil,[]) :
 									existingList=AlreadyAdded.get(secFil,[])
 									existingList.append(Instlist[0])
@@ -462,7 +458,6 @@ selectfield = {2: 'student_group_id', 3: 'student_group__id',
 
 
 def getAssInst(secFilter, superuser=1):
-    flag = 0
     institutions_listall = []
     for k in secFilter:
         assobj = Assessment.objects.get(id=k)
@@ -481,7 +476,6 @@ def getAssInst(secFilter, superuser=1):
                     active=2).values_list('institution__id',
                     flat=True).distinct()
         else:
-            flag = 1
             institutions_list = studentgroup_list
         institutions_listall = list(set(institutions_listall)
                                     | set(institutions_list))
@@ -489,7 +483,6 @@ def getAssInst(secFilter, superuser=1):
 
 
 def getAssSG(secFilter, instid):
-    flag = 0
     sg_listall = []
     sg = StudentGroup.objects.filter(institution__id=instid,
             active=2).values_list('id', flat=True).distinct()
