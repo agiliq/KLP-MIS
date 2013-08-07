@@ -41,10 +41,10 @@ Relation_Type = [('Mother', 'Mother'), ('Father', 'Father'), ('Siblings'
 Assessment_type = [(1, 'Institution'), (2, 'Student Group'), (3,
                    'Student')]
 
-Alpha_list = [('', 'No Section')]
+alpha_list = [('', 'No Section')]
 A_ASCII = 65
 Z_ASCII = 90
-[Alpha_list.append((chr(each), chr(each))) for each in range(A_ASCII, Z_ASCII+1)]
+[alpha_list.append((chr(each), chr(each))) for each in range(A_ASCII, Z_ASCII+1)]
 
 
 class Institution_Category(models.Model):
@@ -458,7 +458,7 @@ class StudentGroup(models.Model):
 
     institution = models.ForeignKey(Institution)
     name = models.CharField(max_length=50)
-    section = models.CharField(max_length=10, choices=Alpha_list,
+    section = models.CharField(max_length=10, choices=alpha_list,
                                blank=True, default='')
     active = models.IntegerField(blank=True, null=True, default=2)
     group_type = models.CharField(max_length=10, choices=Group_Type,
