@@ -538,4 +538,3 @@ def GetAssementList(programId,loguser,showflag=False):
 
 
 urlpatterns = patterns('', url(r'^tree/$', TreeClass))
-
