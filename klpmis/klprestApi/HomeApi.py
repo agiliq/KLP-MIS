@@ -21,10 +21,7 @@ class KLP_Home(Resource):
     def read(self, request):
         user = request.user
         if user.is_authenticated():
-            try:
-                sessionVal = int(request.session['session_sch_typ'])
-            except:
-                sessionVal = 0
+            sessionVal = int(request.session.get('session_sch_type', 0))
             respType = request.GET.get('respType') or None
 
         # Get all Boundary Types
