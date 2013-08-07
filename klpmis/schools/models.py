@@ -1,8 +1,10 @@
-from django.db import models
 import datetime
+
+from django.db import models
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from django.contrib.auth.models import User
+
 from object_permissions import register
 from fullhistory import register_model
 
