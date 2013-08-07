@@ -1,30 +1,33 @@
 from django.core.exceptions import ImproperlyConfigured
 
-import os.path
-
+import os
 from unipath import Path
 
-DEBUG = True
-TEMPLATE_DEBUG = DEBUG
-
-SERVER_EMAIL = 'support@mahiti.org'
-
-SEND_BROKEN_LINK_EMAILS = True
-
-IGNORABLE_404_ENDS = ('.css', '.html', 'favicon.ico')
-
-ADMINS = (('Sree', 'sree@mahiti.org'), ('RamaKrishna',
-          'ramakrishna.marouthu@mahiti.org'), ('Shivangi',
-          'shivangi@klp.org.in'), ('Megha', 'megha@klp.org.in'))  # ('Your Name', 'your_email@domain.com'),
 PROJECT_ROOT = Path(__file__).ancestor(2)
 PYTHON_PATH = 'python'
 PROJECT_NAME = os.path.basename(PROJECT_ROOT)
 
+DEBUG = True
+TEMPLATE_DEBUG = DEBUG
+
+IGNORABLE_404_ENDS = ('.css', '.html', 'favicon.ico')
+
+ADMINS = (('Sree', 'sree@mahiti.org'),
+          ('RamaKrishna', 'ramakrishna.marouthu@mahiti.org'),
+          ('Shivangi', 'shivangi@klp.org.in'),
+          ('Megha', 'megha@klp.org.in'))
+          # ('Your Name', 'your_email@domain.com'),
+
 MANAGERS = ADMINS
 
 TESTING = 0
+
+SERVER_EMAIL = 'support@mahiti.org'
+SEND_BROKEN_LINK_EMAILS = True
+
 REPORTMAIL_SENDER = 'KLP TEAM <dev@klp.org.in>'
-REPORTMAIL_RECEIVER = ['dev@klp.org.in', 'pushparanij@mahiti.org',
+REPORTMAIL_RECEIVER = ['dev@klp.org.in',
+                       'pushparanij@mahiti.org',
                        'megha@klp.org.in']
 SESSION_COOKIE_AGE = 3600
 SESSION_SAVE_EVERY_REQUEST = True
@@ -77,28 +80,25 @@ USE_L10N = True
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
 
-MEDIA_ROOT = '/home/mahiti/Desktop/emsdev3/static_media/'
+MEDIA_ROOT = Path(PROJECT_ROOT, 'static_media')
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
 
 MEDIA_URL = '/static_media/'
-STATIC_URL='/static/'
-# URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
-# trailing slash.
-# Examples: "http://foo.com/media/", "/media/".
+STATIC_URL = '/static/'
 
 ADMIN_MEDIA_PREFIX = '/admin_media/'
 
 # List of callables that know how to import templates from various sources.
 
-TEMPLATE_LOADERS = ('django.template.loaders.filesystem.Loader',
-                    'django.template.loaders.app_directories.Loader')
+TEMPLATE_LOADERS = (
+    'django.template.loaders.filesystem.Loader',
+    'django.template.loaders.app_directories.Loader'
+)
 
-#     'django.template.loaders.eggs.Loader',
-
-MIDDLEWARE_CLASSES = (  # 'django.middleware.csrf.CsrfViewMiddleware',
+MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -107,21 +107,24 @@ MIDDLEWARE_CLASSES = (  # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'fullhistory.fullhistory.FullHistoryMiddleware',
     'schools.middleware.QueryLogMiddleware',
-    )
+)
 
 ROOT_URLCONF = 'klpmis.urls'
 
-TEMPLATE_CONTEXT_PROCESSORS = \
-    ('django.contrib.auth.context_processors.auth',
-     'django.core.context_processors.debug',
-     'django.core.context_processors.i18n',
-     'django.core.context_processors.media',
-     'django.contrib.messages.context_processors.messages')
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.contrib.auth.context_processors.auth',
+    'django.core.context_processors.debug',
+    'django.core.context_processors.i18n',
+    'django.core.context_processors.media',
+    'django.core.context_processors.static',
+    'django.contrib.messages.context_processors.messages',
+)
 
-TEMPLATE_DIRS = '/home/mahiti/Desktop/emsev3/schools/templates/'
+TEMPLATE_DIRS = (
+    Path(PROJECT_ROOT, 'schools/templates'),
+)
 
-INSTALLED_APPS = (  # Uncomment the next line to enable the admin:
-                    # 'django_extensions',
+INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -132,7 +135,8 @@ INSTALLED_APPS = (  # Uncomment the next line to enable the admin:
     'schools',
 #    'object_permissions',
     'fullhistory',
-    )
+)
+
 
 def get_env_variable(var_name):
     try:
