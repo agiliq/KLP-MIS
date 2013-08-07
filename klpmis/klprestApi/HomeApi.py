@@ -107,6 +107,6 @@ def KLP_Set_Session(request):
 
 
 urlpatterns = patterns('',
-    url(r'^home/$', KLP_Home(permitted_methods=('POST', 'GET'))),
+    url(r'^home/$', KLP_Home(permitted_methods=('GET',))),
     url(r'^set/session/$', KLP_Set_Session)
 )
