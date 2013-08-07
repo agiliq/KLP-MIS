@@ -23,21 +23,12 @@ class KLP_Home(Resource):
     """ To generate Home Page home/"""
 
     def read(self, request):
-        user = request.user  # Get logged In User
-        if user.id:
+        user = request.user
+        if user.is_authenticated():
             try:
-
-                # read session value
-
                 sessionVal = int(request.session['session_sch_typ'])
             except:
-
-                # if session is not set default is 0
-
                 sessionVal = 0
-
-            # Get the Resp Type to show the view.
-
             respType = request.GET.get('respType') or None
 
         # Get all Boundary Types
