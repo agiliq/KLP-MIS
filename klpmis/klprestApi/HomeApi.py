@@ -85,10 +85,9 @@ class KLP_Home(Resource):
                 logout(request)
                 return HttpResponseRedirect('/login/')
 
-            respTemplate = render(request,
-                                  'viewtemplates/home.html',
-                                  respDict)
-            return HttpResponse(respTemplate)
+            return render(request,
+                          'viewtemplates/home.html',
+                          respDict)
         else:
 
         # If user is not login redirects to login page
