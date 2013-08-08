@@ -5,13 +5,13 @@ Assessment Api file is used
 3) To Update existing assessment
 4) To get list of assessment while filtering based on programme in filter by programme link
 """
-from django.conf.urls.defaults import *
+#from django.conf.urls.defaults import *
 from django_restapi.resource import Resource
-from schools.models import *
-from schools.forms import *
-from django_restapi.model_resource import Collection, Entry
-from django_restapi.responder import *
-from django_restapi.receiver import *
+from schools.models import Assessment, Assessment_Lookup
+#from schools.forms import *
+from django_restapi.model_resource import Collection
+#from django_restapi.responder import *
+#from django_restapi.receiver import *
 from klprestApi.BoundaryApi import ChoiceEntry
 import datetime
 from django.shortcuts import render_to_response
@@ -22,16 +22,14 @@ from django.db import IntegrityError
 
 class KLP_Assessment(Collection):
     def get_entry(self, assessment_id):
-        # Query For Selected assessment based on assessment_id
         assessment = Assessment.objects.get(id=assessment_id)
         return ChoiceEntry(self, assessment)
 
 
 class KLP_Assessment_Lookup(Collection):
     def get_entry(self, assessment_lookup_id):
-        # Query For Selected assessment based on assessment_id
-        assessment_lookup = Assessment_Lookup.objects.get(id=assessment_id)
-        return ChoiceEntry(self, assessment)
+        assessment_lookup = Assessment_Lookup.objects.get(id=assessment_lookup_id)
+        return ChoiceEntry(self, assessment_lookup)
 
 
 def KLP_Assessment_View(request, assessment_id):
@@ -232,17 +230,31 @@ def KLP_copy_Assessments(request,assessment_id):
     else:
          return render_to_response('viewtemplates/assessment_copy_form.html',{'assessment':Ass})
 
+
+from django.conf.urls import patterns, url
+
 urlpatterns = patterns('',
-   url(r'^assessment/(?P<assessment_id>\d+)/view/?$', KLP_Assessment_View),
-   url(r'^programme/assessment/(?P<referKey>\d+)/creator/?$', KLP_Assessment_Create),
-    url(r'^programme/assessment/assessment_lookup/(?P<referKey>\d+)/creator/?$', KLP_Assessment_Lookup_Create),
-     url(r'^assessment/assessment_lookup/(?P<referKey>\d+)/copy/?$', KLP_Assessment_Lookup_Copy),
-    url(r'^assessment/assessment_lookup/(?P<referKey>\d+)/view/?$', KLP_Assessment_Lookup_List),
-    url(r'^assessment/assessment_lookup/(?P<assessment_id>\d+)/multieditor/?$', KLP_Assessment_Lookup_Multieditor),
-   url(r'^assessment/(?P<assessment_id>\d+)/update/?$', KLP_Assessment_Update),
-    url(r'^assessment/(?P<referKey>\d+)/assessment_lookup/(?P<assessment_lookup_id>\d+)/update/?$', KLP_Assessment_Lookup_Update),
-     url(r'^assessment/(?P<referKey>\d+)/assessment_lookup/(?P<assessment_lookup_id>\d+)/update/(?P<counter>\d+)/?$', KLP_Assessment_Lookup_Update),
-   url(r'^filter/programme/(?P<programme_id>\d+)/assessments/$', KLP_Get_Assessments(permitted_methods=('POST','GET'))),
-    url(r'^assessment/(?P<assessment_id>\d+)/copy/?$', KLP_copy_Assessments),
-     url(r'^assessment_lookup_value/inlineedit/?$',KLP_lookup_inlineEdit),
+    url(r'^assessment/(?P<assessment_id>\d+)/view/?$',
+        KLP_Assessment_View),
+    url(r'^programme/assessment/(?P<referKey>\d+)/creator/?$',
+        KLP_Assessment_Create),
+    url(r'^programme/assessment/assessment_lookup/(?P<referKey>\d+)/creator/?$',
+        KLP_Assessment_Lookup_Create),
+    url(r'^assessment/assessment_lookup/(?P<referKey>\d+)/copy/?$',
+        KLP_Assessment_Lookup_Copy),
+    url(r'^assessment/assessment_lookup/(?P<referKey>\d+)/view/?$',
+        KLP_Assessment_Lookup_List),
+    url(r'^assessment/assessment_lookup/(?P<assessment_id>\d+)/multieditor/?$',
+        KLP_Assessment_Lookup_Multieditor),
+    url(r'^assessment/(?P<assessment_id>\d+)/update/?$',
+        KLP_Assessment_Update),
+    url(r'^assessment/(?P<referKey>\d+)/assessment_lookup/(?P<assessment_lookup_id>\d+)/update/?$',
+        KLP_Assessment_Lookup_Update),
+    url(r'^assessment/(?P<referKey>\d+)/assessment_lookup/(?P<assessment_lookup_id>\d+)/update/(?P<counter>\d+)/?$',
+        KLP_Assessment_Lookup_Update),
+    url(r'^filter/programme/(?P<programme_id>\d+)/assessments/$',
+        KLP_Get_Assessments(permitted_methods=('POST', 'GET'))),
+    url(r'^assessment/(?P<assessment_id>\d+)/copy/?$',
+        KLP_copy_Assessments),
+    url(r'^assessment_lookup_value/inlineedit/?$', KLP_lookup_inlineEdit),
 )
