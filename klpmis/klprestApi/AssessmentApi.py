@@ -262,7 +262,7 @@ def KLP_lookup_inlineEdit(request):
 
 
 @csrf_exempt
-def KLP_Assessment_Lookup_Copy(request, referKey):
+def AssessmentLookupCopy(request, referKey):
     """ To View Selected StudentGroup
     studentsroup/(?P<areferKey>\d+)/copy/?$'/assessment/assessment_lookup/'+stre(referKey+'/view',"""
 
@@ -311,7 +311,7 @@ def KLP_copy_Assessments(request, assessment_id):
                 question_obj = qq.save()
                 newquestionids += str(question_obj.id)+','
 
-            KLP_Assessment_Lookup_Copy(request, new_assessment.id)
+            AssessmentLookupCopy(request, new_assessment.id)
             msg = 'Succesfully Copied_' + str(new_assessment.id)
             msg += '_' + newquestionids
             return HttpResponse(msg)
@@ -332,7 +332,7 @@ urlpatterns = patterns('',
     url(r'^programme/assessment/assessment_lookup/(?P<referKey>\d+)/creator/?$',
         KLP_Assessment_Lookup_Create),
     url(r'^assessment/assessment_lookup/(?P<referKey>\d+)/copy/?$',
-        KLP_Assessment_Lookup_Copy),
+        AssessmentLookupCopy),
     url(r'^assessment/assessment_lookup/(?P<referKey>\d+)/view/?$',
         KLP_Assessment_Lookup_List),
     url(r'^assessment/assessment_lookup/(?P<assessment_id>\d+)/multieditor/?$',
