@@ -93,7 +93,7 @@ def AssessmentCreate(request, referKey):
         return HttpResponse(response)
 
 
-def KLP_Assessment_Lookup_Create(request, referKey):
+def AssessmentLookupCreate(request, referKey):
     """ To Create New Assessment
     programme/assessment/(?P<referKey>\d+)/assessment_lookup_creator/"""
     # Checking user Permissions for Assessment add
@@ -195,7 +195,7 @@ def KLP_Assessment_Lookup_Update(request, referKey,
     return HttpResponse(response)
 
 
-def KLP_Assessment_Update(request, assessment_id):
+def AssessmentUpdate(request, assessment_id):
     """ To update Selected Boundary
     assessment/(?P<assessment_id>\d+)/update/"""
     # Checking user Permissions for Assessment Update
@@ -330,7 +330,7 @@ urlpatterns = patterns('',
     url(r'^programme/assessment/(?P<referKey>\d+)/creator/?$',
         AssessmentCreate),
     url(r'^programme/assessment/assessment_lookup/(?P<referKey>\d+)/creator/?$',
-        KLP_Assessment_Lookup_Create),
+        AssessmentLookupCreate),
     url(r'^assessment/assessment_lookup/(?P<referKey>\d+)/copy/?$',
         AssessmentLookupCopy),
     url(r'^assessment/assessment_lookup/(?P<referKey>\d+)/view/?$',
@@ -338,7 +338,7 @@ urlpatterns = patterns('',
     url(r'^assessment/assessment_lookup/(?P<assessment_id>\d+)/multieditor/?$',
         AssessmentLookupMultieditor),
     url(r'^assessment/(?P<assessment_id>\d+)/update/?$',
-        KLP_Assessment_Update),
+        AssessmentUpdate),
     url(r'^assessment/(?P<referKey>\d+)/assessment_lookup/(?P<assessment_lookup_id>\d+)/update/?$',
         KLP_Assessment_Lookup_Update),
     url(r'^assessment/(?P<referKey>\d+)/assessment_lookup/(?P<assessment_lookup_id>\d+)/update/(?P<counter>\d+)/?$',
