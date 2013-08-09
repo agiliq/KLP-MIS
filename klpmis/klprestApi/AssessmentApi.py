@@ -123,7 +123,7 @@ def KLP_Assessment_Lookup_Create(request, referKey):
         return HttpResponse(response)
 
 
-def KLP_Assessment_Lookup_List(request, referKey):
+def AssessmentLookupList(request, referKey):
     """ To View Selected StudentGroup
         studentsroup/(?P<areferKey>\d+)/view/?$"""
     reqlist = request.GET.items()
@@ -153,7 +153,7 @@ def KLP_Assessment_Lookup_List(request, referKey):
     return HttpResponse(resp(request))
 
 
-def KLP_Assessment_Lookup_Multieditor(request, assessment_id):
+def AssessmentLookupMultieditor(request, assessment_id):
     """ To View Selected StudentGroup
         studentsroup/(?P<assessment_id>\d+)/edit/?$"""
     """ To show Bulk Students to update """
@@ -334,9 +334,9 @@ urlpatterns = patterns('',
     url(r'^assessment/assessment_lookup/(?P<referKey>\d+)/copy/?$',
         AssessmentLookupCopy),
     url(r'^assessment/assessment_lookup/(?P<referKey>\d+)/view/?$',
-        KLP_Assessment_Lookup_List),
+        AssessmentLookupList),
     url(r'^assessment/assessment_lookup/(?P<assessment_id>\d+)/multieditor/?$',
-        KLP_Assessment_Lookup_Multieditor),
+        AssessmentLookupMultieditor),
     url(r'^assessment/(?P<assessment_id>\d+)/update/?$',
         KLP_Assessment_Update),
     url(r'^assessment/(?P<referKey>\d+)/assessment_lookup/(?P<assessment_lookup_id>\d+)/update/?$',
