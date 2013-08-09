@@ -64,7 +64,7 @@ def KLP_Assessment_View(request, assessment_id):
     return HttpResponse(resp)
 
 
-def KLP_Assessment_Create(request, referKey):
+def AssessmentCreate(request, referKey):
     """ To Create New Assessment
         programme/assessment/(?P<referKey>\d+)/creator/"""
     KLP_user_Perm(request.user, "Assessment", "Add")
@@ -328,7 +328,7 @@ urlpatterns = patterns('',
     url(r'^assessment/(?P<assessment_id>\d+)/view/?$',
         KLP_Assessment_View),
     url(r'^programme/assessment/(?P<referKey>\d+)/creator/?$',
-        KLP_Assessment_Create),
+        AssessmentCreate),
     url(r'^programme/assessment/assessment_lookup/(?P<referKey>\d+)/creator/?$',
         KLP_Assessment_Lookup_Create),
     url(r'^assessment/assessment_lookup/(?P<referKey>\d+)/copy/?$',
