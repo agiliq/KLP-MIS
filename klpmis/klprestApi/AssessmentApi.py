@@ -41,7 +41,7 @@ class KLP_Assessment_Lookup(Collection):
         return ChoiceEntry(self, assessment_lookup)
 
 
-def KLP_Assessment_View(request, assessment_id):
+def AssessmentView(request, assessment_id):
     """ To View Selected Assessment assessment/(?P<assessment_id>\d+)/view/"""
     kwrg = {'is_entry': True}
     assessment_obj = Assessment.objects.filter(pk=assessment_id)
@@ -326,7 +326,7 @@ def KLP_copy_Assessments(request, assessment_id):
 
 urlpatterns = patterns('',
     url(r'^assessment/(?P<assessment_id>\d+)/view/?$',
-        KLP_Assessment_View),
+        AssessmentView),
     url(r'^programme/assessment/(?P<referKey>\d+)/creator/?$',
         AssessmentCreate),
     url(r'^programme/assessment/assessment_lookup/(?P<referKey>\d+)/creator/?$',
