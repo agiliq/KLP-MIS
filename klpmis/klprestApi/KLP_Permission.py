@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 """
-KLP_Permission file is used 
+KLP_Permission file is used
 1) To assign permissions
 2) To list users
 3) To Delete users
@@ -12,26 +12,23 @@ KLP_Permission file is used
 
 from django.conf.urls.defaults import *
 from django.shortcuts import render_to_response
-from django_restapi.resource import Resource
 from schools.models import *
 from schools.forms import *
-from django_restapi.model_resource import Collection, Entry
 from django_restapi.responder import *
 from django_restapi.receiver import *
-from klprestApi.BoundaryApi import ChoiceEntry
 from django.template import RequestContext
 from django.contrib.auth.models import User
 import simplejson
 from django.db.models import Q
-from django.core.management import call_command
 from schools.receivers import KLP_user_Perm
 from django.conf import settings
 from subprocess import Popen
-from subprocess import call
-from klprestApi.TreeMenu import KLP_assignedInstitutions, getAssSG
-from klpmis.settings import PROJECT_NAME, PROJECT_ROOT, PYTHON_PATH
+from klprestApi.TreeMenu import getAssSG
+from klpmis.settings import PROJECT_ROOT, PYTHON_PATH
 
 from schools.models import *
+
+
 def KLP_Assign_Permissions(request):
     """ This method is used to assign permissions"""
 
@@ -80,7 +77,7 @@ def KLP_Assign_Permissions(request):
     bound_list = ','.join(str(v1) for v1 in bound_list if v1 > 0)
     permissions = ','.join(str(v1) for v1 in permissions if v1 > 0)
     deUserList = ','.join(str(v1) for v1 in deUserList if v1 > 0)
-   
+
     if not deUserList:
 
         # If no users selected respond back with error message (Select Atleast One User)
@@ -122,7 +119,7 @@ def KLP_Assign_Permissions(request):
                 bound_list,
                 request.user.username,
                 str(request.user.id),
-                request.path_info 
+                request.path_info
                 ])
 
                         # call(["/home/klp/klp/bin/python" ,"/home/klp/klp/klp/manage.py","KLP_assignPermissionnssignPermissions",str(inst_list),str(deUserList),str(permissions),str(permissionType),str(assessmentId),str(assessmentPerm),bound_cat,bound_list])
@@ -150,7 +147,7 @@ def KLP_Assign_Permissions(request):
             # call assignPermission method to assign permissions
 
             inst_list = ','.join(str(v1) for v1 in inst_list if v1 > 0)
-   
+
             Popen([
                 'python',
                 PROJECT_ROOT + '/manage.py',
@@ -208,9 +205,9 @@ def assignPermission(
             sg_list = \
                 StudentGroup.objects.filter(institution__id=inst_id,
                     active=2).values_list('id', flat=True).distinct()
-    
 
-    
+
+
                    # assignedInsIds.append(inst_id)
 
             asmIdSG = \
@@ -241,7 +238,7 @@ def assignPermission(
             AssnewlyassignInst = []
             Assdic = {}
             if 1:
-    
+
                 if permissionType == 'permissions':
 
                  # if permission type is permissions set institution level permissions for the user
@@ -254,11 +251,11 @@ def assignPermission(
                     else:
                         newlyassignInst.append(inst_id)
 
-    
-                       
+
+
                 if 1:  # assessmentPerm not in ['None',None,'']:
-    
-    
+
+
 
                     for asmId in asmIds:
                         (permissionType == 'assessmentpermissions',
@@ -275,21 +272,21 @@ def assignPermission(
                                 newlyassignInst.append(inst_id)
                         if sgInstList and assessmentId or assessmentId \
                             in [None, 'None', '']:
-                            UserPermForm= modelformset_factory(UserAssessmentPermissions,form=UserAssessmentPermissions_Form) 
-                            
-                            
-                                 
+                            UserPermForm= modelformset_factory(UserAssessmentPermissions,form=UserAssessmentPermissions_Form)
+
+
+
                             requestcopy={} #request #.POST.copy()
                             requestcopy['form-0-user']=userObj.id
                             requestcopy['form-0-instituion']=instObj.id
                             requestcopy['form-0-assessment']=assessmentObj.id
                             requestcopy['form-TOTAL_FORMS']=1
-                            requestcopy['form-MAX_NUM_FORMS']=1000  
+                            requestcopy['form-MAX_NUM_FORMS']=1000
                             requestcopy['form-0-access']=True
                             requestcopy['form-0-current_user']=userId
                             requestcopy['form-0-username']=''
                             requestcopy['form-0-path_info']='/'
-    
+
 
                             permObj = \
                                     UserAssessmentPermissions.objects.filter(user=userObj,
@@ -315,17 +312,17 @@ def assignPermission(
                                 #    pass
                             '''
                             if permObj:
-                                       requestcopy['form-INITIAL_FORMS']=1 
+                                       requestcopy['form-INITIAL_FORMS']=1
                                        #newrequest.POST=requestcopy
                                        requestcopy['form-0-id']=permObj[0].id
                                        rform = UserPermForm(requestcopy,requestcopy,queryset=permObj)
-                                       AssalreadyssignInst.append(inst_id)     
+                                       AssalreadyssignInst.append(inst_id)
                             else:
                                        requestcopy['form-INITIAL_FORMS']=0
                                        #newrequest.POST=requestcopy
                                        rform = UserPermForm(requestcopy,requestcopy)
                                        AssnewlyassignInst.append(inst_id)
-    
+
                             rform.save()
                         Assdic[asmId] = \
                             [list(set(AssalreadyssignInst)),
@@ -369,7 +366,7 @@ def assessmentPermisionCheck(
     sgInstList = []
     if permissionType == 'assessmentpermissions':
         sgInstList = getAssSG([asmId], instObj.id)
-    
+
     flag = 0
     if sgInstList and permissionType == 'assessmentpermissions' \
         or permissionType == 'permissionType' or asmId \
