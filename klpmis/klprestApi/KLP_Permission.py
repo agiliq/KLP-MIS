@@ -10,13 +10,14 @@ KLP_Permission file is used
 6) To reassign permissions to user.
 """
 
-from django.conf.urls.defaults import *
-from django.shortcuts import render_to_response
-from schools.models import *
-from schools.forms import *
+from django.conf.urls import patterns, url
+from django.shortcuts import render
+from schools.models import Assessment, Assessment_Class_Association
+from schools.models import Assessment_Institution_Association
+from schools.models import Assessment_StudentGroup_Association
+from schools.forms import UserAssessmentPermissions_Form
 from django_restapi.responder import *
 from django_restapi.receiver import *
-from django.template import RequestContext
 from django.contrib.auth.models import User
 import simplejson
 from django.db.models import Q
@@ -25,8 +26,6 @@ from django.conf import settings
 from subprocess import Popen
 from klprestApi.TreeMenu import getAssSG
 from klpmis.settings import PROJECT_ROOT, PYTHON_PATH
-
-from schools.models import *
 
 
 def KLP_Assign_Permissions(request):
@@ -105,22 +104,20 @@ def KLP_Assign_Permissions(request):
 
                         # bound_list=','.join(str(v1) for v1 in bound_list if v1 > 0)
 
-            Popen([
-                PYTHON_PATH,
-                PROJECT_ROOT + '/manage.py',
-                'KLP_assignPermissions',
-                str(inst_list),
-                str(deUserList),
-                str(permissions),
-                str(permissionType),
-                str(assessmentId),
-                str(assessmentPerm),
-                bound_cat,
-                bound_list,
-                request.user.username,
-                str(request.user.id),
-                request.path_info
-                ])
+            Popen([PYTHON_PATH,
+                   PROJECT_ROOT + '/manage.py',
+                   'KLP_assignPermissions',
+                   str(inst_list),
+                   str(deUserList),
+                   str(permissions),
+                   str(permissionType),
+                   str(assessmentId),
+                   str(assessmentPerm),
+                   bound_cat,
+                   bound_list,
+                   request.user.username,
+                   str(request.user.id),
+                   request.path_info])
 
                         # call(["/home/klp/klp/bin/python" ,"/home/klp/klp/klp/manage.py","KLP_assignPermissionnssignPermissions",str(inst_list),str(deUserList),str(permissions),str(permissionType),str(assessmentId),str(assessmentPerm),bound_cat,bound_list])
 
@@ -148,20 +145,20 @@ def KLP_Assign_Permissions(request):
 
             inst_list = ','.join(str(v1) for v1 in inst_list if v1 > 0)
 
-            Popen([
-                'python',
-                PROJECT_ROOT + '/manage.py',
-                'KLP_assignPermissions',
-                str(inst_list),
-                str(deUserList),
-                str(permissions),
-                str(permissionType),
-                str(assessmentId),
-                str(assessmentPerm),
-                bound_cat,
-                str(bound_list).strip(),
-                request.user.username,str(request.user.id),request.path_info
-                ])
+            Popen(['python',
+                   PROJECT_ROOT + '/manage.py',
+                   'KLP_assignPermissions',
+                   str(inst_list),
+                   str(deUserList),
+                   str(permissions),
+                   str(permissionType),
+                   str(assessmentId),
+                   str(assessmentPerm),
+                   bound_cat,
+                   str(bound_list).strip(),
+                   request.user.username,
+                   str(request.user.id),
+                   request.path_info])
             respDict['respMsg'] = message  # 'Assigned Permissions successfully for  %s Institutions' %(count)
             respDict['isSuccess'] = True
 
@@ -171,15 +168,16 @@ def KLP_Assign_Permissions(request):
                         content_type='application/json; charset=utf-8')
 
 
-def assignPermission(
-    inst_list,
-    deUserList,
-    permissions,
-    permissionType,
-    assessmentId=None,
-    assessmentPerm=None,username=None,userId=None,path_info='/'
-    ):
-    assignedAsmIds = []
+def assignPermission(inst_list,
+                     deUserList,
+                     permissions,
+                     permissionType,
+                     assessmentId=None,
+                     assessmentPerm=None,
+                     username=None,
+                     userId=None,
+                     path_info='/'):
+
     assignedInsIds = []
     allassignIds = []
     newlyassignInst = []
@@ -195,21 +193,16 @@ def assignPermission(
         # get Institution object using id
 
         inst_id = int(inst_id)
-        addflag = False
         instObj = Institution.objects.get(pk=inst_id)
         if assessmentId:
             asmIds = []
             asmIds.append(assessmentId)
-        elif permissionType != 'permissions' or assessmentPerm \
-            == 'True':
+        elif permissionType != 'permissions' or assessmentPerm == 'True':
             sg_list = \
                 StudentGroup.objects.filter(institution__id=inst_id,
                     active=2).values_list('id', flat=True).distinct()
 
-
-
                    # assignedInsIds.append(inst_id)
-
             asmIdSG = \
                 Assessment_StudentGroup_Association.objects.filter(student_group__id__in=sg_list,
                     active=2,assessment__active=2).values_list('assessment__id',
@@ -240,23 +233,15 @@ def assignPermission(
             if 1:
 
                 if permissionType == 'permissions':
-
-                 # if permission type is permissions set institution level permissions for the user
-
                     (assCheck, sgInstList) = \
                         assessmentPermisionCheck(userObj, instObj, [],
-                            permissions, 'permissionType')
+                                                 permissions, 'permissionType')
                     if assCheck:
                         alreadyssignInst.append(inst_id)
                     else:
                         newlyassignInst.append(inst_id)
 
-
-
                 if 1:  # assessmentPerm not in ['None',None,'']:
-
-
-
                     for asmId in asmIds:
                         (permissionType == 'assessmentpermissions',
                          instObj.id, 'uuuuuuuuuuuu')
@@ -264,15 +249,18 @@ def assignPermission(
                         if permissionType != 'permissions':
                             (assCheck, sgInstList) = \
                                 assessmentPermisionCheck(userObj,
-                                    instObj, asmId, permissions,
-                                    permissionType)
+                                                         instObj,
+                                                         asmId,
+                                                         permissions,
+                                                         permissionType)
                             if assCheck:
                                 alreadyssignInst.append(inst_id)
                             else:
                                 newlyassignInst.append(inst_id)
                         if sgInstList and assessmentId or assessmentId \
                             in [None, 'None', '']:
-                            UserPermForm= modelformset_factory(UserAssessmentPermissions,form=UserAssessmentPermissions_Form)
+                            UserPermForm= modelformset_factory(UserAssessmentPermissions,
+                                                               form=UserAssessmentPermissions_Form)
 
 
 
@@ -356,13 +344,11 @@ def assignPermission(
     return (assignedInsIds, allassignIds, dic)
 
 
-def assessmentPermisionCheck(
-    userObj,
-    instObj,
-    asmId,
-    permissions,
-    permissionType,
-    ):
+def assessmentPermisionCheck(userObj,
+                             instObj,
+                             asmId,
+                             permissions,
+                             permissionType):
     sgInstList = []
     if permissionType == 'assessmentpermissions':
         sgInstList = getAssSG([asmId], instObj.id)
@@ -398,14 +384,13 @@ def KLP_Users_list(request):
 
         # render show users form with users list
 
-        return render_to_response('viewtemplates/show_users_form.html',
-                                  {
-            'user_list': user_list,
-            'user': user,
-            'title': 'KLP Users',
-            'legend': 'Karnataka Learning Partnership',
-            'entry': 'Add',
-            }, context_instance=RequestContext(request))
+        return render(request,
+                      'viewtemplates/show_users_form.html',
+                      {'user_list': user_list,
+                       'user': user,
+                       'title': 'KLP Users',
+                       'legend': 'Karnataka Learning Partnership',
+                       'entry': 'Add'})
     else:
 
         # if user is not logged in redirect to login page
@@ -427,14 +412,13 @@ def KLP_User_Activate(request, user_id):
         userObj = User.objects.get(pk=user_id)
         userObj.is_active = 1  # activate user
         userObj.save()  # save user object
-        return render_to_response('viewtemplates/userAction_done.html',
-                                  {
-            'user': request.user,
-            'selUser': userObj,
-            'message': 'User Activated Successfully',
-            'legend': 'Karnataka Learning Partnership',
-            'entry': 'Add',
-            }, context_instance=RequestContext(request))
+        return render(request,
+                      'viewtemplates/userAction_done.html',
+                      {'user': request.user,
+                       'selUser': userObj,
+                       'message': 'User Activated Successfully',
+                       'legend': 'Karnataka Learning Partnership',
+                       'entry': 'Add'})
     else:
 
                 # if user is not logged in redirect to login page
@@ -470,14 +454,13 @@ def KLP_User_Delete(request, user_id):
                 # ........userObj.set_password(randomStr) # replace password with random string
 
         userObj.save()  # save user object
-        return render_to_response('viewtemplates/userAction_done.html',
-                                  {
-            'user': request.user,
-            'selUser': userObj,
-            'message': 'User Deletion Successful',
-            'legend': 'Karnataka Learning Partnership',
-            'entry': 'Add',
-            }, context_instance=RequestContext(request))
+        return render(request,
+                      'viewtemplates/userAction_done.html',
+                      {'user': request.user,
+                       'selUser': userObj,
+                       'message': 'User Deletion Successful',
+                       'legend': 'Karnataka Learning Partnership',
+                       'entry': 'Add'})
     else:
 
         # if user is not logged in redirect to login page
@@ -511,18 +494,17 @@ def KLP_User_Permissions(request, user_id):
 
         # render user permissions template....
 
-        return render_to_response('viewtemplates/user_permissions.html'
-                                  , {
-            'userId': user_id,
-            'userName': userObj.username,
-            'boundType_List': boundType_List,
-            'home': True,
-            'session_sch_typ': sessionVal,
-            'entry': 'Add',
-            'shPerm': True,
-            'title': 'KLP Permissions',
-            'legend': 'Karnataka Learning Partnership',
-            }, context_instance=RequestContext(request))
+        return render(request,
+                      'viewtemplates/user_permissions.html',
+                      {'userId': user_id,
+                       'userName': userObj.username,
+                       'boundType_List': boundType_List,
+                       'home': True,
+                       'session_sch_typ': sessionVal,
+                       'entry': 'Add',
+                       'shPerm': True,
+                       'title': 'KLP Permissions',
+                       'legend': 'Karnataka Learning Partnership'})
     else:
 
         # if user is not logged in redirect to login page
@@ -606,23 +588,23 @@ def KLP_Show_Permissions(request, boundary_id, user_id):
          assessment__id=unMapVal[1]).defer('active')[0] for unMapVal in
          unMapList]
 
-    return render_to_response('viewtemplates/show_permissions.html', {
-        'assignedInst': assignedInst,
-        'userId': user_id,
-        'userName': userObj.username,
-        'unAssignedInst': unAssignedInst,
-        'assignedpermObjects': assignedpermObjects,
-        'redUrl': redUrl,
-        'qList': qList,
-        }, context_instance=RequestContext(request))
+    return render(request,
+                  'viewtemplates/show_permissions.html',
+                  {'assignedInst': assignedInst,
+                   'userId': user_id,
+                   'userName': userObj.username,
+                   'unAssignedInst': unAssignedInst,
+                   'assignedpermObjects': assignedpermObjects,
+                   'redUrl': redUrl,
+                   'qList': qList})
 
 
 def KLP_Show_User_Permissions(request, boundary_id, user_id):
-    return render_to_response('viewtemplates/show_permissions.html',
-                              {'userId': user_id,
-                              'boundary_id': boundary_id,
-                              'confirmMsg': True},
-                              context_instance=RequestContext(request))
+    return render(request,
+                  'viewtemplates/show_permissions.html',
+                  {'userId': user_id,
+                  'boundary_id': boundary_id,
+                  'confirmMsg': True})
 
 
 def KLP_Revoke_Permissions(request, permissionType):
