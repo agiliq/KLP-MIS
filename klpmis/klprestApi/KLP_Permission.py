@@ -16,8 +16,6 @@ from schools.models import Assessment, Assessment_Class_Association
 from schools.models import Assessment_Institution_Association
 from schools.models import Assessment_StudentGroup_Association
 from schools.forms import UserAssessmentPermissions_Form
-from django_restapi.responder import *
-from django_restapi.receiver import *
 from django.contrib.auth.models import User
 import simplejson
 from django.db.models import Q
