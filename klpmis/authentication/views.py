@@ -1,6 +1,7 @@
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as django_login
 from django.contrib.auth import logout as django_logout
+from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 
@@ -45,12 +46,7 @@ def logout(request):
     """ This method is for user logout """
 
     django_logout(request)
-    context = {'title': 'Karnataka Learning Partnership',
-               'legend': 'Karnataka Learning Partnership',
-               'entry': 'Add'}
-    return render(request,
-                  'login.html',
-                  context)
+    return HttpResponseRedirect(reverse('login'))
 
 
 def klp_user_auth(request):
