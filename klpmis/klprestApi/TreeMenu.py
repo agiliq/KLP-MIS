@@ -3,7 +3,7 @@
 """
 TreeMenu is used to filter all objects to genrate tree menu
 """
-from django.conf.urls.defaults import patterns
+from django.conf.urls.defaults import patterns, url
 from django_restapi.model_resource import Collection
 from schools.models import *
 from django.http import *
