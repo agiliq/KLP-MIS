@@ -1,4 +1,3 @@
-from django.conf.urls import patterns, url
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
