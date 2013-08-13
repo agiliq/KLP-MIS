@@ -1,28 +1,23 @@
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
-from django.forms import ModelForm
-from models import *
-from django import forms
-from django.utils.translation import ugettext_lazy as _
-from django.contrib.admin.widgets import AdminTimeWidget, \
-    AdminDateWidget
-from django.utils.encoding import force_unicode
-from django.conf import settings
 import datetime
-import time
+import psycopg2
+
+from django.forms import ModelForm
+from django import forms
 from django.forms.models import modelformset_factory
 from django.forms.extras.widgets import SelectDateWidget
 from django.contrib.auth.forms import *
-import psycopg2
+
+from models import *
 from klpmis.settings import *
 from fullhistory.models import *
 from schools.models import current_academic
+
 d = DATABASES['default']
 datebase = d['NAME']
 user = d['USER']
 password = d['PASSWORD']
 
-from django.db import models
+
 def storeFullhistory(requestparam,data,objid,modelName,action='C'):
     
     
@@ -72,7 +67,7 @@ def create_infos(requestparam, action):
     if requestparam and type(requestparam)()!={}:
         user_name = requestparam.user
     else:
-       user_name=userid=requestparam.get('current_user','user')
+       user_name=requestparam.get('current_user','user')
        
     ret = {'C': u'%s Created', 'U': u'%s Updated',
            'D': u'%s Deleted'}[action] % user_name
@@ -88,8 +83,6 @@ def CustomizeSave(selfObj,Form,commit=True,modelName=None):
 
                 selfObj.instance=instance
           except:
-              initalName=modelName
-              
               modelName=Form.Meta.model._meta.module_name
               
               connection = psycopg2.connect(database=datebase, user=user,                    password=password)
@@ -121,7 +114,7 @@ def CustomizeSave(selfObj,Form,commit=True,modelName=None):
               userdetails['request_path']=request_path
               if username :
 
-                  v=storeFullhistory(userdetails,selfObj.data,insertedRow,modelName)
+                  storeFullhistory(userdetails,selfObj.data,insertedRow,modelName)
           return selfObj.instance
 
 class Institution_Category_Form(ModelForm):
