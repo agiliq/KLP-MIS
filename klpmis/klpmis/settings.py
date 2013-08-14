@@ -123,7 +123,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 )
 
 TEMPLATE_DIRS = (
-    Path(PROJECT_ROOT, 'schools/templates'),
+    #Path(PROJECT_ROOT, 'schools/templates'),
 )
 
 INSTALLED_APPS = (
