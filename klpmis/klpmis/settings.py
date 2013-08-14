@@ -91,8 +91,6 @@ MEDIA_ROOT = Path(PROJECT_ROOT, 'static_media')
 MEDIA_URL = '/static_media/'
 STATIC_URL = '/static/'
 
-ADMIN_MEDIA_PREFIX = '/admin_media/'
-
 # List of callables that know how to import templates from various sources.
 
 TEMPLATE_LOADERS = (
