@@ -18,23 +18,35 @@
                 <tr>
                     <td align="center" colspan="2">&nbsp;</td>
                 </tr>
-                {% if message %}
+                {% if form.non_field_errors %}
                     <!-- Form is not valid show message -->
-                    <tr>
-                        <td colspan="2" bgcolor="#FFF8C6"><span class="editErr">{{message}}</span></td>
-                    </tr>  
+                    {% for each in form.non_field_errors %}
+                        <tr>
+                            <td colspan="2" bgcolor="#FFF8C6"><span class="editErr">{{form.non_field_errors}}</span></td>
+                        </tr>  
+                    {% endfor %}
                     <tr>
                         <td align="center" colspan="2">&nbsp;</td>
                     </tr>              
                 {% endif %}
                 <tr>
+                    {% if form.username.errors %}
+                        <td colspan="2">{{form.username.errors}}</td>
+                    {% endif %}
+                </tr>
+                <tr>
                     <td>User Name</td>
-                    <td><input type="text" name="username" value="" id="username" /></td>
+                    <td>{{form.username}}</td>
                 </tr>
                 <tr><td>&nbsp;</td></tr>
                 <tr>
+                    {% if form.password.errors %}
+                        <td colspan="2">{{form.password.errors}}</td>
+                    {% endif %}
+                </tr>
+                <tr>
                     <td>Password</td>
-                    <td><input type="password" name="password" value="" id="password" /></td>
+                    <td>{{form.password}}</td>
                 </tr>
                 <tr>
                     <td align="center" colspan="2">&nbsp;</td>
