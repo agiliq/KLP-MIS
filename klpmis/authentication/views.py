@@ -10,7 +10,6 @@ def login(request):
     """ This method is for user login """
 
     context = {}
-    context['title'] = 'Karnataka Learning Partnership'
     context['legend'] = 'Karnataka Learning Partnership'
     context['entry'] = 'Add'
     if request.method == 'POST':
