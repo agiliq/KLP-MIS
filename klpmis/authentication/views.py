@@ -9,8 +9,7 @@ from django.shortcuts import render
 def login(request):
     """ This method is for user login """
 
-    context = {}
-    context['entry'] = 'Add'
+    context = {'entry': 'Add'}
     if request.method == 'POST':
         user = authenticate(username=request.POST['username'],
                             password=request.POST['password'])
