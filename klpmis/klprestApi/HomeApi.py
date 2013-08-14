@@ -6,7 +6,7 @@ HomeApi is used
 
 from django.conf.urls.defaults import patterns, url
 from django.http import HttpResponse
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 from django.contrib.auth import logout
 from django.http import HttpResponseRedirect
 
@@ -85,9 +85,9 @@ class KLP_Home(Resource):
                 logout(request)
                 return HttpResponseRedirect('/login/')
 
-            respTemplate = render_to_response('viewtemplates/home.html'
-                    , respDict)
-            return HttpResponse(respTemplate)
+            return render(request,
+                          'viewtemplates/home.html',
+                          respDict)
         else:
 
         # If user is not login redirects to login page
