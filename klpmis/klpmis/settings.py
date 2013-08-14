@@ -88,8 +88,12 @@ MEDIA_ROOT = Path(PROJECT_ROOT, 'static_media')
 # trailing slash if there is a path component (optional in other cases).
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
 
-MEDIA_URL = '/static_media/'
-STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
+STATIC_URL = '/static_media/'
+
+STATICFILES_DIRS = (
+    Path(PROJECT_ROOT, 'static_media'),
+)
 
 # List of callables that know how to import templates from various sources.
 
