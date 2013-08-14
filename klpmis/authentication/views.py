@@ -1,17 +1,12 @@
-"""
-AuthenticationApi is used
-1) To login
-2) To logout
-3) To check user is logged in or not.
-"""
-
-from django.conf.urls import patterns, url
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate
+from django.contrib.auth import login as django_login
+from django.contrib.auth import logout as django_logout
+from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 
 
-def klp_login(request):
+def login(request):
     """ This method is for user login """
 
     context = {}
@@ -23,7 +18,7 @@ def klp_login(request):
                             password=request.POST['password'])
         if user is not None:
             if user.is_active:
-                login(request, user)
+                django_login(request, user)
                 user_url = {'Data Entry Executive': '/home/',
                             'Data Entry Operator': '/home/?respType=filter',
                             'AdminGroup': '/home/?respType=userpermissions'}
@@ -47,24 +42,13 @@ def klp_login(request):
                   context)
 
 
-def klp_logout(request):
+def logout(request):
     """ This method is for user logout """
 
-    logout(request)
-    context = {'title': 'Karnataka Learning Partnership',
-               'legend': 'Karnataka Learning Partnership',
-               'entry': 'Add'}
-    return render(request,
-                  'login.html',
-                  context)
+    django_logout(request)
+    return HttpResponseRedirect(reverse('login'))
 
 
 def klp_user_auth(request):
     """ This method checks, user is authenticated or not """
     return HttpResponse(request.user.is_authenticated())
-
-
-urlpatterns = patterns('',
-                       url(r'^login/?$', klp_login, name="login"),
-                       url(r'^logout/?$', klp_logout, name="logout"),
-                       url(r'^user/authentication/?$', klp_user_auth))
