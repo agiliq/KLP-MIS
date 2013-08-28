@@ -9,6 +9,8 @@ from django.shortcuts import render
 def login(request):
     """ This method is for user login """
 
+    if request.user.is_authenticated():
+        return HttpResponseRedirect('/home/')
     context = {'entry': 'Add'}
     form = AuthenticationForm()
     if request.method == 'POST':
