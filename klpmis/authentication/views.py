@@ -22,8 +22,7 @@ def login(request):
             if user.is_superuser or user.is_staff:
                 return HttpResponseRedirect('/home/')
             else:
-                user_group = user.groups.all().defer('user',
-                                                     'permissions')[0].name
+                user_group = user.groups.all()[0].name
                 return HttpResponseRedirect(user_url[user_group])
     context['form'] = form
     return render(request,
