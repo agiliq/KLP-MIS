@@ -43,6 +43,7 @@ def klp_user_auth(request):
     """ This method checks, user is authenticated or not """
     return HttpResponse(request.user.is_authenticated())
 
+
 def index(request):
     if request.user.is_authenticated():
         return HttpResponseRedirect(reverse('home'))
