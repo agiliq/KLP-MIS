@@ -10,7 +10,7 @@ def login(request):
     """ This method is for user login """
 
     if request.user.is_authenticated():
-        return HttpResponseRedirect('/home/')
+        return HttpResponseRedirect(reverse('home'))
     context = {'entry': 'Add'}
     form = AuthenticationForm()
     if request.method == 'POST':
@@ -22,7 +22,7 @@ def login(request):
                         'Data Entry Operator': '/home/?respType=filter',
                         'AdminGroup': '/home/?respType=userpermissions'}
             if user.is_superuser or user.is_staff:
-                return HttpResponseRedirect('/home/')
+                return HttpResponseRedirect(reverse('home'))
             else:
                 user_group = user.groups.all()[0].name
                 return HttpResponseRedirect(user_url[user_group])
@@ -45,6 +45,6 @@ def klp_user_auth(request):
 
 def index(request):
     if request.user.is_authenticated():
-        return HttpResponseRedirect('/home/')
+        return HttpResponseRedirect(reverse('home'))
     else:
         return HttpResponseRedirect(reverse('login'))
