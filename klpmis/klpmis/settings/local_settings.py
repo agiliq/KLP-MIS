@@ -1,4 +1,4 @@
-from .settings import *
+from .base import *
 
 DB_NAME = get_env_variable('DB_NAME')
 DB_USER = get_env_variable('DB_USER')
@@ -23,3 +23,4 @@ DATABASES = {
         'OPTIONS': {'autocommit': True},
      }
 }
+
