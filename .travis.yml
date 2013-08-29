@@ -5,4 +5,4 @@ python:
 install:
   - pip install -r requirements --use-mirrors
 script:
-  - python manage.py test schools
+  - python manage.py test schools --settings=klpmis.settings.test_settings
