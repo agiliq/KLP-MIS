@@ -22,10 +22,7 @@ def login(request):
             if user.is_superuser or user.is_staff:
                 return HttpResponseRedirect('/home/')
             else:
-            # else redirect to respective paths defined
-            # in usrUrl dictionary based on group.
-                user_group = user.groups.all().defer('user',
-                                                     'permissions')[0].name
+                user_group = user.groups.all()[0].name
                 return HttpResponseRedirect(user_url[user_group])
     context['form'] = form
     return render(request,
@@ -43,3 +40,9 @@ def logout(request):
 def klp_user_auth(request):
     """ This method checks, user is authenticated or not """
     return HttpResponse(request.user.is_authenticated())
+
+def index(request):
+    if request.user.is_authenticated():
+        return HttpResponseRedirect('/home/')
+    else:
+        return HttpResponseRedirect(reverse('login'))
