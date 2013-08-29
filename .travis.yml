@@ -2,4 +2,4 @@ language: python
 python:
   - 2.7
 install: pip install -r klpmis/requirements.txt --use-mirrors
-script: python manage.py test schools --settings=klpmis.settings.test_settings
+script: python manage.py test schools --settings=klpmis.klpmis.settings.test_settings
