@@ -12,7 +12,7 @@ from django_restapi.resource import Resource
 from schools.models import Boundary_Type, Programme
 
 
-class KLP_Home(Resource):
+class Home(Resource):
 
     """ To generate Home Page home/"""
 
