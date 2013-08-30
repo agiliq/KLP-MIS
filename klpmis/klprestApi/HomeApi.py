@@ -4,8 +4,6 @@ HomeApi is used
 2) To set/change session value on change of boundary type.
 """
 
-from django.conf.urls.defaults import patterns, url
-from django.http import HttpResponse
 from django.shortcuts import render
 from django.contrib.auth import logout
 from django.http import HttpResponseRedirect
@@ -93,16 +91,3 @@ class KLP_Home(Resource):
         # If user is not login redirects to login page
 
             return HttpResponseRedirect('/login/')
-
-
-def KLP_Set_Session(request):
-    """ This method uses for set the session """
-
-    request.session['session_sch_typ'] = request.GET.get('sessionVal')
-    return HttpResponse('Success')
-
-
-urlpatterns = patterns('',
-    url(r'^home/$', KLP_Home(permitted_methods=('GET',)), name='home'),
-    url(r'^set/session/$', KLP_Set_Session)
-)

@@ -5,9 +5,9 @@ from django.conf import settings
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    url(r'', include('authentication.urls')),
     url(r'^admin/', include(admin.site.urls)),
-    url(r'', include('klprestApi.HomeApi')),
+    url(r'', include('authentication.urls')),
+    url(r'', include('utils.urls')),
     url(r'', include('klprestApi.TreeMenu')),
     url(r'', include('klprestApi.BoundaryApi')),
     url(r'', include('klprestApi.InstitutionApi')),
