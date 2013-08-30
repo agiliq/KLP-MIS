@@ -5,7 +5,7 @@ from django.core.exceptions import ImproperlyConfigured
 from unipath import Path
 
 
-PROJECT_ROOT = Path(__file__).ancestor(2)
+PROJECT_ROOT = Path(__file__).ancestor(3)
 PYTHON_PATH = 'python'
 PROJECT_NAME = os.path.basename(PROJECT_ROOT)
 
