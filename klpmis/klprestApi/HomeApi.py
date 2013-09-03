@@ -7,6 +7,7 @@ HomeApi is used
 from django.shortcuts import render
 from django.contrib.auth import logout
 from django.http import HttpResponseRedirect
+from django.core.urlresolvers import reverse
 
 from django_restapi.resource import Resource
 from schools.models import Boundary_Type, Programme
@@ -65,7 +66,7 @@ class Home(Resource):
                     active=2, programme_institution_category=sessionVal)
             elif respType == 'createUser' and (
                     user.is_superuser or 'AdminGroup' in user_GroupsList):
-                return HttpResponseRedirect('accounts/auth/user/add/')
+                return HttpResponseRedirect(reverse('accounts_add_user'))
             elif respType == 'changepermissions' and (
                     user.is_superuser or 'AdminGroup' in user_GroupsList):
                 return HttpResponseRedirect('change/user/permissions')

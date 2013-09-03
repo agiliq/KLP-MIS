@@ -164,7 +164,7 @@ def KLP_password_change_done(request,
 
 
 urlpatterns = patterns('', url(r'^accounts/auth/user/add/$',
-                       KLP_addNewUser),
+                       KLP_addNewUser, name='accounts_add_user'),
                        url(r'^accounts/auth/user/addNewUser_done/$',
                        KLP_addNewUser_done),
                        url(r'^accounts/password/change/$',
