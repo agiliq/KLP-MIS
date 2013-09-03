@@ -69,10 +69,10 @@ class Home(Resource):
                 return HttpResponseRedirect(reverse('accounts_add_user'))
             else:
                 logout(request)
-                return HttpResponseRedirect('/login/')
+                return HttpResponseRedirect(reverse('login'))
 
             return render(request,
                           'viewtemplates/home.html',
                           respDict)
         else:
-            return HttpResponseRedirect('/login/')
+            return HttpResponseRedirect(reverse('login'))
