@@ -145,12 +145,13 @@
 
 <div id="container">
 
-{% if entry == "Add" %}
-<fieldset>
-    <legend>Karnataka Learning Partnership</legend>
-{% else %}
-<div class="tablebg">
-{% endif %}
+    {% if entry == "Add" %}
+    <fieldset>
+        <legend>Karnataka Learning Partnership</legend>
+    {% else %}
+    <div class="tablebg">
+    {% endif %}
+
     {% block leftpart %}
     
     <div class="leftPane">
@@ -260,26 +261,26 @@
     {% endblock %}
     {% block midpart %}{% endblock %}
 
-{% if entry == "Add" %}
-</fieldset>
-{% else %}
-</div>
-{% endif %}
-</div>
-<script type="text/javascript">
+    {% if entry == "Add" %}
+    </fieldset>
+    {% else %}
+    </div>
+    {% endif %}
+    </div>
 
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-3982320-15']);
-  _gaq.push(['_setDomainName', 'klp.org.in']);
-  _gaq.push(['_trackPageview']);
+    <script type="text/javascript">
 
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-3982320-15']);
+      _gaq.push(['_setDomainName', 'klp.org.in']);
+      _gaq.push(['_trackPageview']);
 
-</script>
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
 
+    </script>
 </body>
 </html>
