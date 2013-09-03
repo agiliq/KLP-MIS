@@ -11,8 +11,6 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.forms import *
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from django_restapi.responder import *
-from django_restapi.receiver import *
 from schools.models import *
 
 
