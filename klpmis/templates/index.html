@@ -155,7 +155,7 @@
     {% block leftpart %}
     
     <div class="leftPane">
-        {% if user.id %}
+        {% if user.is_authenticated %}
             <!-- This block shows logged in user name and change password link if user login -->
             <div class="KLP_Log">
                     <span class="KLP_brCrumb">Welcome: </span>
