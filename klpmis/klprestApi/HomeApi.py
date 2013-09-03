@@ -67,9 +67,6 @@ class Home(Resource):
             elif respType == 'createUser' and (
                     user.is_superuser or 'AdminGroup' in user_GroupsList):
                 return HttpResponseRedirect(reverse('accounts_add_user'))
-            elif respType == 'changepermissions' and (
-                    user.is_superuser or 'AdminGroup' in user_GroupsList):
-                return HttpResponseRedirect('change/user/permissions')
             else:
                 logout(request)
                 return HttpResponseRedirect('/login/')
