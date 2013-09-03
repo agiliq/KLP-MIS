@@ -39,7 +39,7 @@ class Home(Resource):
                 'session_sch_typ': sessionVal,
                 'usergroups': user_GroupsList,
                 }
-            if respType == None and (user.is_superuser
+            if not respType and (user.is_superuser
                     or 'Data Entry Executive' in user_GroupsList
                     or user.is_staff):
                 respDict['home'] = True
