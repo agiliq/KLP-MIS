@@ -26,8 +26,6 @@ class Home(Resource):
             user_GroupsList = ['%s' % usergroup.name for usergroup in
                                klp_UserGroups]
             respDict = {
-                'legend': 'Karnataka Learning Partnership ',
-                'title': 'Karnataka Learning Partnership ',
                 'entry': 'Add',
                 'boundType_List': boundType_List,
                 'session_sch_typ': sessionVal,
