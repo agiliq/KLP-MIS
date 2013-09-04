@@ -19,31 +19,25 @@ user = d['USER']
 password = d['PASSWORD']
 
 
-def storeFullhistory(requestparam,data,objid,modelName,action='C'):
-    userid=requestparam.get('userid','user')
-    username=requestparam.get('username','username')
-    request_path=requestparam.get('request_path','/')
-    #userid = username.id
-     
+def storeFullhistory(requestparam, data, objid, modelName, action='C'):
+    userid = requestparam.get('userid', 'user')
+    username = requestparam.get('username', 'username')
+    request_path = requestparam.get('request_path', '/')
     fullrequest = Request(user_name=username, user_pk=userid,
                           request_path=request_path)
     fullrequest.save()
-    
-    
     obj = ContentType.objects.get(model=modelName)
 
     content_type_id = obj.id
-    
     create_info = create_infos(requestparam, action)
-    
-    
+
     try:
         revision = len(FullHistory.objects.filter(content_type=modelName,
                        object_id=objid))
 
     except:
         revision = 0
-    revision=0 if revision==0 else  revision+1 
+    revision = 0 if revision == 0 else revision+1
     fh = FullHistory(
         revision=revision,
         action=action,
@@ -52,69 +46,68 @@ def storeFullhistory(requestparam,data,objid,modelName,action='C'):
         data=data,
         request=fullrequest,
         site_id=1,
-        info=create_info,
-        )
+        info=create_info,)
     fh.save()
-    return 'Sccess' 
+    return 'Sccess'
+
 
 def create_infos(requestparam, action):
     '''
-        Generates a summary description of this history entry
-        '''
+    Generates a summary description of this history entry
+    '''
 
     user_name = u'(System)'
-    if requestparam and type(requestparam)()!={}:
+    if requestparam and type(requestparam)() != {}:
         user_name = requestparam.user
     else:
-       user_name=requestparam.get('current_user','user')
-       
+        user_name = requestparam.get('current_user', 'user')
+
     ret = {'C': u'%s Created', 'U': u'%s Updated',
            'D': u'%s Deleted'}[action] % user_name
-
-    
     return ret
-def CustomizeSave(selfObj,Form,commit=True,modelName=None):
-          
-          try:
-                instance = super(Form, selfObj).save(commit=commit)
-                
-                instance.save()
-
-                selfObj.instance=instance
-          except:
-              modelName=Form.Meta.model._meta.module_name
-              
-              connection = psycopg2.connect(database=datebase, user=user,                    password=password)
-              cursor = connection.cursor()
-              Query="SELECT  column_default from information_schema.columns where table_name='schools_"+modelName+"' and column_name='id'"
-              cursor.execute(Query)
-              Seqcolumn=cursor.fetchone()[0]
-              cursor.execute("select "+Seqcolumn)
-              insertedRow=cursor.fetchone()[0]-1
-              cursor.close()
-              
-              #print  selfObj.instances,'INSTANCE OBJ',selfObj.instances.id,insertedRow
-              #print dir(selfObj)
-              selfObj.instance=Form.Meta.model.objects.get(id=insertedRow)
 
 
-              userdetails={}
-              selfObjfiles=selfObj.files
-	      try:
-      			 username = selfObjfiles.user
-       			 userid=username.id
-                         request_path=selfObjfiles.path_info
-              except:
-                      userid=selfObjfiles.get('form-0-current_user','')
-                      username=selfObjfiles.get('form-0-username','')
-                      request_path=selfObjfiles.get('form-0-path_info','/')
-              userdetails['username']=username
-              userdetails['userid']=userid
-              userdetails['request_path']=request_path
-              if username :
+def CustomizeSave(selfObj, Form, commit=True, modelName=None):
 
-                  storeFullhistory(userdetails,selfObj.data,insertedRow,modelName)
-          return selfObj.instance
+    try:
+        instance = super(Form, selfObj).save(commit=commit)
+        instance.save()
+        selfObj.instance = instance
+    except:
+        modelName = Form.Meta.model._meta.module_name
+        connection = psycopg2.connect(database=datebase,
+                                      user=user,
+                                      password=password)
+        cursor = connection.cursor()
+        Query = "SELECT  column_default \
+                 from information_schema.columns \
+                 where table_name='schools_"+modelName+"' \
+                 and column_name='id'"
+        cursor.execute(Query)
+        Seqcolumn = cursor.fetchone()[0]
+        cursor.execute("select "+Seqcolumn)
+        insertedRow = cursor.fetchone()[0]-1
+        cursor.close()
+        #print  selfObj.instances,'INSTANCE OBJ',selfObj.instances.id,insertedRow
+        #print dir(selfObj)
+        selfObj.instance = Form.Meta.model.objects.get(id=insertedRow)
+        userdetails = {}
+        selfObjfiles = selfObj.files
+    try:
+        username = selfObjfiles.user
+        userid = username.id
+        request_path = selfObjfiles.path_info
+    except:
+        userid = selfObjfiles.get('form-0-current_user', '')
+        username = selfObjfiles.get('form-0-username', '')
+        request_path = selfObjfiles.get('form-0-path_info', '/')
+    userdetails['username'] = username
+    userdetails['userid'] = userid
+    userdetails['request_path'] = request_path
+    if username:
+        storeFullhistory(userdetails, selfObj.data, insertedRow, modelName)
+    return selfObj.instance
+
 
 class Institution_Category_Form(ModelForm):
 
