@@ -8,19 +8,18 @@ from django.forms.extras.widgets import SelectDateWidget
 from django.contrib.auth.forms import *
 
 from models import *
-from klpmis.settings import *
+#from klpmis.settings import *
+from django.conf import settings
 from fullhistory.models import *
 from schools.models import current_academic
 
-d = DATABASES['default']
+d = settings.DATABASES['default']
 datebase = d['NAME']
 user = d['USER']
 password = d['PASSWORD']
 
 
 def storeFullhistory(requestparam,data,objid,modelName,action='C'):
-    
-    
     userid=requestparam.get('userid','user')
     username=requestparam.get('username','username')
     request_path=requestparam.get('request_path','/')
