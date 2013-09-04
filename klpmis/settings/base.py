@@ -149,4 +149,3 @@ def get_env_variable(var_name):
     except KeyError:
         error_msg = "Set %s environment variable" % (var_name,)
         raise ImproperlyConfigured(error_msg)
-
