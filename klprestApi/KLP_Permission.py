@@ -25,7 +25,7 @@ from schools.receivers import KLP_user_Perm
 from django.conf import settings
 from subprocess import Popen
 from klprestApi.TreeMenu import getAssSG
-from klpmis.settings import PROJECT_ROOT, PYTHON_PATH
+from django.conf import settings
 
 
 def KLP_Assign_Permissions(request):
@@ -66,8 +66,8 @@ def KLP_Assign_Permissions(request):
             respDict['respMsg'] = 'Select Atleast One Boundary'
             respDict['isSuccess'] = False
         else:
-            Popen([PYTHON_PATH,
-                   PROJECT_ROOT + '/manage.py',
+            Popen([settings.PYTHON_PATH,
+                   settings.PROJECT_ROOT + '/manage.py',
                    'KLP_assignPermissions',
                    str(inst_list),
                    str(deUserList),
@@ -91,7 +91,7 @@ def KLP_Assign_Permissions(request):
             count = count + len(inst_list)
             inst_list = ','.join(str(v1) for v1 in inst_list if v1 > 0)
             Popen(['python',
-                   PROJECT_ROOT + '/manage.py',
+                   settings.PROJECT_ROOT + '/manage.py',
                    'KLP_assignPermissions',
                    str(inst_list),
                    str(deUserList),
