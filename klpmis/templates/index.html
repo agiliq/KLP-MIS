@@ -65,7 +65,7 @@
             }
             if (urHere == 'Programme'){
                 $("#rootProgramme").show()
-               }
+            }
         }
     
         $("#boundary_type").change(function(){
@@ -145,141 +145,140 @@
 
 <div id="container">
 
-{% if entry == "Add" %}
-<fieldset>
-    <legend>Karnataka Learning Partnership</legend>
-{% else %}
-<div class="tablebg">
-{% endif %}
+    {% if entry == "Add" %}
+    <fieldset>
+        <legend>Karnataka Learning Partnership</legend>
+    {% else %}
+    <div class="tablebg">
+    {% endif %}
+
     {% block leftpart %}
     
-    <div class="leftPane">
-        {% if user.id %}
-            <!-- This block shows logged in user name and change password link if user login -->
-            <div class="KLP_Log">
+        <div class="leftPane">
+            {% if user.is_authenticated %}
+                <div class="KLP_Log">
                     <span class="KLP_brCrumb">Welcome: </span>
                     <span>{% if user.first_name%}{{user.first_name}}{% else %}{{user.username}}{%endif%}<span>
                     <span class="KLP_logOut"><a href="{% url "logout" %}" title="logout">Log out</a><span>
                     <span class="KLP_logOut"><a href="/accounts/password/change/" title="ChangePassword">Change Password</a><span>
                 </div>
-        {% endif %}
-        <div class="addBound">
-            <!-- Drop Down shows boundary types -->
-                    <select id="boundary_type" name="boundary_type">
-                        <option value="">----</option>
-                            {% for boundType in boundType_List %}                               
-                                {% if session_sch_typ ==  boundType.id %}
-                                        <option value="{{boundType.id}}" selected="true">{{boundType}}</option>
-                                    {% else %}
-                                        <option value="{{boundType.id}}">{{boundType}}</option>
-                                    {% endif %}
-                            {% endfor %}
-                    </select>
-                    <input type="hidden" name="entryView" id="id_entry_view" value="{{filter}}"/>
-                    <input type="hidden" name="homeView" id="id_home_view" value="{{home}}"/>
-                    <input type="hidden" name="prvSelNode" id="id_prvSelNode" value=""/>
-                    <input type="hidden" name="perm" id="id_perm_assign" value="{{permission}}"/>
-                    <input type="hidden" name="assessPerm" id="id_assess_perm_assign" value="{{assessmentpermission}}"/>
-                    <input type="hidden" name="urHere" id="id_urHere" value="{{urHere}}"/>
-                    <input type="hidden" name="shPerm" id="id_shPerm" value="{{shPerm}}"/>
-                    <input type="hidden" name="userSel" id="id_userSel" value="{{userId}}"/>                    
-                    <span style="{% if not filter %}display:none;{% endif %}">
-                        <!-- Drop Down shows programmes -->
+            {% endif %}
+            <div class="addBound">
+                <!-- Drop Down shows boundary types -->
+                <select id="boundary_type" name="boundary_type">
+                    <option value="">----</option>
+                        {% for boundType in boundType_List %}                               
+                            {% if session_sch_typ ==  boundType.id %}
+                                    <option value="{{boundType.id}}" selected="true">{{boundType}}</option>
+                                {% else %}
+                                    <option value="{{boundType.id}}">{{boundType}}</option>
+                                {% endif %}
+                        {% endfor %}
+                </select>
+                <input type="hidden" name="entryView" id="id_entry_view" value="{{filter}}"/>
+                <input type="hidden" name="homeView" id="id_home_view" value="{{home}}"/>
+                <input type="hidden" name="prvSelNode" id="id_prvSelNode" value=""/>
+                <input type="hidden" name="perm" id="id_perm_assign" value="{{permission}}"/>
+                <input type="hidden" name="assessPerm" id="id_assess_perm_assign" value="{{assessmentpermission}}"/>
+                <input type="hidden" name="urHere" id="id_urHere" value="{{urHere}}"/>
+                <input type="hidden" name="shPerm" id="id_shPerm" value="{{shPerm}}"/>
+                <input type="hidden" name="userSel" id="id_userSel" value="{{userId}}"/>
+                <span style="{% if not filter %}display:none;{% endif %}">
+                    <!-- Drop Down shows programmes -->
                     <select id="filtProg" name="filtProg">
-                            <option value="None">--</option>
-                                {% for prg in prgsList %}
-                                    <option value="{{prg.id}}">{{prg}}</option>
-                                {% endfor %}
-                        </select>
-                        <!-- Drop Down shows Assessments -->
-                    {% if assessmentpermission%}    <select id="filtAsmnt" name="filtAsmnt"> 
-                                <option value="None">--</option>
-                        </select>{%endif%}
+                        <option value="None">--</option>
+                        {% for prg in prgsList %}
+                            <option value="{{prg.id}}">{{prg}}</option>
+                        {% endfor %}
+                    </select>
+                    <!-- Drop Down shows Assessments -->
+                    {% if assessmentpermission%}
+                    <select id="filtAsmnt" name="filtAsmnt"> 
+                        <option value="None">--</option>
+                    </select>
+                    {%endif%}
                 </span>
             </div> 
-           
-           
             <div class="treeMen" id="treeStruc">
-                   <ul id="treeBlk" class="filetree treeview-famfamfam"></ul>
+               <ul id="treeBlk" class="filetree treeview-famfamfam"></ul>
             </div>
-            
-            
+
             {% if not shPerm %}
-            {% if home and not filter%}
-                {% if user.is_superuser or user.is_staff %}
-                <div class="addBound" id="rootBoundary" style="display:none;">
-                <div class="boundLink">
-                    <a href='/boundary/creator/' onclick="return KLP_View(this);" boundaryCategory="9" >Add Root Boundary <img src="/static_media/images/boundary_add.gif" title="Add Boundary" /></a>
-                </div>
-                </div>
-                {% endif %}
-            {% endif %}
-            {% if programme %}
-                {% if user.is_superuser or user.is_staff %}
-            <div class="addBound" id="rootProgramme" style="display:none;">
-                <div class="boundLink">
-                    <a href='/programme/creator/' onclick="return KLP_View(this);">Add Programme <img src="/static_media/images/programme_add.gif" title="Add Programme" /></a>
-                </div>
-            </div>
-                {% endif %}
-            {% endif %}
-            {% if 'Data Entry Executive' in usergroups or 'Data Entry Operator' in usergroups or user.is_superuser or user.is_staff%}
-            <div class="addBound" style="margin:5px 0px;font-size:13px;">
-                <div class="boundLink">
-                    {% if 'Data Entry Executive' in usergroups or user.is_superuser or user.is_staff %}
-                        <a href='/home/' style="{% if home and not permission and not filter%}color:#75ad0a;{%endif%}">Home</a> |
+                {% if home and not filter%}
+                    {% if user.is_superuser or user.is_staff %}
+                    <div class="addBound" id="rootBoundary" style="display:none;">
+                        <div class="boundLink">
+                            <a href='/boundary/creator/' onclick="return KLP_View(this);" boundaryCategory="9" >Add Root Boundary <img src="/static_media/images/boundary_add.gif" title="Add Boundary" /></a>
+                        </div>
+                    </div>
                     {% endif %}
-                    
-                    {% if user.is_staff or user.is_superuser%} 
-                        <a href='/home/?respType=programme' style="{% if programme%}color:#75ad0a;{%endif%}">Programme</a>   | 
-                    {% endif %} 
-                       
-                    {% if 'Data Entry Operator' in usergroups or 'Data Entry Executive' in usergroups or user.is_superuser  or user.is_staff%}
-                        <a href='/home/?respType=filter' style="{% if filter and not permission and not assessmentpermission %}color:#75ad0a;{%endif%}">Filter By Programme</a>
-                    {% endif %}  
-                    
+                {% endif %}
+                {% if programme %}
+                    {% if user.is_superuser or user.is_staff %}
+                        <div class="addBound" id="rootProgramme" style="display:none;">
+                            <div class="boundLink">
+                            <a href='/programme/creator/' onclick="return KLP_View(this);">Add Programme <img src="/static_media/images/programme_add.gif" title="Add Programme" /></a>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endif %}
+                {% if 'Data Entry Executive' in usergroups or 'Data Entry Operator' in usergroups or user.is_superuser or user.is_staff%}
+                <div class="addBound" style="margin:5px 0px;font-size:13px;">
+                    <div class="boundLink">
+                        {% if 'Data Entry Executive' in usergroups or user.is_superuser or user.is_staff %}
+                            <a href='/home/' style="{% if home and not permission and not filter%}color:#75ad0a;{%endif%}">Home</a> |
+                        {% endif %}
+                        
+                        {% if user.is_staff or user.is_superuser%} 
+                            <a href='/home/?respType=programme' style="{% if programme%}color:#75ad0a;{%endif%}">Programme</a>   | 
+                        {% endif %} 
+                           
+                        {% if 'Data Entry Operator' in usergroups or 'Data Entry Executive' in usergroups or user.is_superuser  or user.is_staff%}
+                            <a href='/home/?respType=filter' style="{% if filter and not permission and not assessmentpermission %}color:#75ad0a;{%endif%}">Filter By Programme</a>
+                        {% endif %}  
+                    </div>
                 </div>
-            </div>
-        {% endif %} 
-        {% if 'AdminGroup' in usergroups or user.is_superuser %}
-            <div class="addBound" style="margin:5px 0px;font-size:13px;">
-            <div class="boundLink">
-                    {% if user.is_superuser  %} <a href='/console/'>Admin Console </a> |{% endif %}
-                    {% if 'AdminGroup' in usergroups or user.is_superuser %} 
-                        <a href="/accounts/auth/user/add/"> Create User</a> |
-                        <a href="/home/?respType=userpermissions" style="{% if permission%}color:#75ad0a;{%endif%}"> Assign Permissions</a> |
-                        <a href="/home/?respType=assessmentpermissions" style="{% if assessmentpermission%}color:#75ad0a;{%endif%}"> Assessment Permissions</a> |
-                        <a href="/list/users/"> List Users</a> |  <a href="/KLP_activaterecords_form/">Activate Records</a> 
-                    {% endif %} 
-                    {% if user.is_superuser or 'AdminGroup' in usergroups %} | <a href='/audit/trial'>Audit Trial </a>{% endif %}
+                {% endif %} 
+                {% if 'AdminGroup' in usergroups or user.is_superuser %}
+                <div class="addBound" style="margin:5px 0px;font-size:13px;">
+                    <div class="boundLink">
+                        {% if user.is_superuser  %} <a href='/console/'>Admin Console </a> |{% endif %}
+                        {% if 'AdminGroup' in usergroups or user.is_superuser %} 
+                            <a href="/accounts/auth/user/add/"> Create User</a> |
+                            <a href="/home/?respType=userpermissions" style="{% if permission%}color:#75ad0a;{%endif%}"> Assign Permissions</a> |
+                            <a href="/home/?respType=assessmentpermissions" style="{% if assessmentpermission%}color:#75ad0a;{%endif%}"> Assessment Permissions</a> |
+                            <a href="/list/users/"> List Users</a> |  <a href="/KLP_activaterecords_form/">Activate Records</a> 
+                        {% endif %} 
+                        {% if user.is_superuser or 'AdminGroup' in usergroups %} | <a href='/audit/trial'>Audit Trial </a>{% endif %}
+                    </div>
                 </div>
+                {% endif %}
+            {% endif %}
         </div>
-            {% endif %}
-            {% endif %}
-       </div>
     {% endblock %}
+
     {% block midpart %}{% endblock %}
 
-{% if entry == "Add" %}
-</fieldset>
-{% else %}
-</div>
-{% endif %}
-</div>
-<script type="text/javascript">
+    {% if entry == "Add" %}
+    </fieldset>
+    {% else %}
+    </div>
+    {% endif %}
+    </div>
 
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-3982320-15']);
-  _gaq.push(['_setDomainName', 'klp.org.in']);
-  _gaq.push(['_trackPageview']);
+    <script type="text/javascript">
 
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-3982320-15']);
+      _gaq.push(['_setDomainName', 'klp.org.in']);
+      _gaq.push(['_trackPageview']);
 
-</script>
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
 
+    </script>
 </body>
 </html>

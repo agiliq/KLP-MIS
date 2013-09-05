@@ -11,8 +11,6 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.forms import *
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from django_restapi.responder import *
-from django_restapi.receiver import *
 from schools.models import *
 
 
@@ -102,7 +100,7 @@ def KLP_password_change(request,
 
         if post_change_redirect is None:
             post_change_redirect = \
-                reverse('production.klprestApi.KLP_UserApi.KLP_password_change_done'
+                reverse('accounts_password_change_done'
                         )
         if request.method == 'POST':
 
@@ -163,11 +161,9 @@ def KLP_password_change_done(request,
         }, context_instance=RequestContext(request))
 
 
-urlpatterns = patterns('', url(r'^accounts/auth/user/add/$',
-                       KLP_addNewUser),
-                       url(r'^accounts/auth/user/addNewUser_done/$',
-                       KLP_addNewUser_done),
-                       url(r'^accounts/password/change/$',
-                       KLP_password_change),
-                       url(r'^accounts/password/done/$',
-                       KLP_password_change_done))
+urlpatterns = patterns('',
+    url(r'^accounts/auth/user/add/$', KLP_addNewUser, name='accounts_add_user'),
+    url(r'^accounts/auth/user/addNewUser_done/$', KLP_addNewUser_done, name='accounts_add_user_done'),
+    url(r'^accounts/password/change/$', KLP_password_change, name='accounts_password_change'),
+    url(r'^accounts/password/done/$', KLP_password_change_done, name='accounts_password_change_done')
+)
