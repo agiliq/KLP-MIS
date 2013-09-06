@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 
 class TestViewsBasic(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user(username="foo",
+        self.user = User.objects.create_superuser(username="foo",
                                              email="foo@example.com",
                                              password="bar")
         self.client = Client()
@@ -21,8 +21,8 @@ class TestViewsBasic(TestCase):
     def test_login(self):
         response = self.client.get(reverse("login"))
         self.assertEqual(200, response.status_code)
-        self.client.login(username="foo", password="bar")
-        response = self.client.get(reverse("login"))
+        post_data = {'username': 'foo', 'password': 'bar'}
+        response = self.client.post(reverse("login"), post_data)
         self.assertEqual(302, response.status_code)
         import ipdb; ipdb.set_trace();
         self.client.login(username="foo1", password="bar1")
