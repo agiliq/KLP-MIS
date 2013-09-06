@@ -139,7 +139,7 @@ INSTALLED_APPS = (
     'schools',
 #    'object_permissions',
     'fullhistory',
-    'authentication',
+    'accounts',
 )
 
 
