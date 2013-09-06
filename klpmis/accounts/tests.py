@@ -24,10 +24,6 @@ class TestViewsBasic(TestCase):
         post_data = {'username': 'foo', 'password': 'bar'}
         response = self.client.post(reverse("login"), post_data)
         self.assertEqual(302, response.status_code)
-        import ipdb; ipdb.set_trace();
-        self.client.login(username="foo1", password="bar1")
-        response = self.client.get(reverse("login"))
-        self.assertEqual(302, response.status_code)
 
     def test_logout(self):
         response = self.client.get(reverse("logout"))
