@@ -43,7 +43,7 @@ def logout(request):
     return HttpResponseRedirect(reverse('login'))
 
 
-def user_auth(request):
+def UserAuth(request):
     """ This method checks, user is authenticated or not """
     return HttpResponse(request.user.is_authenticated())
 
@@ -100,8 +100,8 @@ def AddUser(request,
                 'form': form,
                 'title': 'KLP User',
                 'legend': 'Karnataka Learning Partnership',
-                'entry': 'Add',
-                }, context_instance=RequestContext(request))
+                'entry': 'Add', },
+                context_instance=RequestContext(request))
     else:
 
         # if use is not login and user is not super user or not in admin group
@@ -116,13 +116,13 @@ def AddUserDone(request):
         'message': 'User Creation Successful',
         'title': 'KLP User',
         'legend': 'Karnataka Learning Partnership',
-        'entry': 'Add',
-        }, context_instance=RequestContext(request))
+        'entry': 'Add', },
+        context_instance=RequestContext(request))
 
 
 def ChangePassword(request,
-                        template_name='viewtemplates/password_change_form.html'
-                        , post_change_redirect=None):
+                   template_name='viewtemplates/password_change_form.html',
+                   post_change_redirect=None):
     """ To Change Password """
 
     user = request.user  # Get logged in user
@@ -164,8 +164,8 @@ def ChangePassword(request,
                     'returnUrl': returnUrl,
                     'title': 'KLP Change Password',
                     'legend': 'Karnataka Learning Partnership',
-                    'entry': 'Add',
-                    }, context_instance=RequestContext(request))
+                    'entry': 'Add', },
+                    context_instance=RequestContext(request))
         else:
             form = PasswordChangeForm(request.user)
             return render_to_response(template_name, {
@@ -173,15 +173,14 @@ def ChangePassword(request,
                 'returnUrl': returnUrl,
                 'title': 'KLP Change Password',
                 'legend': 'Karnataka Learning Partnership',
-                'entry': 'Add',
-                }, context_instance=RequestContext(request))
+                'entry': 'Add', },
+                context_instance=RequestContext(request))
     else:
         return HttpResponseRedirect('/login/')
 
 
 def ChangePasswordDone(request,
-                             template_name='viewtemplates/password_change_done.html'
-                             ):
+                       template_name='viewtemplates/password_change_done.html'):
     """ To Show Password Change done page. """
 
     user = request.user
@@ -199,5 +198,5 @@ def ChangePasswordDone(request,
         'returnUrl': returnUrl,
         'title': 'KLP Change Password',
         'legend': 'Karnataka Learning Partnership',
-        'entry': 'Add',
-        }, context_instance=RequestContext(request))
+        'entry': 'Add', },
+        context_instance=RequestContext(request))
