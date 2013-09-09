@@ -8,6 +8,7 @@ from django.conf.urls.defaults import *
 from django.template import RequestContext
 
 from schools.models import *
+from schools.forms import UserCreationFormExtended
 
 
 def login(request):
@@ -43,7 +44,7 @@ def logout(request):
     return HttpResponseRedirect(reverse('login'))
 
 
-def UserAuth(request):
+def user_auth(request):
     """ This method checks, user is authenticated or not """
     return HttpResponse(request.user.is_authenticated())
 
@@ -55,12 +56,11 @@ def index(request):
         return HttpResponseRedirect(reverse('login'))
 
 
-def AddUser(request,
-            template_name='viewtemplates/add_new_user.html',
-            post_change_redirect=None):
+def add_user(request,
+             template_name='viewtemplates/add_new_user.html',
+             post_change_redirect=None):
 
     """ This method is used to create or add new user """
-
     user = request.user  # Get logged in user
     klp_UserGroups = user.groups.all()  # Get user groups
     user_GroupsList = ['%s' % usergroup.name for usergroup in
@@ -72,11 +72,10 @@ def AddUser(request,
 
         if post_change_redirect is None:
             post_change_redirect = \
-                reverse('klprestApi.KLP_UserApi.KLP_addNewUser_done')
+                reverse('accounts_add_user_done')
         if request.method == 'POST':
 
             # Get Data From Form
-
             form = UserCreationFormExtended(request.POST)
             if form.is_valid():
 
@@ -109,7 +108,7 @@ def AddUser(request,
         return HttpResponseRedirect('/login/')
 
 
-def AddUserDone(request):
+def add_user_done(request):
     """ To Show User Creation done page"""
 
     return render_to_response('viewtemplates/userAction_done.html', {
@@ -120,9 +119,9 @@ def AddUserDone(request):
         context_instance=RequestContext(request))
 
 
-def ChangePassword(request,
-                   template_name='viewtemplates/password_change_form.html',
-                   post_change_redirect=None):
+def change_password(request,
+                    template_name='viewtemplates/password_change_form.html',
+                    post_change_redirect=None):
     """ To Change Password """
 
     user = request.user  # Get logged in user
@@ -179,8 +178,8 @@ def ChangePassword(request,
         return HttpResponseRedirect('/login/')
 
 
-def ChangePasswordDone(request,
-                       template_name='viewtemplates/password_change_done.html'):
+def change_password_done(request,
+                         template_name='viewtemplates/password_change_done.html'):
     """ To Show Password Change done page. """
 
     user = request.user
