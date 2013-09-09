@@ -19,32 +19,32 @@ password = d['PASSWORD']
 
 
 def storeFullhistory(requestparam,data,objid,modelName,action='C'):
-    
-    
+
+
     userid=requestparam.get('userid','user')
     username=requestparam.get('username','username')
     request_path=requestparam.get('request_path','/')
     #userid = username.id
-     
+
     fullrequest = Request(user_name=username, user_pk=userid,
                           request_path=request_path)
     fullrequest.save()
-    
-    
+
+
     obj = ContentType.objects.get(model=modelName)
 
     content_type_id = obj.id
-    
+
     create_info = create_infos(requestparam, action)
-    
-    
+
+
     try:
         revision = len(FullHistory.objects.filter(content_type=modelName,
                        object_id=objid))
 
     except:
         revision = 0
-    revision=0 if revision==0 else  revision+1 
+    revision=0 if revision==0 else  revision+1
     fh = FullHistory(
         revision=revision,
         action=action,
@@ -56,7 +56,7 @@ def storeFullhistory(requestparam,data,objid,modelName,action='C'):
         info=create_info,
         )
     fh.save()
-    return 'Sccess' 
+    return 'Sccess'
 
 def create_infos(requestparam, action):
     '''
@@ -68,23 +68,23 @@ def create_infos(requestparam, action):
         user_name = requestparam.user
     else:
        user_name=requestparam.get('current_user','user')
-       
+
     ret = {'C': u'%s Created', 'U': u'%s Updated',
            'D': u'%s Deleted'}[action] % user_name
 
-    
+
     return ret
 def CustomizeSave(selfObj,Form,commit=True,modelName=None):
-          
+
           try:
                 instance = super(Form, selfObj).save(commit=commit)
-                
+
                 instance.save()
 
                 selfObj.instance=instance
           except:
               modelName=Form.Meta.model._meta.module_name
-              
+
               connection = psycopg2.connect(database=datebase, user=user,                    password=password)
               cursor = connection.cursor()
               Query="SELECT  column_default from information_schema.columns where table_name='schools_"+modelName+"' and column_name='id'"
@@ -93,7 +93,7 @@ def CustomizeSave(selfObj,Form,commit=True,modelName=None):
               cursor.execute("select "+Seqcolumn)
               insertedRow=cursor.fetchone()[0]-1
               cursor.close()
-              
+
               #print  selfObj.instances,'INSTANCE OBJ',selfObj.instances.id,insertedRow
               #print dir(selfObj)
               selfObj.instance=Form.Meta.model.objects.get(id=insertedRow)
@@ -238,9 +238,9 @@ class Child_Form(Relations_Form):
                       del cleaned_data["fatherfirstname"]
 
                 return cleaned_data
-    
+
     def save(self, commit=True):
-          print self.errors ,'ERRRRRRRRRRRRRR'           
+          print self.errors ,'ERRRRRRRRRRRRRR'
           childObj=CustomizeSave(self,Child_Form)
           #print self.files,'kwars' ,self.instance.id,dir(self.instance)
           relationdatarequest=self.files
@@ -273,31 +273,31 @@ class Child_Form(Relations_Form):
                                    rform = relationForm(relationdata,relationdatarequest)
 
                                 rform.save()
-                            
+
                         else:
 
                              if relationobj:
                                    relationobj.delete()
-             
+
           if self.cleaned_data['ModelName']=='student' and childpostid is None :
               # Create Student Object With as foreign key
 
-	      studentForm= modelformset_factory(Student,form=Student_Form)	
+	      studentForm= modelformset_factory(Student,form=Student_Form)
               relationdata['form-0-other_student_id']=self.cleaned_data['otherId']
-              relationdata['form-0-child']= childObj.id   
+              relationdata['form-0-child']= childObj.id
               try:
                         studObj = childObj.getStudent()
                         relationdata['form-0-id']=studObj.id
                         #studObj.other_student_id = \
                         #self.cleaned_data['otherId']
               except:
-                       
-                 pass  
+
+                 pass
                  #studObj = Student(child=self.instance,
                  #                   other_student_id=self.cleaned_data['otherId'], active=2)
               Studform = studentForm(relationdata,relationdatarequest)
               studObj=Studform.save()
-              
+
               # Create relation ship with SG for current academic year.
               studentgroupForm= modelformset_factory(Student_StudentGroupRelation,form=Student_StudentGroupRelation_Form)
               relationdata['form-0-student_group']=relationdatarequest.POST.get('studentgroup')
@@ -307,9 +307,9 @@ class Child_Form(Relations_Form):
               studgrprelation=studentgroupForm(relationdata,relationdatarequest)
 
               studgrprelation.save()
- 
+
           return self.instance
-    
+
     class Meta:
 
         model = Child
@@ -328,29 +328,29 @@ class StudentGroup_Form(ModelForm):
          super(StudentGroup_Form, self).__init__(*args, **kwargs)
     def save(self,commit=True):
           return CustomizeSave(self,StudentGroup_Form)
-          '''    
+          '''
           try:
             instance = super(StudentGroup_Form, self).save(commit=commit)
-            
+
             instance.save()
-            
-            return instance 
+
+            return instance
           except:
-            
+
             if self.cleaned_data.get('id','') is None:
               connection = psycopg2.connect(database=datebase, user=user,                    password=password)
               tableactive=self.cleaned_data.get('active',2)
-              cursor = connection.cursor() 
+              cursor = connection.cursor()
               Query="SELECT  column_default from information_schema.columns where table_name='schools_studentgroup' and column_name='id'"
               cursor.execute(Query)
               Seqcolumn=cursor.fetchone()[0]
-              cursor.execute("select "+Seqcolumn) 
+              cursor.execute("select "+Seqcolumn)
               insertedRow=cursor.fetchone()[0]-1
               cursor.close()
               createdObj=StudentGroup.objects.filter(id=insertedRow)
               modelName=createdObj.model._meta.module_name
               v=storeFullhistory(self.kwargs.get('files','nothing'),self.data,insertedRow,modelName)
-              print createdObj,'CrateObj' 
+              print createdObj,'CrateObj'
               return createdObj
           '''
 class AcademicYear_Form(ModelForm):
@@ -386,7 +386,7 @@ class Student_StudentGroupRelation_Form(ModelForm):
          super(Student_StudentGroupRelation_Form, self).__init__(*args, **kwargs)
     def save(self,commit=True):
           return CustomizeSave(self,Student_StudentGroupRelation_Form)
-         
+
 
 
 class Staff_Form(ModelForm):
@@ -528,7 +528,7 @@ class UserAssessmentPermissions_Form(ModelForm):
     class Meta:
 
         model = UserAssessmentPermissions
-    '''   
+    '''
     def __init__(self,  *args, **kwargs):
          #self.args=args
          #self.kwargs=kwargs
@@ -549,7 +549,7 @@ class Assessment_StudentGroup_Association_Form(ModelForm):
 class Assessment_Class_Association_Form(ModelForm):
     #active = forms.IntegerField(initial=2, widget=forms.HiddenInput)
     class Meta:
-    
+
         model = Assessment_Class_Association
     def save(self,commit=True):
           #print self.data,'DAAAAAAAAAAAAAAAAAAAAAAAAAa'
@@ -558,7 +558,7 @@ class Assessment_Class_Association_Form(ModelForm):
 class Assessment_Institution_Association_Form(ModelForm):
     #active = forms.IntegerField(initial=2, widget=forms.HiddenInput)
     class Meta:
-    
+
         model = Assessment_Institution_Association
     def save(self,commit=True):
           #print self.data,'DAAAAAAAAAAAAAAAAAAAAAAAAAa'
@@ -572,7 +572,7 @@ class Answer_Form(ModelForm):
     class Meta:
 
         model = Answer
-    '''   
+    '''
     def __init__(self,  *args, **kwargs):
          #self.args=args
          #self.kwargs=kwargs
@@ -581,7 +581,7 @@ class Answer_Form(ModelForm):
     def save(self,commit=True):
           #print self.data,'DAAAAAAAAAAAAAAAAAAAAAAAAAa'
           return CustomizeSave(self,Answer_Form)
-    
+
 
 class UserCreationFormExtended(UserCreationForm):
 
