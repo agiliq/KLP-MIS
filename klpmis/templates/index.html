@@ -159,7 +159,7 @@
                 <div class="KLP_Log">
                     <span class="KLP_brCrumb">Welcome: </span>
                     <span>{% if user.first_name%}{{user.first_name}}{% else %}{{user.username}}{%endif%}<span>
-                    <span class="KLP_logOut"><a href="{% url "logout" %}" title="logout">Log out</a><span>
+                    <span class="KLP_logOut"><a href="{% url 'logout' %}" title="logout">Log out</a><span>
                     <span class="KLP_logOut"><a href="/accounts/password/change/" title="ChangePassword">Change Password</a><span>
                 </div>
             {% endif %}
