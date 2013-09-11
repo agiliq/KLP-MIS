@@ -345,7 +345,7 @@ class TemplateResponder(object):
         #print ResourceForm()
 
         self.extra_context['showsuccess'] = False  # Pass showsuccess True or false for message
-        if request.POST.get('replaceTrue', None) == None:
+        if request.POST.get('replaceTrue', None) is None:
             self.extra_context['replaceTrue'] = True
         else:
             self.extra_context['replaceTrue'] = False
