@@ -1,8 +1,7 @@
 from django.test import TestCase
 from django.test import Client
 from django.core.urlresolvers import reverse
-from django.contrib.auth.models import User
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import User, Group
 
 
 class TestViewsBasic(TestCase):
@@ -27,12 +26,19 @@ class TestViewsBasic(TestCase):
         response = self.client.get(reverse("index"))
         self.assertEqual(302, response.status_code)
 
-    def test_login(self):
+    def test_login_with_correct_password(self):
         response = self.client.get(reverse("login"))
         self.assertEqual(200, response.status_code)
         post_data = {'username': 'foo', 'password': 'bar'}
         response = self.client.post(reverse("login"), post_data)
         self.assertEqual(302, response.status_code)
+
+    def test_login_with_wrong_password(self):
+        response = self.client.get(reverse("login"))
+        self.assertEqual(200, response.status_code)
+        post_data = {'username': 'foo', 'password': 'wrong_bar'}
+        response = self.client.post(reverse("login"), post_data)
+        self.assertEqual(200, response.status_code)
 
     def test_logout(self):
         response = self.client.get(reverse("logout"))
@@ -65,4 +71,39 @@ class TestViewsBasic(TestCase):
         self.client.login(username="foo", password="bar")
         response = self.client.post(reverse('accounts_add_user'),
                                     form_data)
+        # import ipdb; ipdb.set_trace()
         self.assertEqual(302, response.status_code)
+
+    def test_password_change_view(self):
+        """
+        Test GET on /password_change/
+        """
+        self.client.login(username="foo", password="bar")
+        response = self.client.get(reverse("accounts_password_change"))
+        self.assertEquals(200, response.status_code)
+
+    def test_change_password(self):
+        """
+        Error if password can not be changed
+        """
+        data = {
+            "old_password": "bar",
+            "new_password1": "bar_new",
+            "new_password2": "bar_new",
+        }
+        self.client.login(username="foo", password="bar")
+        response = self.client.post(reverse("accounts_password_change"), data)
+        self.assertEqual(302, response.status_code)
+
+    def test_change_password_wrong(self):
+        """
+        Error if password can not be changed
+        """
+        data = {
+            "old_password": "bar_wrong",
+            "new_password1": "bar_new",
+            "new_password2": "bar_new",
+        }
+        self.client.login(username="foo", password="bar")
+        response = self.client.post(reverse("accounts_password_change"), data)
+        self.assertEqual(200, response.status_code)
