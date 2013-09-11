@@ -1,9 +1,7 @@
 import os
-
-from django.core.exceptions import ImproperlyConfigured
-
 from unipath import Path
 
+from django.core.exceptions import ImproperlyConfigured
 
 PROJECT_ROOT = Path(__file__).ancestor(3)
 PYTHON_PATH = 'python'
