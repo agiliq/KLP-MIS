@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import time
 import random
+import hashlib
 
 from django.utils.translation import ugettext as _
 
@@ -85,7 +86,7 @@ def digest_password(realm, username, password):
     Construct the appropriate hashcode needed for HTTP digest
     """
 
-    return md5.md5('%s:%s:%s' % (username, realm, password)).hexdigest()
+    return hashlib.md5('%s:%s:%s' % (username, realm, password)).hexdigest()
 
 
 class HttpDigestAuthentication(object):
