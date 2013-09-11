@@ -141,8 +141,7 @@ def change_password(request,
 
         if post_change_redirect is None:
             post_change_redirect = \
-                reverse('accounts_password_change_done'
-                        )
+                reverse('accounts_password_change_done')
         if request.method == 'POST':
 
             # if request method is post post data to form
