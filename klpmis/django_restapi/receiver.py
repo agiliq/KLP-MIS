@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 """
-Data format classes that can be plugged into 
+Data format classes that can be plugged into
 model_resource.ModelResource and determine how submissions
 of model data need to look like (e.g. form submission MIME types,
 XML, JSON, ...).
@@ -41,7 +41,7 @@ class Receiver(object):
 class FormReceiver(Receiver):
 
     """
-    Data format class with standard Django behavior: 
+    Data format class with standard Django behavior:
     POST and PUT data is in form submission format.
     """
 
@@ -76,7 +76,7 @@ class SerializeReceiver(Receiver):
 class JSONReceiver(SerializeReceiver):
 
     """
-    Data format class for form submission in JSON, 
+    Data format class for form submission in JSON,
     e.g. for web browsers.
     """
 
@@ -87,11 +87,9 @@ class JSONReceiver(SerializeReceiver):
 class XMLReceiver(SerializeReceiver):
 
     """
-    Data format class for form submission in XML, 
+    Data format class for form submission in XML,
     e.g. for software clients.
     """
 
     def __init__(self):
         self.format = 'xml'
-
-

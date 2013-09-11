@@ -3,6 +3,9 @@
 """
 Model-bound resource class.
 """
+from resource import ResourceBase, load_put_and_files, reverse, \
+    HttpMethodNotAllowed
+from receiver import FormReceiver
 
 from django import forms
 from django.conf.urls.defaults import patterns
@@ -11,15 +14,12 @@ from django.forms import ModelForm, models
 from django.forms.util import ErrorDict
 from django.utils.functional import curry
 from django.utils.translation.trans_null import _
-from resource import ResourceBase, load_put_and_files, reverse, \
-    HttpMethodNotAllowed
-from receiver import FormReceiver
 
 
 class InvalidModelData(Exception):
 
     """
-    Raised if create/update fails because the PUT/POST 
+    Raised if create/update fails because the PUT/POST
     data is not appropriate.
     """
 
@@ -35,17 +35,10 @@ class Collection(ResourceBase):
     Resource for a collection of models (queryset).
     """
 
-    def __init__(
-        self,
-        queryset,
-        responder,
-        receiver=None,
-        authentication=None,
-        permitted_methods=None,
-        expose_fields=None,
-        entry_class=None,
-        form_class=None,
-        ):
+    def __init__(self, queryset, responder, receiver=None,
+                 authentication=None, permitted_methods=None,
+                 expose_fields=None, entry_class=None,
+                 form_class=None, ):
         """
         queryset:
             determines the subset of objects (of a Django model)
@@ -61,7 +54,7 @@ class Collection(ResourceBase):
             the authentication instance that checks whether a
             request is authenticated
         permitted_methods:
-            the HTTP request methods that are allowed for this 
+            the HTTP request methods that are allowed for this
             resource e.g. ('GET', 'PUT')
         expose_fields:
             the model fields that can be accessed
@@ -98,11 +91,13 @@ class Collection(ResourceBase):
                              queryset.model._meta.fields]
         responder.expose_fields = expose_fields
         if hasattr(responder, 'create_form'):
-            responder.create_form = curry(responder.create_form,
-                    queryset=queryset, form_class=form_class)
+            responder.create_form = \
+                curry(responder.create_form,
+                      queryset=queryset, form_class=form_class)
         if hasattr(responder, 'update_form'):
-            responder.update_form = curry(responder.update_form,
-                    queryset=queryset, form_class=form_class)
+            responder.update_form = \
+                curry(responder.update_form,
+                      queryset=queryset, form_class=form_class)
 
         # Resource class for individual objects of the collection
 
@@ -112,14 +107,9 @@ class Collection(ResourceBase):
 
         ResourceBase.__init__(self, authentication, permitted_methods)
 
-    def __call__(
-        self,
-        request,
-        *args,
-        **kwargs
-        ):
+    def __call__(self, request, *args, **kwargs):
         """
-        Redirects to one of the CRUD methods depending 
+        Redirects to one of the CRUD methods depending
         on the HTTP method of the request. Checks whether
         the requested method is allowed for this resource.
         Catches errors.
@@ -143,7 +133,7 @@ class Collection(ResourceBase):
         # argument, assume that any args/kwargs are used to
         # select a specific entry from the collection.
 
-        if kwargs.has_key('is_entry'):
+        if kwargs.key in ('is_entry'):
             is_entry = kwargs.pop('is_entry')
         else:
             eval_args = tuple([x for x in args if x != ''])
@@ -174,13 +164,14 @@ class Collection(ResourceBase):
     def create(self, request):
         """
         Creates a resource with attributes given by POST, then
-        redirects to the resource URI. 
+        redirects to the resource URI.
         """
 
         # Create form filled with POST data
 
-        ResourceForm = models.modelform_factory(self.queryset.model,
-                form=self.form_class)
+        ResourceForm = \
+            models.modelform_factory(self.queryset.model,
+                                     form=self.form_class)
         data = self.receiver.get_post_data(request)
         form = ResourceForm(data)
 
@@ -213,7 +204,7 @@ class Collection(ResourceBase):
 
     def get_entry(self, pk_value):
         """
-        Returns a single entry retrieved by filtering the 
+        Returns a single entry retrieved by filtering the
         collection queryset by primary key value.
         """
 
@@ -263,8 +254,9 @@ class Entry(object):
 
         # Create a form from the model/PUT data
 
-        ResourceForm = models.modelform_factory(self.model.__class__,
-                form=self.collection.form_class)
+        ResourceForm = \
+            models.modelform_factory(self.model.__class__,
+                                     form=self.collection.form_class)
         data = self.collection.receiver.get_put_data(request)
 
         form = ResourceForm(data, instance=self.model)
@@ -295,5 +287,3 @@ class Entry(object):
         self.model.delete()
         return HttpResponse(_('Object successfully deleted.'),
                             self.collection.responder.mimetype)
-
-
