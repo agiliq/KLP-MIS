@@ -1,10 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-from django.http import HttpResponse
-from django.utils.translation import ugettext as _
-import hashlib
 import time
 import random
+
+from django.utils.translation import ugettext as _
 
 
 def djangouser_auth(username, password):
@@ -71,10 +70,9 @@ class HttpBasicAuthentication(object):
         Checks whether a request comes from an authorized user.
         """
 
-        if not request.META.has_key('HTTP_AUTHORIZATION'):
+        if not request.META.key in ('HTTP_AUTHORIZATION'):
             return False
-        (authmeth, auth) = request.META['HTTP_AUTHORIZATION'].split(' '
-                , 1)
+        (authmeth, auth) = request.META['HTTP_AUTHORIZATION'].split(' ', 1)
         if authmeth.lower() != 'basic':
             return False
         auth = auth.strip().decode('base64')
@@ -144,7 +142,7 @@ class HttpDigestAuthentication(object):
         ):
         """
         Returns the server-computed digest response key.
-        
+
         http_method:
             The request method, e.g. GET
         username:
@@ -152,18 +150,18 @@ class HttpDigestAuthentication(object):
         fullpath:
             The absolute URI to be accessed by the user
         nonce:
-            A server-specified data string which should be 
+            A server-specified data string which should be
             uniquely generated each time a 401 response is made
         realm:
-            A string to be displayed to users so they know which 
+            A string to be displayed to users so they know which
             username and password to use
         qop:
-            Indicates the "quality of protection" values supported 
+            Indicates the "quality of protection" values supported
             by the server.  The value "auth" indicates authentication.
         cnonce:
-            An opaque quoted string value provided by the client 
-            and used by both client and server to avoid chosen 
-            plaintext attacks, to provide mutual authentication, 
+            An opaque quoted string value provided by the client
+            and used by both client and server to avoid chosen
+            plaintext attacks, to provide mutual authentication,
             and to provide some message integrity protection.
         nc:
             Hexadecimal request counter
