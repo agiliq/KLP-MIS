@@ -1,33 +1,32 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 """
-Data format classes ("responders") that can be plugged 
+Data format classes ("responders") that can be plugged
 into model_resource.ModelResource and determine how
 the objects of a ModelResource instance are rendered
 (e.g. serialized to XML, rendered by templates, ...).
 """
+import datetime
+import simplejson
 
 from django.core import serializers
 from django.core.handlers.wsgi import STATUS_CODE_TEXT
 from django.core.paginator import QuerySetPaginator, InvalidPage
-
 # the correct paginator for Model objects is the QuerySetPaginator,
 # not the Paginator! (see Django doc)
-
 from django.core.xheaders import populate_xheaders
 from django import forms
 from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.forms.util import ErrorDict
 from django.shortcuts import render_to_response
 from django.template import loader, RequestContext
-import  simplejson
 from django.utils.xmlutils import SimplerXMLGenerator
 from django.views.generic import TemplateView
 from django.forms.models import modelformset_factory
+from django.db import transaction
+
 from schools.models import *
 from schools.forms import *
-import datetime
-from django.db import transaction
 
 
 class SerializeResponder(object):
@@ -37,19 +36,14 @@ class SerializeResponder(object):
     with Django's serializer framework.
     """
 
-    def __init__(
-        self,
-        format,
-        mimetype=None,
-        paginate_by=None,
-        allow_empty=False,
-        ):
+    def __init__(self, format, mimetype=None,
+                 paginate_by=None, allow_empty=False, ):
         """
         format:
             may be every format that works with Django's serializer
             framework. By default: xml, python, json, (yaml).
         mimetype:
-            if the default None is not changed, any HttpResponse calls 
+            if the default None is not changed, any HttpResponse calls
             use settings.DEFAULT_CONTENT_TYPE and settings.DEFAULT_CHARSET
         paginate_by:
             Number of elements per page. Default: All elements.
@@ -72,8 +66,7 @@ class SerializeResponder(object):
         hidden_fields = []
         for obj in list(object_list):
             for field in obj._meta.fields:
-                if not field.name in self.expose_fields \
-                    and field.serialize:
+                if not field.name in self.expose_fields and field.serialize:
                     field.serialize = False
                     hidden_fields.append(field)
         response = serializers.serialize(self.format, object_list)
@@ -91,12 +84,7 @@ class SerializeResponder(object):
 
         return HttpResponse(self.render([elem]), self.mimetype)
 
-    def error(
-        self,
-        request,
-        status_code,
-        error_dict=None,
-        ):
+    def error(self, request, status_code, error_dict=None, ):
         """
         Handles errors in a RESTful way.
         - appropriate status code
@@ -118,12 +106,7 @@ Errors:
         response.status_code = status_code
         return response
 
-    def list(
-        self,
-        request,
-        queryset,
-        page=None,
-        ):
+    def list(self, request, queryset, page=None, ):
         """
         Renders a list of model objects to HttpResponse.
         """
@@ -156,12 +139,7 @@ class JSONResponder(SerializeResponder):
                                     paginate_by=paginate_by,
                                     allow_empty=allow_empty)
 
-    def error(
-        self,
-        request,
-        status_code,
-        error_dict=None,
-        ):
+    def error(self, request, status_code, error_dict=None, ):
         """
         Return JSON error response that includes a human readable error
         message, application-specific errors and a machine readable
@@ -191,12 +169,7 @@ class XMLResponder(SerializeResponder):
                                     paginate_by=paginate_by,
                                     allow_empty=allow_empty)
 
-    def error(
-        self,
-        request,
-        status_code,
-        error_dict=None,
-        ):
+    def error(self, request, status_code, error_dict=None, ):
         """
         Return XML error response that includes a human readable error
         message, application-specific errors and a machine readable
@@ -221,7 +194,7 @@ class XMLResponder(SerializeResponder):
             for (model_field, errors) in error_dict.items():
                 for error in errors:
                     xml.addQuickElement(name=model_field,
-                            contents=error)
+                                        contents=error)
             xml.endElement('model-errors')
         xml.endElement('django-error')
         xml.endDocument()
@@ -235,17 +208,13 @@ class TemplateResponder(object):
     generic views).
     """
 
-    def __init__(
-        self,
-        template_dir,
-        paginate_by=None,
-        template_loader=loader,
-        extra_context=None,
-        allow_empty=False,
-        context_processors=None,
-        template_object_name='object',
-        mimetype=None,
-        ):
+    def __init__(self, template_dir, paginate_by=None,
+                 template_loader=loader,
+                 extra_context=None,
+                 allow_empty=False,
+                 context_processors=None,
+                 template_object_name='object',
+                 mimetype=None, ):
 
         self.template_dir = template_dir
         self.paginate_by = paginate_by
@@ -271,22 +240,16 @@ class TemplateResponder(object):
         """
 
         for field in obj._meta.fields:
-            if not field.name in allowed_fields and not field.name \
-                + '_id' in allowed_fields:
+            if not field.name in allowed_fields and not field.name + '_id' in allowed_fields:
                 obj.__dict__.pop(field.name)
 
-    def list(
-        self,
-        request,
-        queryset,
-        page=None,
-        ):
+    def list(self, request, queryset, page=None, ):
         """
         Renders a list of model objects to HttpResponse.
         """
 
-        template_name = '%s/%s_list.html' % (self.template_dir,
-                queryset.model._meta.module_name)
+        template_name = '%s/%s_list.html' \
+            % (self.template_dir, queryset.model._meta.module_name)
         if self.paginate_by:
             paginator = QuerySetPaginator(queryset, self.paginate_by)
             if not page:
@@ -312,13 +275,14 @@ class TemplateResponder(object):
                 'last_on_page': current_page.end_index(),
                 'first_on_page': current_page.start_index(),
                 'pages': paginator.num_pages,
-                'hits': paginator.count,
-                }, self.context_processors)
+                'hits': paginator.count, },
+                self.context_processors)
         else:
             object_list = queryset
-            c = RequestContext(request, {'%s_list' \
-                               % self.template_object_name: object_list,
-                               'is_paginated': False},
+            c = \
+                RequestContext(request,
+                               {'%s_list' % self.template_object_name:
+                                object_list, 'is_paginated': False},
                                self.context_processors)
             if not self.allow_empty and len(queryset) == 0:
                 raise Http404
@@ -338,8 +302,9 @@ class TemplateResponder(object):
         Renders single model objects to HttpResponse.
         """
 
-        template_name = '%s/%s_detail.html' % (self.template_dir,
-                elem._meta.module_name)
+        template_name = \
+            '%s/%s_detail.html' % (self.template_dir,
+            elem._meta.module_name)
         t = self.template_loader.get_template(template_name)
         c = RequestContext(request, {self.template_object_name: elem},
                            self.context_processors)
@@ -353,37 +318,30 @@ class TemplateResponder(object):
                           getattr(elem, elem._meta.pk.name))
         return response
 
-    def error(
-        self,
-        request,
-        status_code,
-        error_dict=None,
-        ):
+    def error(self, request, status_code, error_dict=None, ):
         """
         Renders error template (template name: error status code).
         """
 
         if not error_dict:
             error_dict = ErrorDict()
-        response = TemplateView.as_view (request, template='%s/%s.html'
-                % (self.template_dir, str(status_code)),
-                extra_context={'errors': error_dict},
-                mimetype=self.mimetype)
+        response = \
+            TemplateView.as_view(request,
+                                 template='%s/%s.html' % (self.template_dir,
+                                 str(status_code)),
+                                 extra_context={'errors': error_dict},
+                                 mimetype=self.mimetype)
         response.status_code = status_code
         return response
 
     # @transaction.commit_manually
 
-    def create_form(
-        self,
-        request,
-        queryset,
-        form_class,
-        ):
+    def create_form(self, request, queryset, form_class, ):
         """  Render form for creation of new collection entry. """
 
-        ResourceForm = modelformset_factory(queryset.model,
-                form=form_class)  # get model formset factory based on model and form
+        ResourceForm = \
+            modelformset_factory(queryset.model,
+                                 form=form_class)  # get model formset factory based on model and form
         #print ResourceForm()
 
         self.extra_context['showsuccess'] = False  # Pass showsuccess True or false for message
@@ -395,8 +353,7 @@ class TemplateResponder(object):
         DefaultAnswer = True
         if queryset.model._meta.module_name.lower() == 'question':
             Assobj = \
-                Assessment.objects.get(id=self.extra_context['referKey'
-                    ])
+                Assessment.objects.get(id=self.extra_context['referKey'])
             print Assobj, Assobj.getAssessmentStatus, 'status'
             if Assobj.getAssessmentStatus() and Assobj.flexi_assessment:
                 answerAddable = True
@@ -418,15 +375,15 @@ class TemplateResponder(object):
 
             ChildTrue = modulename == 'child' and True or False
             AssValid = True
-            ''' 
+            '''
             if ChildTrue:
 
             # Check for realtion names if names are not there validation fail
-                
+
                 if not (request.POST.get('form-0-fatherfirstname', '')
                         or request.POST.get('form-0-motherfirstname', ''
                         )):
-                
+
                      RelationValid = False #Relationform.is_valid()
 
                 # IValid=False
@@ -436,15 +393,14 @@ class TemplateResponder(object):
                 print 'SSSSSSSSSS'
                 if request.POST.get('form-0-flexi_assessment'):
                     print request.POST.get('form-0-flexi_assessment')
-                    if not request.POST.get('form-0-primary_field_name'
-                            ) \
-                        or not request.POST.get('form-0-primary_field_type'
-                            ):
-
+                    if not request.POST.get('form-0-primary_field_name') \
+                        or not \
+                            request.POST.get('form-0-primary_field_type'):
                         AssValid = False
             if form_class == Question_Form and answerAddable:
                 if request.POST.get('defaultanswer', 'a').lower() \
-                    not in ['uk', 'ab']:
+                    not in\
+                        ['uk', 'ab']:
                     DefaultAnswer = False
             if request.POST.get('defaultanswer'):
                 self.extra_context['defaultanswer'] = \
@@ -454,29 +410,29 @@ class TemplateResponder(object):
             # If Institution Check for address information save data
 
                 if request.POST.get('form-0-address') \
-                    and request.POST.get('form-0-languages') \
-                    and request.POST.get('form-0-name'):
+                    and \
+                        request.POST.get('form-0-languages') \
+                    and \
+                        request.POST.get('form-0-name'):
                     addressObj = Institution_address(
                         address=request.POST.get('form-0-address'),
                         area=request.POST.get('form-0-area'),
                         pincode=request.POST.get('form-0-pincode'),
-                        instidentification=request.POST.get('form-0-instidentification'
-                                ),
+                        instidentification=request.POST.get('form-0-instidentification'),
                         landmark=request.POST.get('form-0-landmark'),
-                        route_information=request.POST.get('form-0-route_information'
-                                ),
-                        )
+                        route_information=request.POST.get('form-0-route_information'), )
                     addressObj.save()
                     new_data['form-0-inst_address'] = addressObj.id
                     IValid = True
                 else:
                     IValid = False
-            form = ResourceForm(new_data,request)  # post data to form
+            form = ResourceForm(new_data, request)  # post data to form
             Valid = form.is_valid()  # Validate form
             qvalid = True
-            print Valid,'Valid',form.errors
+            print Valid, 'Valid', form.errors
             if Valid and IValid and qvalid and AssValid \
-                and DefaultAnswer and RelationValid:
+                and \
+                    DefaultAnswer and RelationValid:
 
               # If From is valid then save data
 
@@ -495,8 +451,7 @@ class TemplateResponder(object):
                         addressObj.delete()
                     print 'OBK'
                     boundaryObj = \
-                        Boundary.objects.get(pk=request.POST.get('form-0-boundary'
-                            ))
+                        Boundary.objects.get(pk=request.POST.get('form-0-boundary'))
                     userob = User.objects.filter(id=request.user.id)[0]
                     userob.set_perms(['Acess'], obj)
                     print boundaryObj.boundary_category.boundary_category.lower(), \
@@ -504,14 +459,16 @@ class TemplateResponder(object):
                     if boundaryObj.boundary_category.boundary_category.lower() \
                         == 'circle' \
                         and boundaryObj.boundary_type.boundary_type.lower() \
-                        in ['anganwadi', 'preschool']:
+                        in \
+                            ['anganwadi', 'preschool']:
 
                     # if boundary category is circle and boundary type is anganwadi create a class with name Anganwadi Class
 
                         print 'inside IF'
-                        newClass = StudentGroup(name='Anganwadi Class',
-                                active=2, institution_id=obj.id,
-                                group_type='Class')
+                        newClass = \
+                            StudentGroup(name='Anganwadi Class',
+                                         active=2, institution_id=obj.id,
+                                         group_type='Class')
                         newClass.save()
                 elif form_class == Staff_Form:
 
@@ -522,9 +479,11 @@ class TemplateResponder(object):
                         request.POST.getlist('form-0-student_group')
                     for clas in classes:
                         studGrupObj = StudentGroup.objects.get(pk=clas)
-                        relObj = Staff_StudentGroupRelation(staff=obj,
-                                student_group=studGrupObj,
-                                academic=current_academic(), active=2)
+                        relObj = \
+                            Staff_StudentGroupRelation(staff=obj,
+                                                       student_group=studGrupObj,
+                                                       academic=current_academic(),
+                                                       active=2)
                         relObj.save()
                 elif modulename == 'studentgroup':
                     grouptype = request.POST.get('form-0-group_type')
@@ -533,7 +492,7 @@ class TemplateResponder(object):
                     section = request.POST.get('form-0-section')
                     name = request.POST.get('form-0-name')
                     print 'studentgroupsssssssssssssssss'
-                    obj = form.save()[0] 
+                    obj = form.save()[0]
                     '''StudentGroup(group_type=grouptype,
                             active=active, institution_id=instutionid,
                             section=section, name=name)
@@ -573,7 +532,7 @@ class TemplateResponder(object):
                 if modulename == 'child':
 
                     # If current model is child save relations data.
-                   
+
                     relation = {'form-0-motherfirstname': 'Mother',
                                 'form-0-fatherfirstname': 'Father'}
                     names = {
@@ -582,7 +541,7 @@ class TemplateResponder(object):
                         'Father-MiddleName': 'form-0-fathermiddlename',
                         'Father-LastName': 'form-0-fatherlastname',
                         }
-                    
+
                     for (rel_type, rel_value) in relation.iteritems():
                         if request.POST[rel_type]:
                             relation = \
@@ -593,13 +552,12 @@ class TemplateResponder(object):
                                     last_name=request.POST[names[rel_value
                                     + '-LastName']], child=obj)
                             relation.save()
-                '''    
+                '''
                 if modulename == 'question':
 
                     # If current model is child save relations data.
 
-                    defaultanswer = request.POST.get('defaultanswer', ''
-                            )
+                    defaultanswer = request.POST.get('defaultanswer', '')
                     if Assobj.flexi_assessment and defaultanswer:
                         Question_List = \
                             Question.objects.filter(assessment=Assobj)
@@ -634,16 +592,16 @@ class TemplateResponder(object):
 
 				    respDict['student'] = True
 				    #Move into forms.py
-				    ''' 
+				    '''
 				    # Create Student Object With as foreign key
-					    
+
 					    student = Student.objects.get(child=obj,
 					            other_student_id=request.POST.get('form-0-otherId'
 					            ), active=2)
 					    #student.save()
-					    
+
 				    # Create relation ship with SG for current academic year.
-					    
+
 					    #std_stdgrp_relation = \
 					    #    Student_StudentGroupRelation(student=student,
 					    #        student_group=self.extra_context['studentgroup'
@@ -651,7 +609,7 @@ class TemplateResponder(object):
 					    #        active=2)
 
 					    #std_stdgrp_relation.save()
-				     '''                        
+				     '''
 		                    totallengthstudent = \
 		                        Student_StudentGroupRelation.objects.filter(student_group=self.extra_context['studentgroup'
 		                            ], academic=current_academic(),
@@ -745,7 +703,7 @@ class TemplateResponder(object):
 
                         # If buttonType is save and continue show edit form for the object
                     if modulename.lower() in ['staff','assessment_lookup']:
-        
+
                        self.extra_context['replaceTrue']=False
                     elem = \
                         queryset.model.objects.get(**{queryset.model._meta.pk.name: obj.id})
@@ -881,7 +839,7 @@ class TemplateResponder(object):
         print 'EDDDDDDI', editable
         self.extra_context['editable'] = editable
 
-	 
+
         if request.POST:
 
         # If request method is post, post data for object
@@ -987,7 +945,7 @@ class TemplateResponder(object):
                     studObj.other_student_id = \
                         request.POST.get('form-0-otherId')
                     studObj.save()
-                    
+
                     relation = {'form-0-motherfirstname': 'Mother',
                                 'form-0-fatherfirstname': 'Father'}
                     names = {
@@ -1071,14 +1029,14 @@ class TemplateResponder(object):
 
                 buttonType = str(self.extra_context['buttonType'])  # get button type
                 self.extra_context['showsuccess'] = True  # make showsuccess is True
-                 
+
                 if buttonType == 'save':
 
                 #  If Button type is Save show detail information about updated object
 
                     respDict = {elem._meta.module_name.lower(): obj,
                                 'showsuccess': True}
-                    
+
                     if modelName == 'child':
                         if request.POST['ModelName'] == 'student':
                             respDict['student'] = True
@@ -1092,7 +1050,7 @@ class TemplateResponder(object):
                     response = render_to_response(template_name,
                             respDict,
                             context_instance=RequestContext(request))
-                    
+
                     return response
                 elif buttonType == 'save and continue':
 
@@ -1110,7 +1068,7 @@ class TemplateResponder(object):
                         self.extra_context['order'] = \
                             len(Question.objects.filter(assessment__id=self.extra_context['referKey'
                                 ])) + 1
-                    
+
                     ResourceForm = modelformset_factory(queryset.model,
                             form=form_class)
                     form = \
