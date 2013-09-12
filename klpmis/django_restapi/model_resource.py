@@ -133,7 +133,7 @@ class Collection(ResourceBase):
         # argument, assume that any args/kwargs are used to
         # select a specific entry from the collection.
 
-        if kwargs.key in ('is_entry'):
+        if kwargs.has_key('is_entry'):
             is_entry = kwargs.pop('is_entry')
         else:
             eval_args = tuple([x for x in args if x != ''])
