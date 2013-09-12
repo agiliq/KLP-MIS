@@ -60,8 +60,7 @@ def add_user(request,
         # if user is login and user is super user
 
         if post_change_redirect is None:
-            post_change_redirect = \
-                reverse('accounts_add_user_done')
+            post_change_redirect = reverse('accounts_add_user_done')
         if request.method == 'POST':
 
             # Get Data From Form
