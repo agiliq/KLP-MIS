@@ -7,7 +7,6 @@ from django.shortcuts import render, render_to_response
 from django.conf.urls.defaults import *
 from django.template import RequestContext
 
-from schools.models import *
 from schools.forms import UserCreationFormExtended
 
 
