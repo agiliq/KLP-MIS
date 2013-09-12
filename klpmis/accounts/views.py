@@ -4,7 +4,6 @@ from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, render_to_response
-from django.conf.urls.defaults import *
 from django.template import RequestContext
 
 from schools.forms import UserCreationFormExtended
