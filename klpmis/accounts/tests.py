@@ -27,15 +27,11 @@ class TestViewsBasic(TestCase):
         self.assertEqual(302, response.status_code)
 
     def test_login_with_correct_password(self):
-        response = self.client.get(reverse("login"))
-        self.assertEqual(200, response.status_code)
         post_data = {'username': 'foo', 'password': 'bar'}
         response = self.client.post(reverse("login"), post_data)
         self.assertEqual(302, response.status_code)
 
     def test_login_with_wrong_password(self):
-        response = self.client.get(reverse("login"))
-        self.assertEqual(200, response.status_code)
         post_data = {'username': 'foo', 'password': 'wrong_bar'}
         response = self.client.post(reverse("login"), post_data)
         self.assertEqual(200, response.status_code)
