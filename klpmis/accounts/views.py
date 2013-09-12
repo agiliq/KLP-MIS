@@ -170,8 +170,8 @@ def change_password(request,
         return HttpResponseRedirect('/login/')
 
 
-def change_password_done(request,
-                         template_name='viewtemplates/password_change_done.html'):
+def change_password_done(
+        request, template_name='viewtemplates/password_change_done.html'):
     """ To Show Password Change done page. """
 
     user = request.user
