@@ -54,14 +54,14 @@ def add_user(request,
              post_change_redirect=None):
 
     """ This method is used to create or add new user """
-    user = request.user  # Get logged in user
-    klp_UserGroups = user.groups.all()  # Get user groups
+    user = request.user
+    klp_UserGroups = user.groups.all()
     user_GroupsList = ['%s' % usergroup.name for usergroup in
                        klp_UserGroups]
     if user.id is not None and (user.is_superuser or 'AdminGroup'
                                 in user_GroupsList):
 
-        # if use is login and user is super user or in admin group
+        # if user is login and user is super user or in admin group
 
         if post_change_redirect is None:
             post_change_redirect = \
