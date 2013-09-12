@@ -70,16 +70,14 @@ def add_user(request,
                     'legend': 'Karnataka Learning Partnership',
                     'entry': 'Add', },
                     context_instance=RequestContext(request))
-        else:
-            form = UserCreationFormExtended()
-            return render_to_response(template_name, {
-                'form': form,
-                'title': 'KLP User',
-                'legend': 'Karnataka Learning Partnership',
-                'entry': 'Add', },
-                context_instance=RequestContext(request))
-    else:
-        return HttpResponseRedirect('/login/')
+        form = UserCreationFormExtended()
+        return render_to_response(template_name, {
+            'form': form,
+            'title': 'KLP User',
+            'legend': 'Karnataka Learning Partnership',
+            'entry': 'Add', },
+            context_instance=RequestContext(request))
+    return HttpResponseRedirect('/login/')
 
 
 def add_user_done(request):
