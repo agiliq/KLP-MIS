@@ -23,12 +23,7 @@ def login(request):
         if form.is_valid():
             user = form.get_user()
             django_login(request, user)
-            user_url = {'Data Entry Executive': '/home/'}
-            if user.is_superuser or user.is_staff:
-                return HttpResponseRedirect(reverse('home'))
-            else:
-                user_group = user.groups.all()[0].name
-                return HttpResponseRedirect(user_url[user_group])
+            return HttpResponseRedirect(reverse('home'))
     context['form'] = form
     return render(request,
                   'login.html',
