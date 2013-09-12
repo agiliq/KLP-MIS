@@ -32,6 +32,7 @@ class TestViewsBasic(TestCase):
         post_data = {'username': 'foo', 'password': 'bar'}
         response = self.client.post(reverse("login"), post_data)
         self.assertEqual(302, response.status_code)
+        self.assertEqual(response['Location'], 'http://testserver/home/')
 
     def test_login_with_wrong_password(self):
         post_data = {'username': 'foo', 'password': 'wrong_bar'}
@@ -42,6 +43,7 @@ class TestViewsBasic(TestCase):
         self.client.login(username="foo", password="bar")
         response = self.client.get(reverse("logout"))
         self.assertEqual(302, response.status_code)
+        self.assertEqual(response['Location'], 'http://testserver/login/')
 
     def test_user_auth(self):
         response = self.client.get(reverse("user_auth"))
@@ -58,6 +60,7 @@ class TestViewsBasic(TestCase):
         response = self.client.post(reverse('accounts_add_user'),
                                     form_data)
         self.assertEqual(302, response.status_code)
+        self.assertEqual(response['Location'], 'http://testserver/login/')
 
     def test_add_user_with_login(self):
         form_data = {'username': 'test1',
@@ -68,6 +71,8 @@ class TestViewsBasic(TestCase):
         response = self.client.post(reverse('accounts_add_user'),
                                     form_data)
         self.assertEqual(302, response.status_code)
+        self.assertEqual(response['Location'],
+                         'http://testserver/accounts/auth/user/addNewUser_done/')
 
     def test_password_change_view(self):
         """
@@ -89,6 +94,14 @@ class TestViewsBasic(TestCase):
         self.client.login(username="foo", password="bar")
         response = self.client.post(reverse("accounts_password_change"), data)
         self.assertEqual(302, response.status_code)
+        self.assertEqual(response['Location'],
+                         'http://testserver/accounts/password/done/')
+        self.client.logout()
+
+        # Logging in with old password
+        post_data = {'username': 'foo', 'password': 'bar'}
+        response = self.client.post(reverse("login"), post_data)
+        self.assertEqual(200, response.status_code)
 
     def test_change_password_wrong(self):
         """
