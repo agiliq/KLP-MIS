@@ -67,7 +67,6 @@ class TestViewsBasic(TestCase):
         self.client.login(username="foo", password="bar")
         response = self.client.post(reverse('accounts_add_user'),
                                     form_data)
-        # import ipdb; ipdb.set_trace()
         self.assertEqual(302, response.status_code)
 
     def test_password_change_view(self):
