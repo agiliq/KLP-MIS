@@ -23,9 +23,7 @@ def login(request):
         if form.is_valid():
             user = form.get_user()
             django_login(request, user)
-            user_url = {'Data Entry Executive': '/home/',
-                        'Data Entry Operator': '/home/?respType=filter',
-                        'AdminGroup': '/home/?respType=userpermissions'}
+            user_url = {'Data Entry Executive': '/home/'}
             if user.is_superuser or user.is_staff:
                 return HttpResponseRedirect(reverse('home'))
             else:
