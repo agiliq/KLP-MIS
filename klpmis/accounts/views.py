@@ -56,25 +56,14 @@ def add_user(request,
     """ This method is used to create or add new user """
     user = request.user
     if user.id is not None and user.is_superuser:
-
-        # if user is login and user is super user
-
         if post_change_redirect is None:
             post_change_redirect = reverse('accounts_add_user_done')
         if request.method == 'POST':
-
-            # Get Data From Form
             form = UserCreationFormExtended(request.POST)
             if form.is_valid():
-
-                # if form is valid save data     ....       ....          ....
-
                 form.save()
                 return HttpResponseRedirect(post_change_redirect)
             else:
-
-                # else redirect back to add new user form
-
                 return render_to_response(template_name, {
                     'form': form,
                     'title': 'KLP User',
@@ -90,9 +79,6 @@ def add_user(request,
                 'entry': 'Add', },
                 context_instance=RequestContext(request))
     else:
-
-        # if use is not login and user is not super user or not in admin group
-
         return HttpResponseRedirect('/login/')
 
 
