@@ -22,9 +22,11 @@ class TestViewsBasic(TestCase):
     def test_index(self):
         response = self.client.get(reverse("index"))
         self.assertEqual(302, response.status_code)
+        self.assertEqual(response['Location'], 'http://testserver/login/')
         self.client.login(username="foo", password="bar")
         response = self.client.get(reverse("index"))
         self.assertEqual(302, response.status_code)
+        self.assertEqual(response['Location'], 'http://testserver/home/')
 
     def test_login_with_correct_password(self):
         post_data = {'username': 'foo', 'password': 'bar'}
@@ -37,8 +39,6 @@ class TestViewsBasic(TestCase):
         self.assertEqual(200, response.status_code)
 
     def test_logout(self):
-        response = self.client.get(reverse("logout"))
-        self.assertEqual(302, response.status_code)
         self.client.login(username="foo", password="bar")
         response = self.client.get(reverse("logout"))
         self.assertEqual(302, response.status_code)
