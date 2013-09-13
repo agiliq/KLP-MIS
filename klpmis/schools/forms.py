@@ -18,116 +18,95 @@ user = d['USER']
 password = d['PASSWORD']
 
 
-def storeFullhistory(requestparam,data,objid,modelName,action='C'):
-
-
-    userid=requestparam.get('userid','user')
-    username=requestparam.get('username','username')
-    request_path=requestparam.get('request_path','/')
-    #userid = username.id
+def storeFullhistory(requestparam, data, objid, modelName, action='C'):
+    userid = requestparam.get('userid', 'user')
+    username = requestparam.get('username', 'username')
+    request_path = requestparam.get('request_path', '/')
 
     fullrequest = Request(user_name=username, user_pk=userid,
                           request_path=request_path)
     fullrequest.save()
-
-
     obj = ContentType.objects.get(model=modelName)
-
     content_type_id = obj.id
-
     create_info = create_infos(requestparam, action)
-
 
     try:
         revision = len(FullHistory.objects.filter(content_type=modelName,
                        object_id=objid))
-
     except:
         revision = 0
-    revision=0 if revision==0 else  revision+1
-    fh = FullHistory(
-        revision=revision,
-        action=action,
-        content_type_id=content_type_id,
-        object_id=objid,
-        data=data,
-        request=fullrequest,
-        site_id=1,
-        info=create_info,
-        )
+    revision = 0 if revision == 0 else revision+1
+    fh = FullHistory(revision=revision, action=action,
+                     content_type_id=content_type_id,
+                     object_id=objid, data=data,
+                     request=fullrequest,
+                     site_id=1, info=create_info, )
     fh.save()
     return 'Sccess'
+
 
 def create_infos(requestparam, action):
     '''
         Generates a summary description of this history entry
         '''
-
     user_name = u'(System)'
-    if requestparam and type(requestparam)()!={}:
+    if requestparam and type(requestparam)() != {}:
         user_name = requestparam.user
     else:
-       user_name=requestparam.get('current_user','user')
+        user_name = requestparam.get('current_user', 'user')
 
     ret = {'C': u'%s Created', 'U': u'%s Updated',
            'D': u'%s Deleted'}[action] % user_name
-
-
     return ret
-def CustomizeSave(selfObj,Form,commit=True,modelName=None):
-
-          try:
-                instance = super(Form, selfObj).save(commit=commit)
-
-                instance.save()
-
-                selfObj.instance=instance
-          except:
-              modelName=Form.Meta.model._meta.module_name
-
-              connection = psycopg2.connect(database=datebase, user=user,                    password=password)
-              cursor = connection.cursor()
-              Query="SELECT  column_default from information_schema.columns where table_name='schools_"+modelName+"' and column_name='id'"
-              cursor.execute(Query)
-              Seqcolumn=cursor.fetchone()[0]
-              cursor.execute("select "+Seqcolumn)
-              insertedRow=cursor.fetchone()[0]-1
-              cursor.close()
-
-              #print  selfObj.instances,'INSTANCE OBJ',selfObj.instances.id,insertedRow
-              #print dir(selfObj)
-              selfObj.instance=Form.Meta.model.objects.get(id=insertedRow)
 
 
-              userdetails={}
-              selfObjfiles=selfObj.files
-	      try:
-      			 username = selfObjfiles.user
-       			 userid=username.id
-                         request_path=selfObjfiles.path_info
-              except:
-                      userid=selfObjfiles.get('form-0-current_user','')
-                      username=selfObjfiles.get('form-0-username','')
-                      request_path=selfObjfiles.get('form-0-path_info','/')
-              userdetails['username']=username
-              userdetails['userid']=userid
-              userdetails['request_path']=request_path
-              if username :
+def CustomizeSave(selfObj, Form, commit=True, modelName=None):
+    try:
+        instance = super(Form, selfObj).save(commit=commit)
+        instance.save()
+        selfObj.instance = instance
+    except:
+        modelName = Form.Meta.model._meta.module_name
+        connection = psycopg2.connect(database=datebase,
+                                      user=user,
+                                      password=password)
+        cursor = connection.cursor()
+        Query = "SELECT column_default from \
+          information_schema.columns where \
+            table_name = 'schools_"+modelName+"' and column_name='id'"
+        cursor.execute(Query)
+        Seqcolumn = cursor.fetchone()[0]
+        cursor.execute("select "+Seqcolumn)
+        insertedRow = cursor.fetchone()[0]-1
+        cursor.close()
+        selfObj.instance = Form.Meta.model.objects.get(id=insertedRow)
+        userdetails = {}
+        selfObjfiles = selfObj.files
+        try:
+            username = selfObjfiles.user
+            userid = username.id
+            request_path = selfObjfiles.path_info
+        except:
+            userid = selfObjfiles.get('form-0-current_user', '')
+            username = selfObjfiles.get('form-0-username', '')
+            request_path = selfObjfiles.get('form-0-path_info', '/')
+        userdetails['username'] = username
+        userdetails['userid'] = userid
+        userdetails['request_path'] = request_path
+        if username:
+            storeFullhistory(userdetails, selfObj.data, insertedRow, modelName)
+    return selfObj.instance
 
-                  storeFullhistory(userdetails,selfObj.data,insertedRow,modelName)
-          return selfObj.instance
 
 class Institution_Category_Form(ModelForm):
 
     class Meta:
-
         model = Institution_Category
 
 
 class Moi_Type_Form(ModelForm):
 
     class Meta:
-
         model = Moi_Type
 
 
@@ -136,9 +115,7 @@ class Institution_Management_Form(ModelForm):
     name = forms.CharField(max_length=50, required=True)
 
     class Meta:
-
         model = Institution_Management
-
 
 
 class Boundary_Form(ModelForm):
@@ -146,14 +123,12 @@ class Boundary_Form(ModelForm):
     active = forms.IntegerField(initial=2, widget=forms.HiddenInput)
 
     class Meta:
-
         model = Boundary
 
 
 class Boundary_Type_Form(ModelForm):
 
     class Meta:
-
         model = Boundary_Type
 
 
@@ -179,7 +154,6 @@ class Institution_Form(Institution_address_Form):
     active = forms.IntegerField(initial=2, widget=forms.HiddenInput)
 
     class Meta:
-
         model = Institution
 
 
@@ -188,11 +162,11 @@ class Relations_Form(ModelForm):
     first_name = forms.CharField(required=False)
     middle_name = forms.CharField(required=False)
     last_name = forms.CharField(required=False)
+
     def save(self, commit=True):
-          return CustomizeSave(self,Relations_Form)
+        return CustomizeSave(self, Relations_Form)
 
     class Meta:
-
         model = Relations
 
 
@@ -200,14 +174,14 @@ class Child_Form(Relations_Form):
     first_name = forms.CharField(required=False)
     #middle_name = forms.CharField(required=False)
     last_name = forms.CharField(required=False)
-    motherfirstname=forms.CharField(required=False)
-    fatherfirstname=forms.CharField(required=False)
-    motherlastname=forms.CharField(required=False)
-    fatherlastname=forms.CharField(required=False)
-    mothermiddlename=forms.CharField(required=False)
-    fathermiddlename=forms.CharField(required=False)
-    otherId=forms.CharField(required=False)
-    ModelName=forms.CharField(required=False)
+    motherfirstname = forms.CharField(required=False)
+    fatherfirstname = forms.CharField(required=False)
+    motherlastname = forms.CharField(required=False)
+    fatherlastname = forms.CharField(required=False)
+    mothermiddlename = forms.CharField(required=False)
+    fathermiddlename = forms.CharField(required=False)
+    otherId = forms.CharField(required=False)
+    ModelName = forms.CharField(required=False)
     thisyear = datetime.date.today().year
     startyear = thisyear - 20
     dob = \
@@ -220,95 +194,91 @@ class Child_Form(Relations_Form):
          super(Child_Form, self).__init__(*args, **kwargs)
     '''
     def clean(self):
-                cleaned_data = self.cleaned_data
-
-                first_name = cleaned_data.get("first_name").strip()
-                last_name = cleaned_data.get("last_name").strip()
-                if not first_name:
-                      msg = u"Enter First Name "
-                      self._errors["first_name"] = self.error_class([msg])
-                      del cleaned_data["first_name"]
-                      del cleaned_data["last_name"]
-                first_name = cleaned_data.get("motherfirstname").strip()
-                last_name = cleaned_data.get("fatherfirstname").strip()
-                if not first_name and not last_name:
-                      msg = u"Enter Mother Name or Father Name"
-                      self._errors["fatherfirstname"] = self.error_class([msg])
-                      del cleaned_data["motherfirstname"]
-                      del cleaned_data["fatherfirstname"]
-
-                return cleaned_data
+        cleaned_data = self.cleaned_data
+        first_name = cleaned_data.get("first_name").strip()
+        last_name = cleaned_data.get("last_name").strip()
+        if not first_name:
+            msg = u"Enter First Name "
+            self._errors["first_name"] = self.error_class([msg])
+            del cleaned_data["first_name"]
+            del cleaned_data["last_name"]
+        first_name = cleaned_data.get("motherfirstname").strip()
+        last_name = cleaned_data.get("fatherfirstname").strip()
+        if not first_name and not last_name:
+            msg = u"Enter Mother Name or Father Name"
+            self._errors["fatherfirstname"] = self.error_class([msg])
+            del cleaned_data["motherfirstname"]
+            del cleaned_data["fatherfirstname"]
+        return cleaned_data
 
     def save(self, commit=True):
-          print self.errors ,'ERRRRRRRRRRRRRR'
-          childObj=CustomizeSave(self,Child_Form)
-          #print self.files,'kwars' ,self.instance.id,dir(self.instance)
-          relationdatarequest=self.files
-          childpostid=self.cleaned_data.get('id','')
-          relationlist = ['father','mother'] #{'motherfirstname': 'Mother', 'fatherfirstname': 'father'}
-          for  rel_value in relationlist:
-                        relationobj=Relations.objects.filter(relation_type=rel_value.capitalize(),child=childObj).defer('child')
-                        relationForm= modelformset_factory(relationobj.model,form=Relations_Form)
-                        relationdata=relationdatarequest.POST.copy()
-                        try:
-                            del relationdata['form-0-id']
-                        except:
-                                pass
+        print(self.errors, 'ERRRRRRRRRRRRRR')
+        childObj = CustomizeSave(self, Child_Form)
+        #print self.files,'kwars' ,self.instance.id,dir(self.instance)
+        relationdatarequest = self.files
+        childpostid = self.cleaned_data.get('id', '')
+        relationlist = ['father', 'mother']
+        for rel_value in relationlist:
+            relationobj = Relations.objects.filter(relation_type=rel_value.capitalize(),
+                                                   child=childObj).defer('child')
+            relationForm = modelformset_factory(relationobj.model,
+                                                form=Relations_Form)
+            relationdata = relationdatarequest.POST.copy()
+            try:
+                del relationdata['form-0-id']
+            except:
+                pass
 
-                        if self.cleaned_data[rel_value+'firstname']:
+            if self.cleaned_data[rel_value+'firstname']:
 
-                        	relationdata['form-0-first_name']=self.cleaned_data[rel_value+'firstname']
-                        	relationdata['form-0-last_name']=self.cleaned_data[rel_value+'lastname']
-                        	relationdata['form-0-middle_name']=self.cleaned_data[rel_value+'middlename']
-                        	relationdata['form-0-relation_type']=rel_value.capitalize()
-                                relationdata['form-0-child']=childObj.id
-                                if relationobj:
-                                    relationdata['form-INITIAL_FORMS']=1
-                                    relationdata['form-0-id']=relationobj[0].id
-                                    relationdatarequest.POST=relationdata
-                                    rform = relationForm(relationdata,relationdatarequest,queryset=relationobj)
-                                else:
-                                   relationdata['form-INITIAL_FORMS']=0
-                                   relationdatarequest.POST=relationdata
-                                   rform = relationForm(relationdata,relationdatarequest)
+                relationdata['form-0-first_name'] = self.cleaned_data[rel_value+'firstname']
+                relationdata['form-0-last_name'] = self.cleaned_data[rel_value+'lastname']
+                relationdata['form-0-middle_name'] = self.cleaned_data[rel_value+'middlename']
+                relationdata['form-0-relation_type'] = rel_value.capitalize()
+                relationdata['form-0-child'] = childObj.id
+                if relationobj:
+                    relationdata['form-INITIAL_FORMS'] = 1
+                    relationdata['form-0-id'] = relationobj[0].id
+                    relationdatarequest.POST = relationdata
+                    rform = relationForm(relationdata, relationdatarequest,
+                                         queryset=relationobj)
+                else:
+                    relationdata['form-INITIAL_FORMS'] = 0
+                    relationdatarequest.POST = relationdata
+                    rform = relationForm(relationdata, relationdatarequest)
+                    rform.save()
+            else:
+                if relationobj:
+                    relationobj.delete()
 
-                                rform.save()
+            if self.cleaned_data['ModelName'] == 'student' and childpostid is None:
+                  # Create Student Object With as foreign key
 
-                        else:
+                studentForm = modelformset_factory(Student, form=Student_Form)
+                relationdata['form-0-other_student_id'] = self.cleaned_data['otherId']
+                relationdata['form-0-child'] = childObj.id
+                try:
+                    studObj = childObj.getStudent()
+                    relationdata['form-0-id'] = studObj.id
+                    #studObj.other_student_id = \
+                    #self.cleaned_data['otherId']
+                except:
+                    pass
+                     #studObj = Student(child=self.instance,
+                     #                   other_student_id=self.cleaned_data['otherId'], active=2)
+                Studform = studentForm(relationdata, relationdatarequest)
+                studObj = Studform.save()
 
-                             if relationobj:
-                                   relationobj.delete()
-
-          if self.cleaned_data['ModelName']=='student' and childpostid is None :
-              # Create Student Object With as foreign key
-
-	      studentForm= modelformset_factory(Student,form=Student_Form)
-              relationdata['form-0-other_student_id']=self.cleaned_data['otherId']
-              relationdata['form-0-child']= childObj.id
-              try:
-                        studObj = childObj.getStudent()
-                        relationdata['form-0-id']=studObj.id
-                        #studObj.other_student_id = \
-                        #self.cleaned_data['otherId']
-              except:
-
-                 pass
-                 #studObj = Student(child=self.instance,
-                 #                   other_student_id=self.cleaned_data['otherId'], active=2)
-              Studform = studentForm(relationdata,relationdatarequest)
-              studObj=Studform.save()
-
-              # Create relation ship with SG for current academic year.
-              studentgroupForm= modelformset_factory(Student_StudentGroupRelation,form=Student_StudentGroupRelation_Form)
-              relationdata['form-0-student_group']=relationdatarequest.POST.get('studentgroup')
-              relationdata['form-0-student']=studObj[0].id
-              relationdata['form-0-academic']=current_academic().id
-
-              studgrprelation=studentgroupForm(relationdata,relationdatarequest)
-
-              studgrprelation.save()
-
-          return self.instance
+                # Create relation ship with SG for current academic year.
+                studentgroupForm = modelformset_factory(Student_StudentGroupRelation,
+                                                        form=Student_StudentGroupRelation_Form)
+                relationdata['form-0-student_group'] =\
+                    relationdatarequest.POST.get('studentgroup')
+                relationdata['form-0-student'] = studObj[0].id
+                relationdata['form-0-academic'] = current_academic().id
+                studgrprelation = studentgroupForm(relationdata, relationdatarequest)
+                studgrprelation.save()
+        return self.instance
 
     class Meta:
 
