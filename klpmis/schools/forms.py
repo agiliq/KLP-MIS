@@ -1,14 +1,14 @@
 import datetime
 import psycopg2
 
-from django.forms import ModelForm
 from django import forms
-from django.forms.models import modelformset_factory
+from django.contrib.auth.forms import UserCreationForm
 from django.forms.extras.widgets import SelectDateWidget
-from django.contrib.auth.forms import *
+from django.forms import ModelForm
+from django.forms.models import modelformset_factory
 
 from models import *
-from klpmis.settings import *
+from klpmis.settings import DATABASES
 from fullhistory.models import *
 from schools.models import current_academic
 
@@ -286,19 +286,18 @@ class Child_Form(Relations_Form):
 
 
 class StudentGroup_Form(ModelForm):
-
     active = forms.IntegerField(initial=2, widget=forms.HiddenInput)
 
     class Meta:
-
         model = StudentGroup
+
     def __init__(self,  *args, **kwargs):
-         #self.args=args
-         self.kwargs=kwargs
-         super(StudentGroup_Form, self).__init__(*args, **kwargs)
-    def save(self,commit=True):
-          return CustomizeSave(self,StudentGroup_Form)
-          '''
+        self.kwargs = kwargs
+        super(StudentGroup_Form, self).__init__(*args, **kwargs)
+
+    def save(self, commit=True):
+        return CustomizeSave(self, StudentGroup_Form)
+        '''
           try:
             instance = super(StudentGroup_Form, self).save(commit=commit)
 
@@ -308,7 +307,7 @@ class StudentGroup_Form(ModelForm):
           except:
 
             if self.cleaned_data.get('id','') is None:
-              connection = psycopg2.connect(database=datebase, user=user,                    password=password)
+              connection = psycopg2.connect(database=datebase, user=user, password=password)
               tableactive=self.cleaned_data.get('active',2)
               cursor = connection.cursor()
               Query="SELECT  column_default from information_schema.columns where table_name='schools_studentgroup' and column_name='id'"
@@ -323,6 +322,8 @@ class StudentGroup_Form(ModelForm):
               print createdObj,'CrateObj'
               return createdObj
           '''
+
+
 class AcademicYear_Form(ModelForm):
 
     class Meta:
@@ -337,12 +338,16 @@ class Student_Form(ModelForm):
     class Meta:
 
         model = Student
+
     def __init__(self,  *args, **kwargs):
-         #self.args=args
-         self.kwargs=kwargs
-         super(Student_Form, self).__init__(*args, **kwargs)
-    def save(self,commit=True):
-          return CustomizeSave(self,Student_Form)
+        #self.args=args
+        self.kwargs = kwargs
+        super(Student_Form, self).__init__(*args, **kwargs)
+
+    def save(self, commit=True):
+        return CustomizeSave(self, Student_Form)
+
+
 class Student_StudentGroupRelation_Form(ModelForm):
 
     active = forms.IntegerField(initial=2, widget=forms.HiddenInput)
@@ -350,17 +355,17 @@ class Student_StudentGroupRelation_Form(ModelForm):
     class Meta:
 
         model = Student_StudentGroupRelation
+
     def __init__(self,  *args, **kwargs):
          #self.args=args
-         self.kwargs=kwargs
-         super(Student_StudentGroupRelation_Form, self).__init__(*args, **kwargs)
-    def save(self,commit=True):
-          return CustomizeSave(self,Student_StudentGroupRelation_Form)
+        self.kwargs = kwargs
+        super(Student_StudentGroupRelation_Form, self).__init__(*args, **kwargs)
 
+    def save(self, commit=True):
+        return CustomizeSave(self, Student_StudentGroupRelation_Form)
 
 
 class Staff_Form(ModelForm):
-
     thisyear = datetime.date.today().year
     startyear = thisyear - 40
     doj = \
@@ -370,47 +375,46 @@ class Staff_Form(ModelForm):
     active = forms.IntegerField(initial=2, widget=forms.HiddenInput)
 
     class Meta:
-
         model = Staff
 
 
 class Programme_Form(ModelForm):
 
-    start_date = forms.DateField(widget=forms.DateInput(format='%d-%m-%Y'
-                                ), initial=datetime.date.today,
-                                input_formats=['%d-%m-%Y', '%d-%m-%y'])
-    end_date = forms.DateField(widget=forms.DateInput(format='%d-%m-%Y'
-                              ), initial=default_end_date,
-                              input_formats=['%d-%m-%Y', '%d-%m-%y'])
+    start_date = \
+        forms.DateField(widget=forms.DateInput(format='%d-%m-%Y'),
+                        initial=datetime.date.today,
+                        input_formats=['%d-%m-%Y', '%d-%m-%y'])
+    end_date = forms.DateField(widget=forms.DateInput(format='%d-%m-%Y'),
+                               initial=default_end_date,
+                               input_formats=['%d-%m-%Y', '%d-%m-%y'])
     active = forms.IntegerField(initial=2, widget=forms.HiddenInput)
+
     def clean(self):
                 cleaned_data = self.cleaned_data
                 start_date = cleaned_data.get("start_date")
                 end_date = cleaned_data.get("end_date")
                 if end_date < start_date:
-                      msg = u"End date should be greater than start date."
-                      self._errors["end_date"] = self.error_class([msg])
-                      del cleaned_data["start_date"]
-                      del cleaned_data["end_date"]
+                    msg = u"End date should be greater than start date."
+                    self._errors["end_date"] = self.error_class([msg])
+                    del cleaned_data["start_date"]
+                    del cleaned_data["end_date"]
                 return cleaned_data
 
     class Meta:
-
         model = Programme
 
 
 class Assessment_Form(ModelForm):
 
-    start_date = forms.DateField(widget=forms.DateInput(format='%d-%m-%Y'
-                                ), initial=datetime.date.today,
-                                input_formats=['%d-%m-%Y', '%d-%m-%y'])
-    end_date = forms.DateField(widget=forms.DateInput(format='%d-%m-%Y'
-                              ), initial=default_end_date,
-                              input_formats=['%d-%m-%Y', '%d-%m-%y'])
+    start_date = forms.DateField(widget=forms.DateInput(format='%d-%m-%Y'),
+                                 initial=datetime.date.today,
+                                 input_formats=['%d-%m-%Y', '%d-%m-%y'])
+    end_date = forms.DateField(widget=forms.DateInput(format='%d-%m-%Y'),
+                               initial=default_end_date,
+                               input_formats=['%d-%m-%Y', '%d-%m-%y'])
     active = forms.IntegerField(initial=2, widget=forms.HiddenInput)
 
     # flexi_assessment = forms.BooleanField(initial=False)
-
     primary_field_name = forms.CharField(required=False)
 
     # primary_field_type = forms.CharField(required=False)
@@ -421,10 +425,10 @@ class Assessment_Form(ModelForm):
                 start_date = cleaned_data.get("start_date")
                 end_date = cleaned_data.get("end_date")
                 if end_date < start_date:
-                      msg = u"End date should be greater than start date."
-                      self._errors["end_date"] = self.error_class([msg])
-                      del cleaned_data["start_date"]
-                      del cleaned_data["end_date"]
+                    msg = u"End date should be greater than start date."
+                    self._errors["end_date"] = self.error_class([msg])
+                    del cleaned_data["start_date"]
+                    del cleaned_data["end_date"]
                 return cleaned_data
 
     class Meta:
@@ -438,7 +442,6 @@ class Assessment_Lookup_Form(ModelForm):
     description = forms.CharField(required=False)
 
     class Meta:
-
         model = Assessment
 
 
@@ -446,9 +449,9 @@ class Question_Form(ModelForm):
 
     question_type = forms.ChoiceField(choices=QuestionType)
     score_min = forms.DecimalField(max_digits=5, decimal_places=2,
-                                  required=False)
+                                   required=False)
     score_max = forms.DecimalField(max_digits=5, decimal_places=2,
-                                  required=False)
+                                   required=False)
     grade = forms.CharField(required=False)
     active = forms.IntegerField(initial=2, widget=forms.HiddenInput)
 
@@ -461,8 +464,7 @@ class Question_Form(ModelForm):
             else:
                 score_max = self.cleaned_data.get('score_max', '')
                 if score_min > score_max:
-                    raise forms.ValidationError('Score Min Should be Less than Score Min.'
-                            )
+                    raise forms.ValidationError('Score Min Should be Less than Score Min.')
         return score_min
 
     def clean_score_max(self):
@@ -474,8 +476,7 @@ class Question_Form(ModelForm):
             else:
                 score_min = self.cleaned_data.get('score_min', '')
                 if score_min > score_max:
-                    raise forms.ValidationError('Score Max Should be Grater than Score Min.'
-                            )
+                    raise forms.ValidationError('Score Max Should be Grater than Score Min.')
         return score_max
 
     def clean_grade(self):
@@ -492,7 +493,6 @@ class Question_Form(ModelForm):
         model = Question
 
 
-
 class UserAssessmentPermissions_Form(ModelForm):
     #active = forms.IntegerField(initial=2, widget=forms.HiddenInput)
     class Meta:
@@ -504,35 +504,38 @@ class UserAssessmentPermissions_Form(ModelForm):
          #self.kwargs=kwargs
          super(Answer_Form, self).__init__(*args, **kwargs)
     '''
-    def save(self,commit=True):
-          #print self.data,'DAAAAAAAAAAAAAAAAAAAAAAAAAa'
-          return CustomizeSave(self,UserAssessmentPermissions_Form)
+
+    def save(self, commit=True):
+        return CustomizeSave(self, UserAssessmentPermissions_Form)
+
 
 class Assessment_StudentGroup_Association_Form(ModelForm):
     #active = forms.IntegerField(initial=2, widget=forms.HiddenInput)
     class Meta:
 
         model = Assessment_StudentGroup_Association
-    def save(self,commit=True):
-          #print self.data,'DAAAAAAAAAAAAAAAAAAAAAAAAAa'
-          return CustomizeSave(self,Assessment_StudentGroup_Association_Form)
+
+    def save(self, commit=True):
+        return CustomizeSave(self, Assessment_StudentGroup_Association_Form)
+
+
 class Assessment_Class_Association_Form(ModelForm):
     #active = forms.IntegerField(initial=2, widget=forms.HiddenInput)
     class Meta:
-
         model = Assessment_Class_Association
-    def save(self,commit=True):
-          #print self.data,'DAAAAAAAAAAAAAAAAAAAAAAAAAa'
-          return CustomizeSave(self,Assessment_Class_Association_Form)
+
+    def save(self, commit=True):
+        return CustomizeSave(self, Assessment_Class_Association_Form)
+
 
 class Assessment_Institution_Association_Form(ModelForm):
     #active = forms.IntegerField(initial=2, widget=forms.HiddenInput)
     class Meta:
 
         model = Assessment_Institution_Association
-    def save(self,commit=True):
-          #print self.data,'DAAAAAAAAAAAAAAAAAAAAAAAAAa'
-          return CustomizeSave(self,Assessment_Institution_Association_Form)
+
+    def save(self, commit=True):
+        return CustomizeSave(self, Assessment_Institution_Association_Form)
 
 
 class Answer_Form(ModelForm):
@@ -548,9 +551,9 @@ class Answer_Form(ModelForm):
          #self.kwargs=kwargs
          super(Answer_Form, self).__init__(*args, **kwargs)
     '''
-    def save(self,commit=True):
-          #print self.data,'DAAAAAAAAAAAAAAAAAAAAAAAAAa'
-          return CustomizeSave(self,Answer_Form)
+
+    def save(self, commit=True):
+        return CustomizeSave(self, Answer_Form)
 
 
 class UserCreationFormExtended(UserCreationForm):
@@ -573,5 +576,3 @@ class UserCreationFormExtended(UserCreationForm):
 
         model = User
         fields = ('username', 'password1', 'password2', 'groups')
-
-
