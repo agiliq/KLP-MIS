@@ -48,7 +48,7 @@ def index(request):
 
 
 def add_user(request,
-             template_name='viewtemplates/add_new_user.html',
+             template_name='accounts/add_new_user.html',
              post_change_redirect=None):
 
     """ This method is used to create or add new user """
@@ -79,7 +79,7 @@ def add_user(request,
 def add_user_done(request):
     """ To Show User Creation done page"""
 
-    return render_to_response('viewtemplates/userAction_done.html', {
+    return render_to_response('accounts/userAction_done.html', {
         'message': 'User Creation Successful',
         'title': 'KLP User',
         'legend': 'Karnataka Learning Partnership',
@@ -88,7 +88,7 @@ def add_user_done(request):
 
 
 def change_password(request,
-                    template_name='viewtemplates/password_change_form.html',
+                    template_name='accounts/password_change_form.html',
                     post_change_redirect=None):
     """ To Change Password """
 
@@ -146,7 +146,7 @@ def change_password(request,
 
 
 def change_password_done(
-        request, template_name='viewtemplates/password_change_done.html'):
+        request, template_name='accounts/password_change_done.html'):
     """ To Show Password Change done page. """
 
     user = request.user
