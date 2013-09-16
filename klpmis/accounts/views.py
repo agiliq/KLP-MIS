@@ -103,7 +103,7 @@ def change_password(request,
     else:
         userGroup = user.groups.all()[0].name
         returnUrl = usrUrl[userGroup]
-    if user.id is not None:
+    if request.user.is_authenticated():
 
         # if user is logged in
 
