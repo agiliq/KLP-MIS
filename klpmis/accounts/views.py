@@ -5,6 +5,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, render_to_response
 from django.template import RequestContext
+from django.contrib import messages
 
 from schools.forms import UserCreationFormExtended
 
@@ -73,6 +74,8 @@ def add_user(request,
             'title': 'KLP User',
             'entry': 'Add', },
             context_instance=RequestContext(request))
+    messages.add_message(request, messages.warning,
+                         'You should be a super user to add a user')
     return HttpResponseRedirect('/login/')
 
 
