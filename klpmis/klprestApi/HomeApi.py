@@ -72,7 +72,7 @@ class Home(Resource):
                 return HttpResponseRedirect(reverse('login'))
 
             return render(request,
-                          'viewtemplates/home.html',
+                          'accounts/home.html',
                           respDict)
         else:
             return HttpResponseRedirect(reverse('login'))
