@@ -5,6 +5,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, render_to_response
 from django.template import RequestContext
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
 from schools.forms import UserCreationFormExtended
@@ -48,13 +49,14 @@ def index(request):
         return HttpResponseRedirect(reverse('login'))
 
 
+@login_required
 def add_user(request,
              template_name='accounts/add_new_user.html',
              post_change_redirect=None):
 
     """ This method is used to create or add new user """
     user = request.user
-    if user.id is not None and user.is_superuser:
+    if user.is_superuser:
         if post_change_redirect is None:
             post_change_redirect = reverse('accounts_add_user_done')
         if request.method == 'POST':
