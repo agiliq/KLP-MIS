@@ -93,10 +93,8 @@ def change_password(request,
                     post_change_redirect=None):
     """ To Change Password """
 
-    user = request.user  # Get logged in user
-    usrUrl = {'Data Entry Executive': '/home/',
-              'Data Entry Operator': '/home/?respType=filter',
-              'AdminGroup': '/home/?respType=userpermissions'}
+    user = request.user
+    usrUrl = {'Data Entry Executive': '/home/'}
     if user.is_superuser:
         returnUrl = '/home/'
     elif user.is_staff:
@@ -130,7 +128,6 @@ def change_password(request,
                     'form': form,
                     'returnUrl': returnUrl,
                     'title': 'KLP Change Password',
-                    'legend': 'Karnataka Learning Partnership',
                     'entry': 'Add', },
                     context_instance=RequestContext(request))
         else:
@@ -139,7 +136,6 @@ def change_password(request,
                 'form': form,
                 'returnUrl': returnUrl,
                 'title': 'KLP Change Password',
-                'legend': 'Karnataka Learning Partnership',
                 'entry': 'Add', },
                 context_instance=RequestContext(request))
     else:
@@ -164,6 +160,5 @@ def change_password_done(
     return render_to_response(template_name, {
         'returnUrl': returnUrl,
         'title': 'KLP Change Password',
-        'legend': 'Karnataka Learning Partnership',
         'entry': 'Add', },
         context_instance=RequestContext(request))
