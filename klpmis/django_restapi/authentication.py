@@ -1,10 +1,10 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-from django.http import HttpResponse
-from django.utils.translation import ugettext as _
-import hashlib
 import time
 import random
+import hashlib
+
+from django.utils.translation import ugettext as _
 
 
 def djangouser_auth(username, password):
@@ -71,10 +71,9 @@ class HttpBasicAuthentication(object):
         Checks whether a request comes from an authorized user.
         """
 
-        if not request.META.has_key('HTTP_AUTHORIZATION'):
+        if not request.META.key in ('HTTP_AUTHORIZATION'):
             return False
-        (authmeth, auth) = request.META['HTTP_AUTHORIZATION'].split(' '
-                , 1)
+        (authmeth, auth) = request.META['HTTP_AUTHORIZATION'].split(' ', 1)
         if authmeth.lower() != 'basic':
             return False
         auth = auth.strip().decode('base64')
@@ -87,7 +86,7 @@ def digest_password(realm, username, password):
     Construct the appropriate hashcode needed for HTTP digest
     """
 
-    return md5.md5('%s:%s:%s' % (username, realm, password)).hexdigest()
+    return hashlib.md5('%s:%s:%s' % (username, realm, password)).hexdigest()
 
 
 class HttpDigestAuthentication(object):
@@ -131,20 +130,13 @@ class HttpDigestAuthentication(object):
             amap[k] = v.replace('"', '')
         return amap
 
-    def get_auth_response(
-        self,
-        http_method,
-        fullpath,
-        username,
-        nonce,
-        realm,
-        qop,
-        cnonce,
-        nc,
-        ):
+    def get_auth_response(self, http_method,
+                          fullpath, username,
+                          nonce, realm,
+                          qop, cnonce, nc, ):
         """
         Returns the server-computed digest response key.
-        
+
         http_method:
             The request method, e.g. GET
         username:
@@ -152,25 +144,25 @@ class HttpDigestAuthentication(object):
         fullpath:
             The absolute URI to be accessed by the user
         nonce:
-            A server-specified data string which should be 
+            A server-specified data string which should be
             uniquely generated each time a 401 response is made
         realm:
-            A string to be displayed to users so they know which 
+            A string to be displayed to users so they know which
             username and password to use
         qop:
-            Indicates the "quality of protection" values supported 
+            Indicates the "quality of protection" values supported
             by the server.  The value "auth" indicates authentication.
         cnonce:
-            An opaque quoted string value provided by the client 
-            and used by both client and server to avoid chosen 
-            plaintext attacks, to provide mutual authentication, 
+            An opaque quoted string value provided by the client
+            and used by both client and server to avoid chosen
+            plaintext attacks, to provide mutual authentication,
             and to provide some message integrity protection.
         nc:
             Hexadecimal request counter
         """
 
         ha1 = self.authfunc(realm, username)
-        ha2 = md5.md5('%s:%s' % (http_method, fullpath)).hexdigest()
+        ha2 = hashlib.md5('%s:%s' % (http_method, fullpath)).hexdigest()
         if qop:
             chk = '%s:%s:%s:%s:%s:%s' % (
                 ha1,
@@ -178,11 +170,10 @@ class HttpDigestAuthentication(object):
                 nc,
                 cnonce,
                 qop,
-                ha2,
-                )
+                ha2, )
         else:
             chk = '%s:%s:%s' % (ha1, nonce, ha2)
-        computed_response = md5.md5(chk).hexdigest()
+        computed_response = hashlib.md5(chk).hexdigest()
         return computed_response
 
     def challenge_headers(self, stale=''):
@@ -191,17 +182,16 @@ class HttpDigestAuthentication(object):
         authorization.
         """
 
-        nonce = md5.md5('%s:%s' % (time.time(),
-                        random.random())).hexdigest()
-        opaque = md5.md5('%s:%s' % (time.time(),
-                         random.random())).hexdigest()
+        nonce = hashlib.md5('%s:%s' % (time.time(),
+                            random.random())).hexdigest()
+        opaque = hashlib.md5('%s:%s' % (time.time(),
+                             random.random())).hexdigest()
         self.nonce[nonce] = None
         parts = {
             'realm': self.realm,
             'qop': 'auth',
             'nonce': nonce,
-            'opaque': opaque,
-            }
+            'opaque': opaque, }
         if stale:
             parts['stale'] = 'true'
         head = ', '.join(['%s="%s"' % (k, v) for (k, v) in
@@ -215,12 +205,11 @@ class HttpDigestAuthentication(object):
 
         # Make sure the request is a valid HttpDigest request
 
-        if not request.META.has_key('HTTP_AUTHORIZATION'):
+        if not request.META.key in ('HTTP_AUTHORIZATION'):
             return False
         fullpath = request.META['SCRIPT_NAME'] \
             + request.META['PATH_INFO']
-        (authmeth, auth) = request.META['HTTP_AUTHORIZATION'].split(' '
-                , 1)
+        (authmeth, auth) = request.META['HTTP_AUTHORIZATION'].split(' ', 1)
         if authmeth.lower() != 'digest':
             return False
 
@@ -254,8 +243,7 @@ class HttpDigestAuthentication(object):
             realm,
             qop,
             cnonce,
-            nc,
-            )
+            nc,)
 
         # Compare server-side key with key from client
         # Prevent replay attacks
@@ -271,5 +259,3 @@ class HttpDigestAuthentication(object):
             return False  # stale = True
         self.nonce[nonce] = nc
         return True
-
-

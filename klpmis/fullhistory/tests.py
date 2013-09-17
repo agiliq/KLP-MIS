@@ -1,18 +1,14 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-import unittest
-
-from django.test import TestCase
-from django.test.client import Client
-from django.core import urlresolvers
+import django
 from django.contrib.auth.models import User  # this app requires auth, so we can do tests against it
 from django.contrib import admin
+from django.test import TestCase
 
+import fullhistory
 from models import *
 from admin import *
-import fullhistory
 
-import django
 django1_1 = django.VERSION[0] == 1 and django.VERSION[1] >= 1
 
 
@@ -45,8 +41,6 @@ class Test4Model(Test2Model):
 
 
 if django1_1:
-
-
     class TestProxyModel(Test1Model):
 
         class Meta:
@@ -200,14 +194,14 @@ class FullHistoryTest(TestCase):
         previous_revision = -1
         for history in \
             FullHistory.objects.actions_for_object(model=Test3Model,
-                pk=pk):
+                                                   pk=pk):
             self.assertEqual(previous_revision + 1, history.revision)
             previous_revision = history.revision
 
         # lets rollback to the 3rd version
 
         t3 = FullHistory.objects.rollback(version=3, model=Test3Model,
-                pk=pk)
+                                          pk=pk)
         t3 = Test3Model.objects.get(pk=pk)
         FullHistory.objects.audit(t3)
         t3.delete()
@@ -250,5 +244,3 @@ class FullHistoryTest(TestCase):
         response = self.client.get(base + '%s/history/version/256/'
                                    % t3.pk)
         self.assertEqual(404, response.status_code)
-
-

@@ -21,6 +21,5 @@ DATABASES = {
         'HOST': '',
         'PORT': '',
         'OPTIONS': {'autocommit': True},
-     }
+    }
 }
-

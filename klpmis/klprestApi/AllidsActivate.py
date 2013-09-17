@@ -8,22 +8,17 @@ Institution Api is used
 3) To update existing Institution
 4) To list boundaries/institutions while assign permissions
 """
+import simplejson
 
 from django.conf.urls.defaults import *
+from django.core.mail import send_mail
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response
+from django.views.decorators.csrf import csrf_exempt
 
+from klpmis.settings import *
 from schools.models import *
 from schools.forms import *
-
-from django.contrib.auth.models import User
-
-import simplejson
-from django.template import loader, RequestContext
-
-from django.core.mail import send_mail
-from klpmis.settings import *
-from django.views.decorators.csrf import csrf_exempt
 
 
 # from django.conf import settings
@@ -41,8 +36,8 @@ def KLP_act_form(request):
         respDict = {'title': 'Karnataka Learning Partnership ',
                     'user': user}
         respTemplate = \
-            render_to_response('viewtemplates/AllidsActivate_html.html'
-                               , respDict)
+            render_to_response('viewtemplates/AllidsActivate_html.html',
+                               respDict)
 
              # render admin console template
 
@@ -52,8 +47,7 @@ def KLP_act_form(request):
 @csrf_exempt
 def KLP_Activation(request):
     """ To actiave the records>"""
-    import pdb
-    
+
     # Checking user Permissions
         # KLP_user_Perm(request.user, "Institution", "Add")
         # Get Button Type
@@ -88,16 +82,16 @@ def KLP_Activation(request):
             'staff': Staff,
             'class': StudentGroup,
             'center': StudentGroup,
-            }
+        }
         if model_name1 != 'student':
-            obj = obj1 = \
+            obj1 = \
                 modelDict[model_name1].objects.filter(id__in=allids,
-                    active=int(actiontype))
+                                                      active=int(actiontype))
             obj3 = modelDict[model_name1].objects.filter(id__in=allids)
         else:
-            obj = obj1 = \
+            obj1 = \
                 modelDict[model_name1].objects.filter(child__id__in=allids,
-                    active=int(actiontype))
+                                                      active=int(actiontype))
             obj3 = \
                 modelDict[model_name1].objects.filter(child__id__in=allids)
         actiondic = {1: 'Deactivated', 2: 'Activated'}
@@ -129,10 +123,10 @@ def KLP_Activation(request):
                 childi = obj3.values_list('id', flat=True)
                 relObjects = \
                     Student_StudentGroupRelation.objects.filter(student__id__in=childi,
-                        academic=current_academic, active=2)
+                                                                academic=current_academic, active=2)
                 relObjects.update(active=1)
                 childlength = []
-            if len(childlength) == 0 :
+            if len(childlength) == 0:
                 obj2 = obj3  # modelDict[model_name1].objects.filter(id__in=allids)
                 isExecute = True
                 idlist2 = obj2.values_list('id')
