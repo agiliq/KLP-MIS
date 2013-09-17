@@ -25,9 +25,7 @@ def login(request):
             django_login(request, user)
             return HttpResponseRedirect(reverse('home'))
     context['form'] = form
-    return render(request,
-                  'login.html',
-                  context)
+    return render(request, 'login.html', context)
 
 
 def logout(request):
@@ -78,7 +76,7 @@ def add_user(request,
             context_instance=RequestContext(request))
     messages.add_message(request, messages.warning,
                          'You should be a super user to add a user')
-    return HttpResponseRedirect('/login/')
+    return HttpResponseRedirect(reverse("login"))
 
 
 def add_user_done(request):
@@ -130,13 +128,14 @@ def change_password(request,
 
                 return HttpResponseRedirect(post_change_redirect)
             else:
-                return render_to_response(template_name, {
-                    'form': form,
-                    'returnUrl': returnUrl,
-                    'title': 'KLP Change Password',
-                    'legend': 'Karnataka Learning Partnership',
-                    'entry': 'Add', },
-                    context_instance=RequestContext(request))
+                context = {'form': form,
+                           'returnUrl': returnUrl,
+                           'title': 'KLP Change Password',
+                           'legend': 'Karnataka Learning Partnership',
+                           'entry': 'Add'}
+                return render(request,
+                              template_name,
+                              context)
         else:
             form = PasswordChangeForm(request.user)
             return render_to_response(template_name, {
@@ -147,7 +146,7 @@ def change_password(request,
                 'entry': 'Add', },
                 context_instance=RequestContext(request))
     else:
-        return HttpResponseRedirect('/login/')
+        return HttpResponseRedirect(reverse("login"))
 
 
 def change_password_done(
