@@ -57,25 +57,22 @@ def add_user(request,
     """ This method is used to create or add new user """
     user = request.user
     if user.is_superuser:
+        context = {
+            'title': 'KLP User',
+            'entry': 'Add'
+        }
+        form = UserCreationFormExtended()
+        context['form'] = form
         if post_change_redirect is None:
             post_change_redirect = reverse('accounts_add_user_done')
         if request.method == 'POST':
             form = UserCreationFormExtended(request.POST)
+            context['form'] = form
             if form.is_valid():
                 form.save()
                 return HttpResponseRedirect(post_change_redirect)
-            else:
-                return render_to_response(template_name, {
-                    'form': form,
-                    'title': 'KLP User',
-                    'entry': 'Add', },
-                    context_instance=RequestContext(request))
-        form = UserCreationFormExtended()
-        return render_to_response(template_name, {
-            'form': form,
-            'title': 'KLP User',
-            'entry': 'Add', },
-            context_instance=RequestContext(request))
+            return render(request, template_name, context)
+        return render(request, template_name, context)
     messages.add_message(request, messages.warning,
                          'You should be a super user to add a user')
     return HttpResponseRedirect('/login/')
