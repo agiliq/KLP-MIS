@@ -18,7 +18,7 @@ class UserCreationFormExtended(UserCreationForm):
             user.save()
         return user
 
-    class Meta:
+    class Meta(UserCreationForm.Meta):
 
         model = User
-        fields = ('username', 'password1', 'password2', 'groups')
+        fields = ('groups',)
