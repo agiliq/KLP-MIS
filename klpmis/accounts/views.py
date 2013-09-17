@@ -84,7 +84,6 @@ def add_user_done(request):
     return render_to_response('accounts/userAction_done.html', {
         'message': 'User Creation Successful',
         'title': 'KLP User',
-        'legend': 'Karnataka Learning Partnership',
         'entry': 'Add', },
         context_instance=RequestContext(request))
 
