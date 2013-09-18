@@ -3,8 +3,7 @@ from django.contrib.auth import logout as django_logout
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, HttpResponse
-from django.shortcuts import render, render_to_response
-from django.template import RequestContext
+from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
@@ -79,11 +78,10 @@ def add_user(request,
 def add_user_done(request):
     """ To Show User Creation done page"""
 
-    return render_to_response('accounts/userAction_done.html', {
-        'message': 'User Creation Successful',
-        'title': 'KLP User',
-        'entry': 'Add', },
-        context_instance=RequestContext(request))
+    context = {'message': 'User Creation Successful',
+               'title': 'KLP User',
+               'entry': 'Add'}
+    return render(request, 'accounts/userAction_done.html', context)
 
 
 def change_password(request,
@@ -131,12 +129,13 @@ def change_password(request,
                               context)
         else:
             form = PasswordChangeForm(request.user)
-            return render_to_response(template_name, {
-                'form': form,
-                'returnUrl': returnUrl,
-                'title': 'KLP Change Password',
-                'entry': 'Add', },
-                context_instance=RequestContext(request))
+            context = {'form': form,
+                       'returnUrl': returnUrl,
+                       'title': 'KLP Change Password',
+                       'entry': 'Add'}
+            return render(request,
+                          template_name,
+                          context)
     else:
         return HttpResponseRedirect(reverse("login"))
 
@@ -156,8 +155,8 @@ def change_password_done(
     else:
         userGroup = user.groups.all()[0].name
         returnUrl = usrUrl[userGroup]
-    return render_to_response(template_name, {
-        'returnUrl': returnUrl,
-        'title': 'KLP Change Password',
-        'entry': 'Add', },
-        context_instance=RequestContext(request))
+    context = {'returnUrl': returnUrl,
+               'title': 'KLP Change Password',
+               'entry': 'Add', }
+    return render(request,
+                  template_name, context)
