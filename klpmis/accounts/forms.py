@@ -12,13 +12,14 @@ class UserCreationFormExtended(UserCreationForm):
         user = super(UserCreationFormExtended, self).save(commit=False)
         user.set_password(self.cleaned_data['password1'])
 
+        # import ipdb; ipdb.set_trace()
         if commit:
             user.save()
             user.groups = self.cleaned_data['groups']
             user.save()
         return user
 
-    class Meta(UserCreationForm.Meta):
+    class Meta():
 
         model = User
-        fields = ('groups',)
+        fields = ('username', 'password1', 'password2', 'groups')
