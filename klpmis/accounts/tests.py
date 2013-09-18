@@ -60,7 +60,9 @@ class TestViewsBasic(TestCase):
         response = self.client.post(reverse('accounts_add_user'),
                                     form_data)
         self.assertEqual(302, response.status_code)
-        self.assertEqual(response['Location'], 'http://testserver/login/')
+        login_url = "http://testserver/accounts/login/"
+        self.assertEqual(response['Location'],
+                         login_url+'?next=/accounts/auth/user/add/')
 
     def test_add_user_with_login(self):
         form_data = {'username': 'test1',

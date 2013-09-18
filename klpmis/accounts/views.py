@@ -8,7 +8,7 @@ from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
-from schools.forms import UserCreationFormExtended
+from .forms import UserCreationFormExtended
 
 
 def login(request):
@@ -55,25 +55,22 @@ def add_user(request,
     """ This method is used to create or add new user """
     user = request.user
     if user.is_superuser:
+        context = {
+            'title': 'KLP User',
+            'entry': 'Add'
+        }
+        form = UserCreationFormExtended()
+        context['form'] = form
         if post_change_redirect is None:
             post_change_redirect = reverse('accounts_add_user_done')
         if request.method == 'POST':
             form = UserCreationFormExtended(request.POST)
+            context['form'] = form
             if form.is_valid():
                 form.save()
                 return HttpResponseRedirect(post_change_redirect)
-            else:
-                return render_to_response(template_name, {
-                    'form': form,
-                    'title': 'KLP User',
-                    'entry': 'Add', },
-                    context_instance=RequestContext(request))
-        form = UserCreationFormExtended()
-        return render_to_response(template_name, {
-            'form': form,
-            'title': 'KLP User',
-            'entry': 'Add', },
-            context_instance=RequestContext(request))
+            return render(request, template_name, context)
+        return render(request, template_name, context)
     messages.add_message(request, messages.warning,
                          'You should be a super user to add a user')
     return HttpResponseRedirect(reverse("login"))
@@ -85,7 +82,6 @@ def add_user_done(request):
     return render_to_response('accounts/userAction_done.html', {
         'message': 'User Creation Successful',
         'title': 'KLP User',
-        'legend': 'Karnataka Learning Partnership',
         'entry': 'Add', },
         context_instance=RequestContext(request))
 
@@ -95,10 +91,8 @@ def change_password(request,
                     post_change_redirect=None):
     """ To Change Password """
 
-    user = request.user  # Get logged in user
-    usrUrl = {'Data Entry Executive': '/home/',
-              'Data Entry Operator': '/home/?respType=filter',
-              'AdminGroup': '/home/?respType=userpermissions'}
+    user = request.user
+    usrUrl = {'Data Entry Executive': '/home/'}
     if user.is_superuser:
         returnUrl = '/home/'
     elif user.is_staff:
@@ -131,7 +125,6 @@ def change_password(request,
                 context = {'form': form,
                            'returnUrl': returnUrl,
                            'title': 'KLP Change Password',
-                           'legend': 'Karnataka Learning Partnership',
                            'entry': 'Add'}
                 return render(request,
                               template_name,
@@ -142,7 +135,6 @@ def change_password(request,
                 'form': form,
                 'returnUrl': returnUrl,
                 'title': 'KLP Change Password',
-                'legend': 'Karnataka Learning Partnership',
                 'entry': 'Add', },
                 context_instance=RequestContext(request))
     else:
@@ -167,6 +159,5 @@ def change_password_done(
     return render_to_response(template_name, {
         'returnUrl': returnUrl,
         'title': 'KLP Change Password',
-        'legend': 'Karnataka Learning Partnership',
         'entry': 'Add', },
         context_instance=RequestContext(request))

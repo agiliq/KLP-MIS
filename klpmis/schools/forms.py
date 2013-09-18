@@ -2,7 +2,6 @@ import datetime
 import psycopg2
 
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
 from django.forms.extras.widgets import SelectDateWidget
 from django.forms import ModelForm
 from django.forms.models import modelformset_factory
@@ -568,25 +567,3 @@ class Answer_Form(ModelForm):
 
     def save(self, commit=True):
         return CustomizeSave(self, Answer_Form)
-
-
-class UserCreationFormExtended(UserCreationForm):
-
-    def __init__(self, *args, **kwargs):
-        super(UserCreationFormExtended, self).__init__(*args, **kwargs)
-        self.fields['groups'].required = True
-
-    def save(self, commit=True):
-        user = super(UserCreationFormExtended, self).save(commit=False)
-        user.set_password(self.cleaned_data['password1'])
-
-        if commit:
-            user.save()
-            user.groups = self.cleaned_data['groups']
-            user.save()
-        return user
-
-    class Meta:
-
-        model = User
-        fields = ('username', 'password1', 'password2', 'groups')
