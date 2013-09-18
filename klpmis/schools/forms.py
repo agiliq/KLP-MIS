@@ -35,7 +35,7 @@ def storeFullhistory(requestparam, data, objid, modelName, action='C'):
                        object_id=objid))
     except:
         revision = 0
-    revision = 0 if revision == 0 else revision+1
+    revision = 0 if revision == 0 else revision + 1
     fh = FullHistory(revision=revision, action=action,
                      content_type_id=content_type_id,
                      object_id=objid, data=data,
@@ -73,11 +73,11 @@ def CustomizeSave(selfObj, Form, commit=True, modelName=None):
         cursor = connection.cursor()
         Query = "SELECT column_default from \
           information_schema.columns where \
-            table_name = 'schools_"+modelName+"' and column_name='id'"
+            table_name = 'schools_" + modelName + "' and column_name='id'"
         cursor.execute(Query)
         Seqcolumn = cursor.fetchone()[0]
-        cursor.execute("select "+Seqcolumn)
-        insertedRow = cursor.fetchone()[0]-1
+        cursor.execute("select " + Seqcolumn)
+        insertedRow = cursor.fetchone()[0] - 1
         cursor.close()
         selfObj.instance = Form.Meta.model.objects.get(id=insertedRow)
         userdetails = {}
@@ -219,8 +219,9 @@ class Child_Form(Relations_Form):
         childpostid = self.cleaned_data.get('id', '')
         relationlist = ['father', 'mother']
         for rel_value in relationlist:
-            relationobj = Relations.objects.filter(relation_type=rel_value.capitalize(),
-                                                   child=childObj).defer('child')
+            relationobj = \
+                Relations.objects.filter(relation_type=rel_value.capitalize(),
+                                         child=childObj).defer('child')
             relationForm = modelformset_factory(relationobj.model,
                                                 form=Relations_Form)
             relationdata = relationdatarequest.POST.copy()
@@ -229,11 +230,14 @@ class Child_Form(Relations_Form):
             except:
                 pass
 
-            if self.cleaned_data[rel_value+'firstname']:
+            if self.cleaned_data[rel_value + 'firstname']:
 
-                relationdata['form-0-first_name'] = self.cleaned_data[rel_value+'firstname']
-                relationdata['form-0-last_name'] = self.cleaned_data[rel_value+'lastname']
-                relationdata['form-0-middle_name'] = self.cleaned_data[rel_value+'middlename']
+                relationdata['form-0-first_name'] = \
+                    self.cleaned_data[rel_value + 'firstname']
+                relationdata['form-0-last_name'] = \
+                    self.cleaned_data[rel_value + 'lastname']
+                relationdata['form-0-middle_name'] = \
+                    self.cleaned_data[rel_value + 'middlename']
                 relationdata['form-0-relation_type'] = rel_value.capitalize()
                 relationdata['form-0-child'] = childObj.id
                 if relationobj:
@@ -255,7 +259,8 @@ class Child_Form(Relations_Form):
                   # Create Student Object With as foreign key
 
                 studentForm = modelformset_factory(Student, form=Student_Form)
-                relationdata['form-0-other_student_id'] = self.cleaned_data['otherId']
+                relationdata['form-0-other_student_id'] = \
+                    self.cleaned_data['otherId']
                 relationdata['form-0-child'] = childObj.id
                 try:
                     studObj = childObj.getStudent()
@@ -264,19 +269,19 @@ class Child_Form(Relations_Form):
                     #self.cleaned_data['otherId']
                 except:
                     pass
-                     #studObj = Student(child=self.instance,
-                     #                   other_student_id=self.cleaned_data['otherId'], active=2)
                 Studform = studentForm(relationdata, relationdatarequest)
                 studObj = Studform.save()
 
                 # Create relation ship with SG for current academic year.
-                studentgroupForm = modelformset_factory(Student_StudentGroupRelation,
-                                                        form=Student_StudentGroupRelation_Form)
+                studentgroupForm = \
+                    modelformset_factory(Student_StudentGroupRelation,
+                                         form=Student_StudentGroupRelation_Form)
                 relationdata['form-0-student_group'] =\
                     relationdatarequest.POST.get('studentgroup')
                 relationdata['form-0-student'] = studObj[0].id
                 relationdata['form-0-academic'] = current_academic().id
-                studgrprelation = studentgroupForm(relationdata, relationdatarequest)
+                studgrprelation = studentgroupForm(relationdata,
+                                                   relationdatarequest)
                 studgrprelation.save()
         return self.instance
 
@@ -291,7 +296,7 @@ class StudentGroup_Form(ModelForm):
     class Meta:
         model = StudentGroup
 
-    def __init__(self,  *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         self.kwargs = kwargs
         super(StudentGroup_Form, self).__init__(*args, **kwargs)
 
@@ -307,10 +312,14 @@ class StudentGroup_Form(ModelForm):
           except:
 
             if self.cleaned_data.get('id','') is None:
-              connection = psycopg2.connect(database=datebase, user=user, password=password)
+              connection = psycopg2.connect(database=datebase,
+                                            user=user,
+                                            password=password)
               tableactive=self.cleaned_data.get('active',2)
               cursor = connection.cursor()
-              Query="SELECT  column_default from information_schema.columns where table_name='schools_studentgroup' and column_name='id'"
+              Query="SELECT  column_default from
+                information_schema.columns where
+                    table_name='schools_studentgroup' and column_name='id'"
               cursor.execute(Query)
               Seqcolumn=cursor.fetchone()[0]
               cursor.execute("select "+Seqcolumn)
@@ -318,7 +327,9 @@ class StudentGroup_Form(ModelForm):
               cursor.close()
               createdObj=StudentGroup.objects.filter(id=insertedRow)
               modelName=createdObj.model._meta.module_name
-              v=storeFullhistory(self.kwargs.get('files','nothing'),self.data,insertedRow,modelName)
+              v=storeFullhistory(self.kwargs.get('files','nothing'),
+                                                 self.data,
+                                                 insertedRow,modelName)
               print createdObj,'CrateObj'
               return createdObj
           '''
@@ -339,7 +350,7 @@ class Student_Form(ModelForm):
 
         model = Student
 
-    def __init__(self,  *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         #self.args=args
         self.kwargs = kwargs
         super(Student_Form, self).__init__(*args, **kwargs)
@@ -356,10 +367,11 @@ class Student_StudentGroupRelation_Form(ModelForm):
 
         model = Student_StudentGroupRelation
 
-    def __init__(self,  *args, **kwargs):
+    def __init__(self, *args, **kwargs):
          #self.args=args
         self.kwargs = kwargs
-        super(Student_StudentGroupRelation_Form, self).__init__(*args, **kwargs)
+        super(Student_StudentGroupRelation_Form,
+              self).__init__(*args, **kwargs)
 
     def save(self, commit=True):
         return CustomizeSave(self, Student_StudentGroupRelation_Form)
@@ -464,7 +476,8 @@ class Question_Form(ModelForm):
             else:
                 score_max = self.cleaned_data.get('score_max', '')
                 if score_min > score_max:
-                    raise forms.ValidationError('Score Min Should be Less than Score Min.')
+                    raise forms.ValidationError('Score \
+                            Min Should be Less than Score Min.')
         return score_min
 
     def clean_score_max(self):
@@ -476,7 +489,8 @@ class Question_Form(ModelForm):
             else:
                 score_min = self.cleaned_data.get('score_min', '')
                 if score_min > score_max:
-                    raise forms.ValidationError('Score Max Should be Grater than Score Min.')
+                    raise forms.ValidationError('Score \
+                            Max Should be Grater than Score Min.')
         return score_max
 
     def clean_grade(self):
