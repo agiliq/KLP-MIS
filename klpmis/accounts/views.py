@@ -145,9 +145,7 @@ def change_password_done(
     """ To Show Password Change done page. """
 
     user = request.user
-    usrUrl = {'Data Entry Executive': '/home/',
-              'Data Entry Operator': '/home/?respType=filter',
-              'AdminGroup': '/home/?respType=userpermissions'}
+    usrUrl = {'Data Entry Executive': '/home/'}
     if user.is_superuser:
         returnUrl = '/home/'
     elif user.is_staff:
