@@ -192,6 +192,7 @@ class Child_Form(Relations_Form):
          self.kwargs=kwargs
          super(Child_Form, self).__init__(*args, **kwargs)
     '''
+
     def clean(self):
         cleaned_data = self.cleaned_data
         first_name = cleaned_data.get("first_name").strip()
@@ -213,7 +214,7 @@ class Child_Form(Relations_Form):
     def save(self, commit=True):
         print(self.errors, 'ERRRRRRRRRRRRRR')
         childObj = CustomizeSave(self, Child_Form)
-        #print self.files,'kwars' ,self.instance.id,dir(self.instance)
+        # print self.files,'kwars' ,self.instance.id,dir(self.instance)
         relationdatarequest = self.files
         childpostid = self.cleaned_data.get('id', '')
         relationlist = ['father', 'mother']
@@ -264,8 +265,8 @@ class Child_Form(Relations_Form):
                 try:
                     studObj = childObj.getStudent()
                     relationdata['form-0-id'] = studObj.id
-                    #studObj.other_student_id = \
-                    #self.cleaned_data['otherId']
+                    # studObj.other_student_id = \
+                    # self.cleaned_data['otherId']
                 except:
                     pass
                 Studform = studentForm(relationdata, relationdatarequest)
@@ -350,7 +351,7 @@ class Student_Form(ModelForm):
         model = Student
 
     def __init__(self, *args, **kwargs):
-        #self.args=args
+        # self.args=args
         self.kwargs = kwargs
         super(Student_Form, self).__init__(*args, **kwargs)
 
@@ -367,7 +368,7 @@ class Student_StudentGroupRelation_Form(ModelForm):
         model = Student_StudentGroupRelation
 
     def __init__(self, *args, **kwargs):
-         #self.args=args
+         # self.args=args
         self.kwargs = kwargs
         super(Student_StudentGroupRelation_Form,
               self).__init__(*args, **kwargs)
@@ -508,6 +509,7 @@ class Question_Form(ModelForm):
 
 class UserAssessmentPermissions_Form(ModelForm):
     #active = forms.IntegerField(initial=2, widget=forms.HiddenInput)
+
     class Meta:
 
         model = UserAssessmentPermissions
@@ -524,6 +526,7 @@ class UserAssessmentPermissions_Form(ModelForm):
 
 class Assessment_StudentGroup_Association_Form(ModelForm):
     #active = forms.IntegerField(initial=2, widget=forms.HiddenInput)
+
     class Meta:
 
         model = Assessment_StudentGroup_Association
@@ -534,6 +537,7 @@ class Assessment_StudentGroup_Association_Form(ModelForm):
 
 class Assessment_Class_Association_Form(ModelForm):
     #active = forms.IntegerField(initial=2, widget=forms.HiddenInput)
+
     class Meta:
         model = Assessment_Class_Association
 
@@ -543,6 +547,7 @@ class Assessment_Class_Association_Form(ModelForm):
 
 class Assessment_Institution_Association_Form(ModelForm):
     #active = forms.IntegerField(initial=2, widget=forms.HiddenInput)
+
     class Meta:
 
         model = Assessment_Institution_Association
@@ -555,6 +560,7 @@ class Answer_Form(ModelForm):
     #current_user = forms.IntegerField(initial=2, widget=forms.HiddenInput)
     #username = forms.CharField(initial=2, widget=forms.HiddenInput)
     #path_info = forms.IntegerField(initial='/', widget=forms.HiddenInput)
+
     class Meta:
 
         model = Answer
