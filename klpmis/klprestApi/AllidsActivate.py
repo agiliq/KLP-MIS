@@ -96,8 +96,6 @@ def KLP_Activation(request):
                 modelDict[model_name1].objects.filter(child__id__in=allids)
         actiondic = {1: 'Deactivated', 2: 'Activated'}
 
-        flag = len(obj1) != 0
-
         if len(obj3) == 0 or len(obj3) != len(allids):
             idslist3 = obj3.values_list('id')
             idlist4 = []
@@ -133,17 +131,18 @@ def KLP_Activation(request):
                 idstr = ','.join(str(v1[0]) for v1 in idlist2)
                 obj2.update(active=actiontype)
 
-                SendingMail(idstr, obj2.model._meta.module_name,actiondic[actiontype])
+                SendingMail(idstr, obj2.model._meta.module_name,
+                            actiondic[actiontype])
                 receiver = settings.REPORTMAIL_RECEIVER
                 receiver = ','.join(str(v1) for v1 in receiver)
                 if not actiondic[actiontype] == "Deactivated":
                     message = \
-                    'A mail will be sent to %s as soon as all the records are activated .' \
-                    % receiver
+                        'A mail will be sent to %s as soon as all the records are activated .' \
+                        % receiver
                 else:
-                     message = \
-                    'A mail will be sent to %s as soon as all the records are deactivated .' \
-                    % receiver
+                    message = \
+                        'A mail will be sent to %s as soon as all the records are deactivated .' \
+                        % receiver
                 resStr = obj2.model._meta.module_name + ' Ids ' + idstr \
                     + ' are Successfully ' + actiondic[actiontype] \
                     + ' .' + message
@@ -169,7 +168,7 @@ def hasChildObj(idlists, model_name1):
         'staff': Staff,
         'class': StudentGroup,
         'center': StudentGroup,
-        }
+    }
 
         # Checking user Permissions
 
@@ -182,8 +181,9 @@ def hasChildObj(idlists, model_name1):
         if model_name1.lower() == 'boundary':
             flag = obj.getChild(obj.boundary_type)
         elif model_name1.lower() in ['class', 'studentgroup']:
-            if Student_StudentGroupRelation.objects.filter(student_group__id=k,
-                    active=2, academic=current_academic()).count():
+            if Student_StudentGroupRelation.objects.filter(
+                student_group__id=k, active=2,
+                    academic=current_academic()).count():
                 flag = True
             else:
                 flag = False
@@ -196,18 +196,16 @@ def hasChildObj(idlists, model_name1):
     return haschildlist
 
 
-def SendingMail(idlist, mname,atype):
+def SendingMail(idlist, mname, atype):
     inst_liststr = idlist
     sender = settings.REPORTMAIL_SENDER
     receiver = settings.REPORTMAIL_RECEIVER
     if atype == "Deactivated":
         subject = 'Deactivated list'
-        fullmsg = 'Following %s Ids are Deactivated  :  \n %s ' % (mname,
-            inst_liststr)
+        fullmsg = 'Following %s Ids are Deactivated  :  \n %s ' % (mname, inst_liststr)
     else:
         subject = 'Activated list'
-        fullmsg = 'Following %s Ids are Activated  :  \n %s ' % (mname,
-            inst_liststr)
+        fullmsg = 'Following %s Ids are Activated  :  \n %s ' % (mname, inst_liststr)
     send_mail(subject, fullmsg, sender, receiver)
 
 
