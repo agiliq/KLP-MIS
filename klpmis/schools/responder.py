@@ -1,35 +1,31 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 """
-Data format classes ("responders") that can be plugged 
+Data format classes ("responders") that can be plugged
 into model_resource.ModelResource and determine how
 the objects of a ModelResource instance are rendered
 (e.g. serialized to XML, rendered by templates, ...).
 """
-
-from django.core import serializers
-from django.core.handlers.wsgi import STATUS_CODE_TEXT
-from django.core.paginator import QuerySetPaginator, InvalidPage
-
+import datetime
 # the correct paginator for Model objects is the QuerySetPaginator,
 # not the Paginator! (see Django doc)
-
+from django.core.paginator import QuerySetPaginator, InvalidPage
+from django.core import serializers
+from django.core.handlers.wsgi import STATUS_CODE_TEXT
 from django.core.xheaders import populate_xheaders
 from django import forms
 from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.forms.util import ErrorDict
 from django.shortcuts import render_to_response
 from django.template import loader, RequestContext
-#from django.utils import simplejson
-import json
 from django.utils.xmlutils import SimplerXMLGenerator
-#from django.views.generic.simple import direct_to_template
 from django.views.generic import TemplateView
 from django.forms.models import modelformset_factory
+from django.db import transaction
+from django.conf import settings
+
 from schools.models import *
 from schools.forms import *
-import datetime
-from django.db import transaction
 
 
 class SerializeResponder(object):
@@ -45,13 +41,13 @@ class SerializeResponder(object):
         mimetype=None,
         paginate_by=None,
         allow_empty=False,
-        ):
+    ):
         """
         format:
             may be every format that works with Django's serializer
             framework. By default: xml, python, json, (yaml).
         mimetype:
-            if the default None is not changed, any HttpResponse calls 
+            if the default None is not changed, any HttpResponse calls
             use settings.DEFAULT_CONTENT_TYPE and settings.DEFAULT_CHARSET
         paginate_by:
             Number of elements per page. Default: All elements.
@@ -75,7 +71,7 @@ class SerializeResponder(object):
         for obj in list(object_list):
             for field in obj._meta.fields:
                 if not field.name in self.expose_fields \
-                    and field.serialize:
+                        and field.serialize:
                     field.serialize = False
                     hidden_fields.append(field)
         response = serializers.serialize(self.format, object_list)
@@ -98,7 +94,7 @@ class SerializeResponder(object):
         request,
         status_code,
         error_dict=None,
-        ):
+    ):
         """
         Handles errors in a RESTful way.
         - appropriate status code
@@ -112,10 +108,7 @@ class SerializeResponder(object):
         response.write('%d %s' % (status_code,
                        STATUS_CODE_TEXT[status_code]))
         if error_dict:
-            response.write('''
-
-Errors:
-''')
+            response.write('''Errors:''')
             response.write(error_dict.as_text())
         response.status_code = status_code
         return response
@@ -125,7 +118,7 @@ Errors:
         request,
         queryset,
         page=None,
-        ):
+    ):
         """
         Renders a list of model objects to HttpResponse.
         """
@@ -163,7 +156,7 @@ class JSONResponder(SerializeResponder):
         request,
         status_code,
         error_dict=None,
-        ):
+    ):
         """
         Return JSON error response that includes a human readable error
         message, application-specific errors and a machine readable
@@ -198,14 +191,12 @@ class XMLResponder(SerializeResponder):
         request,
         status_code,
         error_dict=None,
-        ):
+    ):
         """
         Return XML error response that includes a human readable error
         message, application-specific errors and a machine readable
         status code.
         """
-
-        from django.conf import settings
         if not error_dict:
             error_dict = ErrorDict()
         response = HttpResponse(mimetype=self.mimetype)
@@ -215,7 +206,7 @@ class XMLResponder(SerializeResponder):
         xml.startElement('django-error', {})
         xml.addQuickElement(name='error-message', contents='%d %s'
                             % (status_code,
-                            STATUS_CODE_TEXT[status_code]))
+                               STATUS_CODE_TEXT[status_code]))
         xml.addQuickElement(name='status-code',
                             contents=str(status_code))
         if error_dict:
@@ -223,7 +214,7 @@ class XMLResponder(SerializeResponder):
             for (model_field, errors) in error_dict.items():
                 for error in errors:
                     xml.addQuickElement(name=model_field,
-                            contents=error)
+                                        contents=error)
             xml.endElement('model-errors')
         xml.endElement('django-error')
         xml.endDocument()
@@ -247,11 +238,11 @@ class TemplateResponder(object):
         context_processors=None,
         template_object_name='object',
         mimetype=None,
-        ):
+    ):
 
         self.template_dir = template_dir
         self.paginate_by = paginate_by
-       
+
         self.template_loader = template_loader
         if not extra_context:
             extra_context = {}
@@ -259,8 +250,7 @@ class TemplateResponder(object):
             if callable(value):
                 extra_context[key] = value()
         self.extra_context = extra_context
-       
-       
+
         self.allow_empty = allow_empty
         self.context_processors = context_processors
         self.template_object_name = template_object_name
@@ -274,21 +264,16 @@ class TemplateResponder(object):
 
         for field in obj._meta.fields:
             if not field.name in allowed_fields and not field.name \
-                + '_id' in allowed_fields:
+                    + '_id' in allowed_fields:
                 obj.__dict__.pop(field.name)
 
-    def list(
-        self,
-        request,
-        queryset,
-        page=None,
-        ):
+    def list(self, request, queryset, page=None):
         """
         Renders a list of model objects to HttpResponse.
         """
 
         template_name = '%s/%s_list.html' % (self.template_dir,
-                queryset.model._meta.module_name)
+                                             queryset.model._meta.module_name)
         if self.paginate_by:
             paginator = QuerySetPaginator(queryset, self.paginate_by)
             if not page:
@@ -315,10 +300,10 @@ class TemplateResponder(object):
                 'first_on_page': current_page.start_index(),
                 'pages': paginator.num_pages,
                 'hits': paginator.count,
-                }, self.context_processors)
+            }, self.context_processors)
         else:
             object_list = queryset
-            c = RequestContext(request, {'%s_list' \
+            c = RequestContext(request, {'%s_list'
                                % self.template_object_name: object_list,
                                'is_paginated': False},
                                self.context_processors)
@@ -327,11 +312,10 @@ class TemplateResponder(object):
 
         # Hide unexposed fields
 
-       
         for obj in object_list:
             self._hide_unexposed_fields(obj, self.expose_fields)
         c.update(self.extra_context)
-       
+
         t = self.template_loader.get_template(template_name)
         return HttpResponse(t.render(c), mimetype=self.mimetype)
 
@@ -341,7 +325,7 @@ class TemplateResponder(object):
         """
 
         template_name = '%s/%s_detail.html' % (self.template_dir,
-                elem._meta.module_name)
+                                               elem._meta.module_name)
         t = self.template_loader.get_template(template_name)
         c = RequestContext(request, {self.template_object_name: elem},
                            self.context_processors)
@@ -360,7 +344,7 @@ class TemplateResponder(object):
         request,
         status_code,
         error_dict=None,
-        ):
+    ):
         """
         Renders error template (template name: error status code).
         """
@@ -368,9 +352,9 @@ class TemplateResponder(object):
         if not error_dict:
             error_dict = ErrorDict()
         response = TemplateView.as_view(request, template='%s/%s.html'
-                % (self.template_dir, str(status_code)),
-                extra_context={'errors': error_dict},
-                mimetype=self.mimetype)
+                                        % (self.template_dir, str(status_code)),
+                                        extra_context={'errors': error_dict},
+                                        mimetype=self.mimetype)
         response.status_code = status_code
         return response
 
@@ -381,14 +365,16 @@ class TemplateResponder(object):
         request,
         queryset,
         form_class,
-        ):
+    ):
         """  Render form for creation of new collection entry. """
 
+        # get model formset factory based on model and form
         ResourceForm = modelformset_factory(queryset.model,
-                form=form_class)  # get model formset factory based on model and form
+                                            form=form_class)
 
-        self.extra_context['showsuccess'] = False  # Pass showsuccess True or false for message
-        if request.POST.get('replaceTrue', None) == None:
+        # Pass showsuccess True or false for message
+        self.extra_context['showsuccess'] = False
+        if request.POST.get('replaceTrue', None) is None:
             self.extra_context['replaceTrue'] = True
         else:
             self.extra_context['replaceTrue'] = False
@@ -396,13 +382,12 @@ class TemplateResponder(object):
         DefaultAnswer = True
         if queryset.model._meta.module_name.lower() == 'question':
             Assobj = \
-                Assessment.objects.get(id=self.extra_context['referKey'
-                    ])
-       
+                Assessment.objects.get(id=self.extra_context['referKey'])
+
             if Assobj.getAssessmentStatus and Assobj.flexi_assessment:
                 answerAddable = True
         self.extra_context['answerAddable'] = answerAddable
-       
+
         if request.POST:
 
         # If request method is post, post data
@@ -411,11 +396,12 @@ class TemplateResponder(object):
 
             RelationValid = True
             IValid = True
-       
+
             new_data = request.POST.copy()
             modulename = queryset.model._meta.module_name
 
-        # Check if current model is child then pass ChildTrue to True else false
+        # Check if current model is child then pass ChildTrue to True else
+        # false
 
             ChildTrue = modulename == 'child' and True or False
             AssValid = True
@@ -430,20 +416,19 @@ class TemplateResponder(object):
                 '''
                 # IValid=False
 
-       
             if form_class == Assessment_Form:
-       
+
                 if request.POST.get('form-0-flexi_assessment'):
-       
+
                     if not request.POST.get('form-0-primary_field_name'
-                            ) \
+                                            ) \
                         or not request.POST.get('form-0-primary_field_type'
-                            ):
+                                                ):
 
                         AssValid = False
             if form_class == Question_Form and answerAddable:
                 if request.POST.get('defaultanswer', 'a').lower() \
-                    not in ['uk', 'ab']:
+                        not in ['uk', 'ab']:
                     DefaultAnswer = False
             if request.POST.get('defaultanswer'):
                 self.extra_context['defaultanswer'] = \
@@ -454,17 +439,17 @@ class TemplateResponder(object):
 
                 if request.POST.get('form-0-address') \
                     and request.POST.get('form-0-languages') \
-                    and request.POST.get('form-0-name'):
+                        and request.POST.get('form-0-name'):
                     addressObj = Institution_address(
                         address=request.POST.get('form-0-address'),
                         area=request.POST.get('form-0-area'),
                         pincode=request.POST.get('form-0-pincode'),
                         instidentification=request.POST.get('form-0-instidentification'
-                                ),
+                                                            ),
                         landmark=request.POST.get('form-0-landmark'),
                         route_information=request.POST.get('form-0-route_information'
-                                ),
-                        )
+                                                           ),
+                    )
                     addressObj.save()
                     new_data['form-0-inst_address'] = addressObj.id
                     IValid = True
@@ -474,7 +459,7 @@ class TemplateResponder(object):
             Valid = form.is_valid()  # Validate form
             qvalid = True
             if Valid and IValid and qvalid and AssValid \
-                and DefaultAnswer:  # and RelationValid:
+                    and DefaultAnswer:  # and RelationValid:
 
               # If From is valid then save data
 
@@ -491,25 +476,25 @@ class TemplateResponder(object):
                     else:
 
                         addressObj.delete()
-       
+
                     boundaryObj = \
                         Boundary.objects.get(pk=request.POST.get('form-0-boundary'
-                            ))
+                                                                 ))
                     userob = User.objects.filter(id=request.user.id)[0]
                     userob.set_perms(['Acess'], obj)
-       
-                        boundaryObj.boundary_type.boundary_type.lower()
+
+                    boundaryObj.boundary_type.boundary_type.lower()
                     if boundaryObj.boundary_category.boundary_category.lower() \
                         == 'circle' \
                         and boundaryObj.boundary_type.boundary_type.lower() \
-                        in ['anganwadi', 'preschool']:
+                            in ['anganwadi', 'preschool']:
 
-                    # if boundary category is circle and boundary type is anganwadi create a class with name Anganwadi Class
+                    # if boundary category is circle and boundary type is
+                    # anganwadi create a class with name Anganwadi Class
 
-       
                         newClass = StudentGroup(name='Anganwadi Class',
-                                active=2, institution_id=obj.id,
-                                group_type='Class')
+                                                active=2, institution_id=obj.id,
+                                                group_type='Class')
                         newClass.save()
                 elif form_class == Staff_Form:
 
@@ -520,9 +505,11 @@ class TemplateResponder(object):
                         request.POST.getlist('form-0-student_group')
                     for clas in classes:
                         studGrupObj = StudentGroup.objects.get(pk=clas)
-                        relObj = Staff_StudentGroupRelation(staff=obj,
-                                student_group=studGrupObj,
-                                academic=current_academic(), active=2)
+                        relObj = \
+                            Staff_StudentGroupRelation(staff=obj,
+                                                       student_group=studGrupObj,
+                                                       academic=current_academic(),
+                                                       active=2)
                         relObj.save()
                 elif modulename == 'studentgroup':
                     grouptype = request.POST.get('form-0-group_type')
@@ -531,8 +518,8 @@ class TemplateResponder(object):
                     section = request.POST.get('form-0-section')
                     name = request.POST.get('form-0-name')
                     obj = StudentGroup(group_type=grouptype,
-                            active=active, institution_id=instutionid,
-                            section=section, name=name)
+                                       active=active, institution_id=instutionid,
+                                       section=section, name=name)
                     obj.save()
                 elif modulename == 'child':
                     firstname = request.POST.get('form-0-first_name')
@@ -542,9 +529,9 @@ class TemplateResponder(object):
                     mt = request.POST.get('form-0-mt')
                     gender = request.POST.get('form-0-gender')
                     dob = \
-                        datetime.date(int(request.POST.get('form-0-dob_year'
-                            )), int(request.POST.get('form-0-dob_month'
-                            )), int(request.POST.get('form-0-dob_day')))
+                        datetime.date(int(request.POST.get('form-0-dob_year')),
+                                      int(request.POST.get('form-0-dob_month')),
+                                      int(request.POST.get('form-0-dob_day')))
                     obj = Child(
                         first_name=firstname,
                         last_name=lastname,
@@ -553,14 +540,14 @@ class TemplateResponder(object):
                         mt_id=mt,
                         gender=gender,
                         dob=dob,
-                        )
+                    )
                     obj.save()
                 else:
 
                   # else save data
 
                     obj = form.save()[0]
-       
+
                 if modulename == 'child':
 
                     # If current model is child save relations data.
@@ -572,29 +559,28 @@ class TemplateResponder(object):
                         'Mother-LastName': 'form-0-motherlastname',
                         'Father-MiddleName': 'form-0-fathermiddlename',
                         'Father-LastName': 'form-0-fatherlastname',
-                        }
+                    }
                     for (rel_type, rel_value) in relation.iteritems():
                         if request.POST[rel_type]:
                             relation = \
                                 Relations(relation_type=rel_value,
-                                    first_name=request.POST[rel_type],
-                                    middle_name=request.POST[names[rel_value
-                                    + '-MiddleName']],
-                                    last_name=request.POST[names[rel_value
-                                    + '-LastName']], child=obj)
+                                          first_name=request.POST[rel_type],
+                                          middle_name=request.POST[names[rel_value
+                                          + '-MiddleName']],
+                                          last_name=request.POST[names[rel_value
+                                          + '-LastName']], child=obj)
                             relation.save()
                 if modulename == 'question':
 
                     # If current model is child save relations data.
 
-                    defaultanswer = request.POST.get('defaultanswer', ''
-                            )
+                    defaultanswer = request.POST.get('defaultanswer', '')
                     if Assobj.flexi_assessment:
                         Question_List = \
                             Question.objects.filter(assessment=Assobj)
                         AnsObjs = \
-                            Answer.objects.filter(question__in=Question_List).distinct('flexi_data'
-                                )
+                            Answer.objects.filter(
+                                question__in=Question_List).distinct('flexi_data')
                         answerStatus = -99999
                         if defaultanswer.lower() == 'uk':
                             answerStatus = -1
@@ -605,9 +591,11 @@ class TemplateResponder(object):
                             AnsObj.answer_score = None
                             AnsObj.anserGrade = None
                             AnsObj.save()
-       
-                buttonType = str(self.extra_context['buttonType'])  # get button type
-                self.extra_context['showsuccess'] = True  # make showsuccess is True
+
+                # get button type
+                buttonType = str(self.extra_context['buttonType'])
+                # make showsuccess is True
+                self.extra_context['showsuccess'] = True
 
                 if buttonType == 'save':
 
@@ -625,75 +613,81 @@ class TemplateResponder(object):
 
                     # Create Student Object With as foreign key
 
-                            student = Student(child=obj,
-                                    other_student_id=request.POST.get('form-0-otherId'
-                                    ), active=2)
+                            student = \
+                                Student(child=obj,
+                                        other_student_id=request.POST.get(
+                                            'form-0-otherId'), active=2)
                             student.save()
 
                     # Create relation ship with SG for current academic year.
 
                             std_stdgrp_relation = \
-                                Student_StudentGroupRelation(student=student,
-                                    student_group=self.extra_context['studentgroup'
-                                    ], academic=current_academic(),
+                                Student_StudentGroupRelation(
+                                    student=student,
+                                    student_group=self.extra_context[
+                                        'studentgroup'],
+                                    academic=current_academic(),
                                     active=2)
 
                             std_stdgrp_relation.save()
                             totallengthstudent = \
-                                Student_StudentGroupRelation.objects.filter(student_group=self.extra_context['studentgroup'
-                                    ], academic=current_academic(),
+                                Student_StudentGroupRelation.objects.filter(
+                                    student_group=self.extra_context[
+                                        'studentgroup'],
+                                    academic=current_academic(),
                                     active=2).count()
-                            if self.extra_context['mapStudent'] in [1,
-                                    '1']:
+                            if self.extra_context['mapStudent'] in [1, '1']:
 
-                        # mapstudent has value 1 add row in the assessment data entry screen.
+                        # mapstudent has value 1 add row in the assessment data
+                        # entry screen.
 
                                 assessmentObj = \
-                                    Assessment.objects.get(pk=self.extra_context['assessment_id'
-                                        ])
+                                    Assessment.objects.get(
+                                        pk=self.extra_context['assessment_id'])
                                 questions_list = \
-                                    Question.objects.filter(assessment=assessmentObj,
+                                    Question.objects.filter(
+                                        assessment=assessmentObj,
                                         active=2)
                                 entryStr = \
                                     '''<tr class='KLP_txt_cen'><td><form onsubmit='return false;' id='id_Student_%s' name='student_%s' class="validForm"><div style="display: none;"><input type="hidden" value="%s" name="csrfmiddlewaretoken"></div><input type='hidden' value='%s' name='programId'><input type='hidden' value='%s' name='assessmentId'><input type='hidden' value='%s' name='student'><input type='hidden' value='%s' name='student_groupId'><input type="hidden" name="formcounter" id="formcounter" value="%s"><table><tbody><tr>''' \
                                     % (
-                                    student.id,
-                                    student.id,
-                                    request.META.get('CSRF_COOKIE',
-        None),
-                                    assessmentObj.programme.id,
-                                    self.extra_context['assessment_id'
-        ],
-                                    student.id,
-                                    self.extra_context['studentgroup_id'
-        ],
-                                    totallengthstudent,
+                                        student.id,
+                                        student.id,
+                                        request.META.get('CSRF_COOKIE',
+                                                         None),
+                                        assessmentObj.programme.id,
+                                        self.extra_context['assessment_id'
+                                                           ],
+                                        student.id,
+                                        self.extra_context['studentgroup_id'
+                                                           ],
+                                        totallengthstudent,
                                     )
                                 for question in questions_list:
                                     if question.question_type == 1:
                                         entryStr = entryStr \
     + '''<td class='KLP_td_height'><span style="color:#736F6E;">%s</span><br/><input type='text' class='required digits' size='3' value='' id='id_student_%s_%s' name='student_%s_%s_%s' tabindex='1' min="%s" max="%s"></td>''' \
-    % (
-                                            question.order,
-                                            student.id,
-                                            question.id,
-                                            student.id,
-                                            question.id,
-                                            totallengthstudent,
-                                            question.score_min,
-                                            question.score_max,
+                                            % (
+                                                question.order,
+                                                student.id,
+                                                question.id,
+                                                student.id,
+                                                question.id,
+                                                totallengthstudent,
+                                                question.score_min,
+                                                question.score_max,
                                             )
                                     else:
                                         entryStr = entryStr \
     + '''<td class='KLP_td_height'><span style="color:#736F6E;">%s</span><br/><input type='text' class='required' size='3' value='' id='id_student_%s_%s' name='student_%s_%s_%s' tabindex='1' isinGrades="%s"></td>''' \
-    % (
-                                            question.order,
-                                            student.id,
-                                            question.id,
-                                            student.id,
-                                            question.id,
-                                            totallengthstudent,
-                                            question.grade,
+                                            % (
+                                                question.order,
+                                                student.id,
+                                                question.id,
+                                                student.id,
+                                                question.id,
+                                                totallengthstudent,
+                                                question.grade,
                                             )
                                 entryStr = entryStr \
                                     + '''<td class='KLP_td_height'> <input type='submit' value='submit' formname='id_Student_%s' url='/answer/data/entry/' tabindex='1'><script>$().ready(function() {KLP_validateScript("id_Student_%s");});</script></td></tr></tbody></table></form></td></tr>''' \
@@ -701,54 +695,59 @@ class TemplateResponder(object):
                                 detailStr = \
                                     '''<tr class='KLP_txt_cen'><td><table><tr><td class='KLP_td_width'>%s</td><td class='KLP_td_width'><span class='blue' title='Father: %s, Mother: %s, Gender: %s, MT: %s, DOB: %s'>%s&nbsp;%s</span><span class='KLP_Form_status' id='id_Student_%s_status'>Form Status</span></td></tr></table></td></tr>''' \
                                     % (
-                                    student.id,
-                                    request.POST['form-0-fatherfirstname'
-        ],
-                                    request.POST['form-0-motherfirstname'
-        ],
-                                    student.child.gender,
-                                    student.child.mt,
-                                    student.child.dob.strftime('%d-%m-%Y'
-        ),
-                                    student.child.first_name,
-                                    student.child.last_name,
-                                    student.id,
+                                        student.id,
+                                        request.POST['form-0-fatherfirstname'
+                                                     ],
+                                        request.POST['form-0-motherfirstname'
+                                                     ],
+                                        student.child.gender,
+                                        student.child.mt,
+                                        student.child.dob.strftime('%d-%m-%Y'
+                                                                   ),
+                                        student.child.first_name,
+                                        student.child.last_name,
+                                        student.id,
                                     )
                                 mapStudenStr = {'detailStr': detailStr,
-                                        'ansEntryStr': entryStr}
-                                return HttpResponse(simplejson.dumps(mapStudenStr),
-                                        content_type='application/json; charset=utf-8'
-                                        )
+                                                'ansEntryStr': entryStr}
+                                return HttpResponse(
+                                    simplejson.dumps(mapStudenStr),
+                                    content_type='application/json; charset=utf-8'
+                                )
 
                 # Show detail about newly create Object........
 
                     template_name = '%s/%s_detail.html' \
                         % (self.template_dir, modulename)
                     response = render_to_response(template_name,
-                            respDict,
-                            context_instance=RequestContext(request))
+                                                  respDict,
+                                                  context_instance=RequestContext(request))
                     return response
                 elif buttonType == 'save and continue':
 
-                        # If buttonType is save and continue show edit form for the object
+                        # If buttonType is save and continue show edit form for
+                        # the object
 
                     elem = \
-                        queryset.model.objects.get(**{queryset.model._meta.pk.name: obj.id})
+                        queryset.model.objects.get(
+                            **{queryset.model._meta.pk.name: obj.id})
                     ResourceForm = modelformset_factory(queryset.model,
-                            extra=0)
+                                                        extra=0)
                     form = \
-                        ResourceForm(queryset=queryset.model.objects.filter(id=obj.id))
-                    template_name = '%s/%s_form.html' % ('edittemplates'
-                            , modulename)
+                        ResourceForm(
+                            queryset=queryset.model.objects.filter(id=obj.id))
+                    template_name = '%s/%s_form.html' % (
+                        'edittemplates',
+                        modulename)
                     return render_to_response(template_name, {
                         'form': form,
                         'update': True,
                         self.template_object_name: elem,
                         'extra_context': self.extra_context,
-                        }, context_instance=RequestContext(request))
+                    }, context_instance=RequestContext(request))
                 elif buttonType == 'save and add another':
 
-                # # If buttonType is save and add another show new entry form
+                # If buttonType is save and add another show new entry form
 
                     self.extra_context['prevousId'] = obj.id
                     if form_class == Question_Form:
@@ -757,14 +756,14 @@ class TemplateResponder(object):
 
                         self.extra_context['order'] = \
                             Question.objects.filter(assessment__id=self.extra_context['referKey'
-                                ]).count() + 1
+                                                                                      ]).count() + 1
 
                     form = \
                         ResourceForm(queryset=queryset.model.objects.none())
                 else:
                     if form_class in [Institution_Category_Form,
-                            Moi_Type_Form, Institution_Management_Form,
-                            Assessment_Form]:
+                                      Moi_Type_Form, Institution_Management_Form,
+                                      Assessment_Form]:
                         response = \
                             '<input type=hidden id=success_status size=15 value=True /><input type=hidden value=%s id=obj_id />' \
                             % obj.id
@@ -780,16 +779,16 @@ class TemplateResponder(object):
                         form.errors[0]['defaultanswer'] = \
                             ['The Field is required.']
                     elif request.POST.get('defaultanswer', 'a').lower() \
-                        not in ['uk', 'ab']:
+                            not in ['uk', 'ab']:
                         form.errors[0]['defaultanswer'] = \
                             ['Please enter AB/UK']
                 if not AssValid:
                     if not request.POST.get('form-0-primary_field_name'
-                            ):
+                                            ):
                         form.errors[0]['primary_field_name'] = \
                             ['The Field is required.']
                     if not request.POST.get('form-0-primary_field_type'
-                            ):
+                                            ):
                         form.errors[0]['primary_field_type'] = \
                             ['The Field is required.']
 
@@ -812,11 +811,11 @@ class TemplateResponder(object):
                     self.extra_context['form-0-otherId'] = \
                         request.POST.get('form-0-otherId')
                 template_name = '%s/%s_form.html' % (self.template_dir,
-                        queryset.model._meta.module_name)
+                                                     queryset.model._meta.module_name)
                 response = render_to_response(template_name,
-                        {'form': form,
-                        'extra_context': self.extra_context},
-                        context_instance=RequestContext(request))
+                                              {'form': form,
+                                               'extra_context': self.extra_context},
+                                              context_instance=RequestContext(request))
                 return response
         else:
 
@@ -824,11 +823,9 @@ class TemplateResponder(object):
 
             form = ResourceForm(queryset=queryset.model.objects.none())
 
-       
     # Show the form
-
         template_name = '%s/%s_form.html' % (self.template_dir,
-                queryset.model._meta.module_name)
+                                             queryset.model._meta.module_name)
         return render_to_response(template_name, {'form': form,
                                   'extra_context': self.extra_context},
                                   context_instance=RequestContext(request))
@@ -839,31 +836,33 @@ class TemplateResponder(object):
         pk,
         queryset,
         form_class,
-        ):
+    ):
         """ Render edit form for single entry."""
 
-        elem = queryset.get(**{queryset.model._meta.pk.name: pk})  # get object based on model and pk
+        # get object based on model and pk
+        elem = queryset.get(**{queryset.model._meta.pk.name: pk})
         ResourceForm = modelformset_factory(queryset.model,
-                form=form_class, extra=0)  # get model formset factory based on model and form
-        self.extra_context['showsuccess'] = False  # Pass showsuccess True or false for message
-        if request.POST.get('replaceTrue', None) == None:
+                                            form=form_class, extra=0)  # get model formset factory based on model and form
+        # Pass showsuccess True or false for message
+        self.extra_context['showsuccess'] = False
+        if request.POST.get('replaceTrue', None) is None:
             self.extra_context['replaceTrue'] = True
         else:
             self.extra_context['replaceTrue'] = False
-       
+
         if request.POST:
 
         # If request method is post, post data for object
         # form = ResourceForm(request.POST, queryset=queryset.model.objects.filter(pk=pk), )
         # Valid=form.is_valid()  # Validate form
-       
 
             RelationValid = True
             IValid = True
             new_data = request.POST.copy()
             modelName = queryset.model._meta.module_name
 
-        # Check if current model is child then pass ChildTrue to True else false
+        # Check if current model is child then pass ChildTrue to True else
+        # false
 
             ChildTrue = modelName == 'child' and True or False
             if ChildTrue:
@@ -872,39 +871,40 @@ class TemplateResponder(object):
 
                 if not (request.POST.get('form-0-fatherfirstname', '')
                         or request.POST.get('form-0-motherfirstname', ''
-                        )):
+                                            )):
                     RelationValid = False
                     IValid = False
-       
+
             AssValid = True
             if form_class == Assessment_Form:
-       
+
                 if request.POST.get('form-0-flexi_assessment'):
-       
+
                     if not request.POST.get('form-0-primary_field_name'
-                            ) \
+                                            ) \
                         or not request.POST.get('form-0-primary_field_type'
-                            ):
+                                                ):
 
                         AssValid = False
             if modelName == 'institution':
 
-            # If Institution Check for address information and if it there update data
+            # If Institution Check for address information and if it there
+            # update data
 
                 if request.POST.get('form-0-address') \
                     and request.POST.get('form-0-languages') \
-                    and request.POST.get('form-0-name'):
+                        and request.POST.get('form-0-name'):
                     addressObj = elem.inst_address
                     if addressObj:
                         addressObj.address = \
                             request.POST.get('form-0-address')
                         addressObj.area = request.POST.get('form-0-area'
-                                )
+                                                           )
                         addressObj.pincode = \
                             request.POST.get('form-0-pincode')
                         addressObj.instidentification = \
                             request.POST.get('form-0-instidentification'
-                                )
+                                             )
                         addressObj.landmark = \
                             request.POST.get('form-0-landmark')
                         addressObj.route_information = \
@@ -916,12 +916,12 @@ class TemplateResponder(object):
                             area=request.POST.get('form-0-area'),
                             pincode=request.POST.get('form-0-pincode'),
                             instidentification=request.POST.get('form-0-instidentification'
-                                    ),
+                                                                ),
                             landmark=request.POST.get('form-0-landmark'
-                                    ),
+                                                      ),
                             route_information=request.POST.get('form-0-route_information'
-                                    ),
-                            )
+                                                               ),
+                        )
                         addressObj.save()
                     new_data['form-0-inst_address'] = addressObj.id
                     IValid = True
@@ -934,12 +934,10 @@ class TemplateResponder(object):
             Valid = form.is_valid()  # Validate form
 
             if Valid and IValid and RelationValid and AssValid:
-       
 
             # If From is valid then update data
-
                 obj1 = form.save()
-       
+
                 try:
                     obj = obj1[0]
                 except:
@@ -960,54 +958,62 @@ class TemplateResponder(object):
                         'Mother-LastName': 'form-0-motherlastname',
                         'Father-MiddleName': 'form-0-fathermiddlename',
                         'Father-LastName': 'form-0-fatherlastname',
-                        }
+                    }
                     for (rel_type, rel_value) in relation.iteritems():
 
                         if request.POST[rel_type]:
                             relation = \
-                                Relations.objects.filter(relation_type=rel_value,
+                                Relations.objects.filter(
+                                    relation_type=rel_value,
                                     child=obj)
 
                             if relation:
 
                                 rel = \
-                                    relation.update(first_name=request.POST[rel_type],
+                                    relation.update(
+                                        first_name=request.POST[rel_type],
                                         middle_name=request.POST[names[rel_value
-                                        + '-MiddleName']],
+                                                                       + '-MiddleName']],
                                         last_name=request.POST[names[rel_value
-                                        + '-LastName']])
+                                                                     + '-LastName']])
                             else:
 
                                 relation = \
                                     Relations(relation_type=rel_value,
-                                        first_name=request.POST[rel_type],
-                                        middle_name=request.POST[names[rel_value
-                                        + '-MiddleName']],
-                                        last_name=request.POST[names[rel_value
-                                        + '-LastName']], child=obj)
+                                              first_name=request.POST[
+                                                  rel_type],
+                                              middle_name=request.POST[names[rel_value
+                                                                       + '-MiddleName']],
+                                              last_name=request.POST[names[rel_value
+                                                                     + '-LastName']], child=obj)
                                 relation.save()
                         else:
 
                             relation = \
-                                Relations.objects.filter(relation_type=rel_value,
+                                Relations.objects.filter(
+                                    relation_type=rel_value,
                                     child=obj).delete()
                 elif modelName == 'staff':
 
                 # If model name is staff update Sg classes
 
-                    mappedClasses = elem.getAssigendClasses()  # get already assigned classes
+                    # get already assigned classes
+                    mappedClasses = elem.getAssigendClasses()
                     mapClasIds = []
                     classes = \
-                        request.POST.getlist('form-0-student_group')  # get newly assigned classes
+                        request.POST.getlist(
+                            'form-0-student_group')  # get newly assigned classes
                     newclasses = [int(i) for i in classes]
                     for mapClas in mappedClasses:
                         mapClasIds.append(mapClas.id)
                         if mapClas.id not in newclasses:
 
-                        # if already assigned class not in newly assigned clasess change relation by changing active state.
+                        # if already assigned class not in newly assigned
+                        # clasess change relation by changing active state.
 
                             staff_StudentGroup = \
-                                Staff_StudentGroupRelation.objects.filter(staff__id=pk,
+                                Staff_StudentGroupRelation.objects.filter(
+                                    staff__id=pk,
                                     student_group=mapClas,
                                     academic=current_academic())[0]
                             staff_StudentGroup.active = 1
@@ -1016,11 +1022,13 @@ class TemplateResponder(object):
                     for clas in newclasses:
                         if clas not in mapClasIds:
 
-                        # if newly assigned class not in already assigned class create relation ship with SG.
+                        # if newly assigned class not in already assigned class
+                        # create relation ship with SG.
 
                             clasObj = StudentGroup.objects.get(pk=clas)
                             sobj = \
-                                Staff_StudentGroupRelation.objects.filter(staff__id=pk,
+                                Staff_StudentGroupRelation.objects.filter(
+                                    staff__id=pk,
                                     student_group=clasObj,
                                     academic=current_academic())
                             if sobj:
@@ -1028,21 +1036,25 @@ class TemplateResponder(object):
                             else:
                                 staff_StudentGroup = \
                                     Staff_StudentGroupRelation(staff=elem,
-                                        student_group=clasObj,
-                                        academic=current_academic(),
-                                        active=2)
+                                                               student_group=clasObj,
+                                                               academic=current_academic(
+                                                               ),
+                                                               active=2)
                                 staff_StudentGroup.save()
 
-                buttonType = str(self.extra_context['buttonType'])  # get button type
-                self.extra_context['showsuccess'] = True  # make showsuccess is True
-       
+                # get button type
+                buttonType = str(self.extra_context['buttonType'])
+                # make showsuccess is True
+                self.extra_context['showsuccess'] = True
+
                 if buttonType == 'save':
 
-                #  If Button type is Save show detail information about updated object
+                # If Button type is Save show detail information about updated
+                # object
 
                     respDict = {elem._meta.module_name.lower(): obj,
                                 'showsuccess': True}
-       
+
                     if modelName == 'child':
                         if request.POST['ModelName'] == 'student':
                             respDict['student'] = True
@@ -1054,52 +1066,52 @@ class TemplateResponder(object):
                         template_name = '%s/%s_detail.html' \
                             % ('viewtemplates', elem._meta.module_name)
                     response = render_to_response(template_name,
-                            respDict,
-                            context_instance=RequestContext(request))
-       
+                                                  respDict,
+                                                  context_instance=RequestContext(request))
+
                     return response
                 elif buttonType == 'save and continue':
 
-                        # If buttonType is save and continue show edit form for the object
+                        # If buttonType is save and continue show edit form for
+                        # the object
 
                     retFormlist = \
-                        ResourceForm(queryset=queryset.model.objects.filter(pk=obj.id))
+                        ResourceForm(
+                            queryset=queryset.model.objects.filter(pk=obj.id))
                 elif buttonType == 'save and add another':
 
-                        # # If buttonType is save and add another show new entry form
+                        # If buttonType is save and add another show new entry
+                        # form
 
                     self.extra_context['prevousId'] = obj.id
                     if form_class == Question_Form:
                         self.extra_context['order'] = \
                             len(Question.objects.filter(assessment__id=self.extra_context['referKey'
-                                ])) + 1
+                                                                                          ])) + 1
                     ResourceForm = modelformset_factory(queryset.model,
-                            form=form_class)
+                                                        form=form_class)
                     form = \
                         ResourceForm(queryset=queryset.model.objects.none())
-                    template_name = '%s/%s_form.html' % ('viewtemplates'
-                            , elem._meta.module_name)
+                    template_name = '%s/%s_form.html' % (
+                        'viewtemplates',
+                        elem._meta.module_name)
                     response = render_to_response(template_name,
-                            {'form': form,
-                            'extra_context': self.extra_context},
-                            context_instance=RequestContext(request))
+                                                  {'form': form,
+                                                   'extra_context': self.extra_context},
+                                                  context_instance=RequestContext(request))
                     return response
             else:
 
             # If form is not valid response back to Edit form
 
-       
-
             # form = ....ResourceForm(request.POST)
-
-       
                 if not AssValid:
                     if not request.POST.get('form-0-primary_field_name'
-                            ):
+                                            ):
                         form.errors[0]['primary_field_name'] = \
                             ['The Field is required.']
                     if not request.POST.get('form-0-primary_field_type'
-                            ):
+                                            ):
                         form.errors[0]['primary_field_type'] = \
                             ['The Field is required.']
                 if not RelationValid and ChildTrue:
@@ -1121,14 +1133,14 @@ class TemplateResponder(object):
                     self.extra_context['form-0-otherId'] = \
                         request.POST.get('form-0-otherId')
                 template_name = '%s/%s_form.html' % (self.template_dir,
-                        elem._meta.module_name)
-       
+                                                     elem._meta.module_name)
+
                 return render_to_response(template_name, {
                     'form': form,
                     'update': True,
                     self.template_object_name: elem,
                     'extra_context': self.extra_context,
-                    }, context_instance=RequestContext(request))
+                }, context_instance=RequestContext(request))
         else:
 
         # If request method is not post get form for the model based on pk
@@ -1145,12 +1157,10 @@ class TemplateResponder(object):
     # Show the form
 
         template_name = '%s/%s_form.html' % (self.template_dir,
-                elem._meta.module_name)
+                                             elem._meta.module_name)
         return render_to_response(template_name, {
             'form': form,
             'update': True,
             self.template_object_name: elem,
             'extra_context': self.extra_context,
-            }, context_instance=RequestContext(request))
-
-
+        }, context_instance=RequestContext(request))
