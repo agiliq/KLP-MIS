@@ -1,7 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-""" This file containd the methods  and receiver methods to check the user permissions and to assign permission on new institution creation"""
+""" This file contains the methods  and receiver methods to check the user
+     permissions and to assign permission on new institution creation"""
 
 
 def KLP_obj_Perm(
@@ -9,21 +10,24 @@ def KLP_obj_Perm(
     instObj,
     permission,
     assessmentObj,
-    ):
+):
     """ This method is used to check user object level permissions """
 
     from schools.models import UserAssessmentPermissions
 
-    # Check user is logged in or not if logged in, check user is active user or not
+    # Check user is logged in or not if logged in, check user is active user
+    # or not
 
     if userObj.id is not None or userObj.is_active:
 
-        # If true check user has permissions to access intitution and assessment object
+        # If true check user has permissions to access intitution and
+        # assessment object
 
         chkPerm = False
         userAsmList = \
             UserAssessmentPermissions.objects.filter(user=userObj,
-                instituion=instObj, assessment=assessmentObj).values()
+                                                     instituion=instObj,
+                                                     assessment=assessmentObj).values()
         if userAsmList:
             chkPerm = userAsmList[0].get('access') or False
     else:
@@ -33,13 +37,16 @@ def KLP_obj_Perm(
         raise Exception('Insufficient Previliges')
     if not (userObj.is_superuser or userObj.is_staff or chkPerm):
 
-        # If user is not super user and he is not in staff and user doesn't has permission with intitution object raise Insufficient Previliges exception
+        # If user is not super user and he is not in staff and user doesn't has
+        # permission with intitution object raise Insufficient Previliges
+        # exception
 
         raise Exception('Insufficient Previliges')
 
 
 def KLP_user_Perm(userObj, modelName, operation):
-    """ This method is used to check user operational permissions based on model """
+    """ This method is used to check user operational
+        permissions based on model """
 
     # get user groups
 
@@ -57,7 +64,8 @@ def KLP_user_Perm(userObj, modelName, operation):
             pass
         elif 'AdminGroup' in user_GroupsList:
 
-            # if user in admin group allow to add/update/delete users and pemissions
+            # if user in admin group allow to add/update/delete users and
+            # pemissions
 
             if modelName != 'Users':
                 raise Exception('Insufficient Previliges')
@@ -69,20 +77,24 @@ def KLP_user_Perm(userObj, modelName, operation):
                 raise Exception('Insufficient Previliges')
         elif 'Data Entry Executive' in user_GroupsList:
 
-            # if user in Data Entry Executive group allow to access 'Institution', 'Staff', 'StudentGroup', 'Student' and 'Answer' models
+            # if user in Data Entry Executive group allow to access
+            # 'Institution', 'Staff', 'StudentGroup', 'Student' and 'Answer'
+            # models
 
             if modelName.lower() not in ['institution', 'staff',
-                    'studentgroup', 'student', 'answer']:
+                                         'studentgroup', 'student', 'answer']:
                 raise Exception('Insufficient Previliges')
         elif 'Data Entry Operator' in user_GroupsList:
 
-            # if user in Data Entry Operator group allow to access 'Student' and 'Answer' models
+            # if user in Data Entry Operator group allow to access 'Student'
+            # and 'Answer' models
 
             if modelName.lower() not in ['student', 'answer']:
                 raise Exception('Insufficient Previliges')
         else:
 
-            # if user not in any of the group and not staff and not super user then raise Insufficient Previliges exception
+            # if user not in any of the group and not staff and not super user
+            # then raise Insufficient Previliges exception
 
             raise Exception('Insufficient Previliges')
     else:
@@ -97,8 +109,9 @@ def KLP_NewInst_Permission(
     instance,
     created,
     **kwargs
-    ):
-    """ This receiver method is used to assign permissions to users on new institution creation"""
+):
+    """ This receiver method is used to assign permissions to
+        users on new institution creation"""
 
     # Check institution is creating or editing.
 
@@ -113,13 +126,17 @@ def KLP_NewInst_Permission(
         # Get all instititons under boundary to check permissions
 
         inst_list = Institution.objects.filter(boundary=parentBoundary,
-                active=2)
+                                               active=2)
 
-        # get all active users in Data Entry Executive and Data Entry Operator group
+        # get all active users in Data Entry Executive and Data Entry Operator
+        # group
 
         users_List = \
-            User.objects.filter(groups__name__in=['Data Entry Executive'
-                                , 'Data Entry Operator'], is_active=1)
+            User.objects.filter(
+                groups__name__in=[
+                    'Data Entry Executive',
+                    'Data Entry Operator'],
+                is_active=1)
 
         # get count of institutions under boundary
 
@@ -131,12 +148,13 @@ def KLP_NewInst_Permission(
                 # check user permission with institutions under boundary
 
                 userPerm.append(user.has_any_perms(inst, perms=['Acess'
-                                ]))
-            lenTrue = userPerm.count(True)  # get count of instituions where user has permission
+                                                                ]))
+            # get count of instituions where user has permission
+            lenTrue = userPerm.count(True)
             if lenTrue == lenInst - 1:
 
-                # if user has permission with all institutions under boundary except newly created institution, set permissions to user for new institution also
+                # if user has permission with all institutions under boundary
+                # except newly created institution, set permissions to user for
+                # new institution also
 
                 user.set_perms(['Acess'], instance)
-
-
