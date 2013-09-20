@@ -5,11 +5,9 @@ BoundaryTypeApi is used to create new boundary type
 """
 
 from django.conf.urls.defaults import *
-from django.shortcuts import render_to_response
-from django_restapi.resource import Resource
 from schools.models import *
 from schools.forms import *
-from django_restapi.model_resource import Collection, Entry
+from django_restapi.model_resource import Collection
 from django_restapi.responder import *
 from django_restapi.receiver import *
 from klprestApi.BoundaryApi import ChoiceEntry
@@ -29,8 +27,9 @@ class BoundaryTypeView(Collection):
 template_boundary_type_view = \
     BoundaryTypeView(queryset=Boundary_Type.objects.filter(pk=0),
                      permitted_methods=('GET', 'POST'),
-                     responder=TemplateResponder(template_dir='viewtemplates'
-                     , template_object_name='boundary_type'),
+                     responder=TemplateResponder(
+                         template_dir='viewtemplates',
+                         template_object_name='boundary_type'),
                      receiver=XMLReceiver())
 
 urlpatterns = patterns('', url(r'^boundary-type/creator/?$',
