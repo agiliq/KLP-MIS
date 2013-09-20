@@ -21,8 +21,9 @@ from django_restapi.model_resource import Collection
 from django_restapi.responder import TemplateResponder
 from django_restapi.receiver import XMLReceiver
 
-from schools.forms import Assessment_Form, Assessment_Lookup_Form, Question_Form
-from schools.models import Assessment, Assessment_Lookup
+from schools.forms import Assessment_Form, Assessment_Lookup_Form
+from schools.forms import Question_Form
+from schools.models import Assessment, Assessment_Lookup, Question
 from schools.receivers import KLP_user_Perm
 
 from klprestApi.BoundaryApi import ChoiceEntry
@@ -99,8 +100,9 @@ def AssessmentLookupCreate(request, referKey):
     # Checking user Permissions for Assessment add
     KLP_user_Perm(request.user, "Assessment", "Add")
     buttonType = request.POST.get('form-buttonType', '')
-    assessment_lookups = Assessment_Lookup.objects.filter(
-                          assessment__id=referKey).order_by('rank', 'name')
+    assessment_lookups = \
+        Assessment_Lookup.objects.filter(
+            assessment__id=referKey).order_by('rank', 'name')
     if 1:
         rankrange = 21
         if len(assessment_lookups)+1 >= rankrange:
@@ -109,16 +111,20 @@ def AssessmentLookupCreate(request, referKey):
                               'referKey': referKey,
                               'rankrange': range(1, rankrange),
                               'rank': len(assessment_lookups)+1}
-        t_responder = TemplateResponder(template_dir='viewtemplates',
-                                        template_object_name='assessment_lookup',
-                                        extra_context=extra_context_dict)
+        t_responder = \
+            TemplateResponder(template_dir='viewtemplates',
+                              template_object_name='assessment_lookup',
+                              extra_context=extra_context_dict)
 
-        assessment = KLP_Assessment(queryset=Assessment_Lookup.objects.filter(pk=0),
-                                    permitted_methods=('GET', 'POST'),
-                                    responder=t_responder,
-                                    receiver=XMLReceiver(),)
-        response = assessment.responder.create_form(request,
-                                                    form_class=Assessment_Lookup_Form)
+        assessment = \
+            KLP_Assessment(queryset=Assessment_Lookup.objects.filter(pk=0),
+                           permitted_methods=('GET', 'POST'),
+                           responder=t_responder,
+                           receiver=XMLReceiver(),)
+        response = \
+            assessment.responder.create_form(request,
+                                             form_class=
+                                             Assessment_Lookup_Form)
 
         return HttpResponse(response)
 
@@ -135,7 +141,9 @@ def AssessmentLookupList(request, referKey):
     #kwrg = {'is_entry': True}
 
     url = '/assessment_lookup/'+referKey+'/multieditor/'
-    assessment_lookups = Assessment_Lookup.objects.filter(assessment__id=referKey).order_by('rank', 'name')
+    assessment_lookups = \
+        Assessment_Lookup.objects.filter(assessment__id=
+                                         referKey).order_by('rank', 'name')
 
     Norecords = assessment_lookups.count()
     t_responder = TemplateResponder(template_dir='viewtemplates',
@@ -183,14 +191,18 @@ def KLP_Assessment_Lookup_Update(request, referKey,
                                     template_object_name='assessment_lookup',
                                     extra_context=extra_context)
 
-    assessment = KLP_Assessment(queryset=Assessment_Lookup.objects.filter(pk=assessment_lookup_id).order_by('rank', 'name'),
-                                permitted_methods=('GET', 'POST'),
-                                responder=t_responder,
-                                receiver=XMLReceiver(),)
+    assessment = \
+        KLP_Assessment(
+            queryset=Assessment_Lookup.objects.filter(
+                pk=assessment_lookup_id).order_by('rank', 'name'),
+            permitted_methods=('GET', 'POST'),
+            responder=t_responder,
+            receiver=XMLReceiver(),)
 
-    response = assessment.responder.update_form(request,
-                                                pk=assessment_lookup_id,
-                                                form_class=Assessment_Lookup_Form)
+    response = \
+        assessment.responder.update_form(request,
+                                         pk=assessment_lookup_id,
+                                         form_class=Assessment_Lookup_Form)
 
     return HttpResponse(response)
 
@@ -218,10 +230,12 @@ def AssessmentUpdate(request, assessment_id):
                                     template_object_name='assessment',
                                     extra_context=extra_context_dict)
 
-    assessment = KLP_Assessment(queryset=Assessment.objects.filter(pk=assessment_id),
-                                permitted_methods=('GET', 'POST'),
-                                responder=t_responder,
-                                receiver = XMLReceiver(),)
+    assessment = \
+        KLP_Assessment(
+            queryset=Assessment.objects.filter(pk=assessment_id),
+            permitted_methods=('GET', 'POST'),
+            responder=t_responder,
+            receiver = XMLReceiver(),)
     response = assessment.responder.update_form(request, pk=assessment_id,
                                                 form_class=Assessment_Form)
 
@@ -234,8 +248,9 @@ class KLP_Get_Assessments(Resource):
     def read(self, request, programme_id):
         try:
             # Query all active(2) assessments based on programme id
-            assessments_list = Assessment.objects.filter(programme__id=programme_id,
-                                                         active=2).defer("programme")
+            assessments_list = \
+                Assessment.objects.filter(programme__id=programme_id,
+                                          active=2).defer("programme")
             respStr = ''
             for assessment in assessments_list:
                 respStr += '%s$$%s&&' % (assessment.id, assessment)
@@ -264,11 +279,13 @@ def KLP_lookup_inlineEdit(request):
 @csrf_exempt
 def AssessmentLookupCopy(request, referKey):
     """ To View Selected StudentGroup
-    studentsroup/(?P<areferKey>\d+)/copy/?$'/assessment/assessment_lookup/'+stre(referKey+'/view',"""
+    studentsroup/(?P<areferKey>\d+)/copy/?$'/assessment/assessment_lookup/
+        '+stre(referKey+'/view',"""
 
     if request.POST:
         assessment_id = request.POST.get('lookupValues')
-        assessment_lookups = Assessment_Lookup.objects.filter(assessment__id=assessment_id)
+        assessment_lookups = \
+            Assessment_Lookup.objects.filter(assessment__id=assessment_id)
 
         for k in assessment_lookups:
             k.id = None
@@ -277,8 +294,12 @@ def AssessmentLookupCopy(request, referKey):
 
         return HttpResponse('Copied Successfully')
     else:
-        assessment_lookups = Assessment_Lookup.objects.filter().values_list('assessment', flat=True)
-        assessment_list = Assessment.objects.filter(id__in=assessment_lookups).exclude(id=referKey)
+        assessment_lookups = \
+            Assessment_Lookup.objects.filter().values_list('assessment',
+                                                           flat=True)
+        assessment_list = \
+            Assessment.objects.filter(
+                id__in=assessment_lookups).exclude(id=referKey)
         context = {'assessment_id': referKey,
                    'assessmentList': assessment_list}
         return render(request,
@@ -302,7 +323,8 @@ def KLP_copy_Assessments(request, assessment_id):
                                                       'copy _of_')
             assessment_form = Assessment_Form(assessment_dic)
             new_assessment = assessment_form.save()
-            questions = Question.objects.filter(assessment__id=assessment_id).values()
+            questions = \
+                Question.objects.filter(assessment__id=assessment_id).values()
             newquestionids = ''
             for question in questions:
                 del question['id']
