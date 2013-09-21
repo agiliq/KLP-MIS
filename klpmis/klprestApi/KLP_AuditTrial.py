@@ -3,25 +3,23 @@
 """
 KLP_AuditTrial is used to generate audit trail report using fullhistory.
 """
+import datetime
 
 from django.conf.urls.defaults import *
-from django.core.urlresolvers import reverse
 from django.contrib.auth.forms import *
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+
 from django_restapi.responder import *
 from django_restapi.receiver import *
 from schools.models import *
-
 from schools.receivers import KLP_user_Perm
 from fullhistory.models import FullHistory
-from django.db.models import Q
-import datetime
-from django.contrib.contenttypes.models import ContentType
 
 
 def KLP_audit(request):
-    """ This method is used to show audit trail report for the users using fullhistory """
+    """ This method is used to show audit trail report
+        for the users using fullhistory """
 
     user = request.user  # get logged in user
 
@@ -51,7 +49,8 @@ def KLP_audit(request):
         start_date = request.POST.get('start_date')
         end_date = request.POST.get('end_date')
 
-        # if start date and end date are empty then default start date and end date are current date.
+        # if start date and end date are empty then default
+            # start date and end date are current date.
 
         if not start_date:
             start_date = defaultDate
@@ -63,20 +62,26 @@ def KLP_audit(request):
         strDate = start_date.split('-')
         enDate = end_date.split('-')
 
-        # Query fullhistory table based on start date, end date and selected user
+        # Query fullhistory table based on start date, end date and selected
+        # user
 
         fullHistoryList = \
-            FullHistory.objects.filter(action_time__range=(datetime.date(int(strDate[2]),
-                int(strDate[1]), int(strDate[0])),
-                datetime.date(int(enDate[2]), int(enDate[1]),
-                int(enDate[0]))), request__user_pk=selUser)
+            FullHistory.objects.filter(
+                action_time__range=(datetime.date(int(strDate[2]),
+                                                  int(strDate[1]),
+                                                  int(strDate[0])),
+                                    datetime.date(
+                                        int(enDate[2]), int(enDate[1]),
+                                        int(enDate[0]))),
+                request__user_pk=selUser)
         respDict['fullHistoryList'] = fullHistoryList
 
         # return reponse to template
 
         return render_to_response('viewtemplates/auditTrial.html',
                                   respDict,
-                                  context_instance=RequestContext(request))
+                                  context_instance=
+                                  RequestContext(request))
     return render_to_response('viewtemplates/auditTrial.html',
                               respDict,
                               context_instance=RequestContext(request))
