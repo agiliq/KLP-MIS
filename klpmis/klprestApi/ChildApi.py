@@ -2,15 +2,13 @@
 # -*- coding: utf-8 -*-
 from django.conf.urls.defaults import *
 from django.http import HttpResponse
-from django.shortcuts import render_to_response
-from django_restapi.resource import Resource
-from schools.models import *
-from schools.forms import *
-from django_restapi.model_resource import Collection, Entry
-from django_restapi.responder import *
-from django_restapi.receiver import *
-from klprestApi.BoundaryApi import ChoiceEntry
-from django.contrib.contenttypes.models import ContentType
+from .django_restapi.resource import Resource
+from .schools.models import *
+from .schools.forms import *
+from .django_restapi.model_resource import Collection
+from .django_restapi.responder import *
+from .django_restapi.receiver import *
+from .klprestApi.BoundaryApi import ChoiceEntry
 from staging.schools.models import current_academic
 
 
@@ -33,13 +31,15 @@ def KLP_Child_Create(request, referKey):
     queryset = Child.objects.filter(pk=0)
     KLP_Create_Child = KLP_Child(queryset, permitted_methods=('GET',
                                  'POST'),
-                                 responder=TemplateResponder(template_dir='viewtemplates'
-                                 , template_object_name='child',
-                                 extra_context={'buttonType': buttonType,
-                                 'referKey': referKey}),
+                                 responder=TemplateResponder(
+                                     template_dir='viewtemplates',
+                                     template_object_name='child',
+                                     extra_context={
+                                         'buttonType': buttonType,
+                                         'referKey': referKey}),
                                  receiver=XMLReceiver())
     response = KLP_Create_Child.responder.create_form(request,
-            form_class=Child_Form)
+                                                      form_class=Child_Form)
     return HttpResponse(response)
 
 
@@ -50,11 +50,12 @@ def KLP_Child_View(request, child_id):
 
         # before Child.objects.all()
 
-    resp = KLP_Child(queryset=Child.objects.filter(pk=child_id),
-                     permitted_methods=('GET', 'POST'),
-                     responder=TemplateResponder(template_dir='viewtemplates'
-                     , template_object_name='child'))(request,
-            child_id, **kwrg)
+    resp = \
+        KLP_Child(queryset=Child.objects.filter(
+            pk=child_id), permitted_methods=('GET', 'POST'),
+            responder=TemplateResponder(
+                template_dir='viewtemplates',
+                template_object_name='child'))(request, child_id, **kwrg)
     return HttpResponse(resp)
 
 
@@ -69,12 +70,16 @@ def KLP_Child_Update(request, child_id):
     KLP_Edit_Child = \
         KLP_Child(queryset=Child.objects.filter(pk=child_id),
                   permitted_methods=('GET', 'POST'),
-                  responder=TemplateResponder(template_dir='edittemplates'
-                  , template_object_name='child',
-                  extra_context={'buttonType': buttonType,
-                  'referKey': referKey}), receiver=XMLReceiver())
-    response = KLP_Edit_Child.responder.update_form(request,
-            pk=child_id, form_class=Child_Form)
+                  responder=TemplateResponder(
+                      template_dir='edittemplates',
+                      template_object_name='child',
+                      extra_context={
+                          'buttonType': buttonType,
+                          'referKey': referKey}), receiver=XMLReceiver())
+    response = \
+        KLP_Edit_Child.responder.update_form(request,
+                                             pk=child_id,
+                                             form_class=Child_Form)
     return HttpResponse(response)
 
 
@@ -83,80 +88,89 @@ def getStudentSearch(
     boundary,
     fieldName,
     searchtext,
-    ):
+):
     '''To get the Child details by category
 
-          name wise to get the child details list either api/child/name/<child-name> or api/xml/child/name/<child-name>
-                  
+          name wise to get the child details list either
+            api/child/name/<child-name> or api/xml/child/name/<child-name>
+
          In json format api/json/child/name/<child-name>
 
-         date of birth wise to get the child details list either api/child/dob/yyyymmdd or api/child/dob/yyyymmdd
-                  
+         date of birth wise to get the child details list either
+            api/child/dob/yyyymmdd or api/child/dob/yyyymmdd
+
          In json format api/json/child/dob/yyyymmdd
 
-         sex wise to get the child details list either api/child/sex/male or api/child/sex/female
-                  
+         sex wise to get the child details list either
+            api/child/sex/male or api/child/sex/female
+
          In json format api/json/child/sex/male
 
-            
-         mother language wise to get the child details list either api/child/ml/1 or api/child/ml/2
-                  
+
+         mother language wise to get the child details list either
+            api/child/ml/1 or api/child/ml/2
+
          In json format api/json/ml/1'''
 
     queryset = []
     if fieldName == 'firstname':
         child_list = \
-            Child.objects.filter(first_name__startswith=searchtext,
-                                 boundary__id=boundary).values_list('id'
-                , flat=True)
+            Child.objects.filter(
+                first_name__startswith=searchtext,
+                boundary__id=boundary).values_list('id', flat=True)
 
     if fieldName == 'lastname':
         child_list = \
-            Child.objects.filter(last_name__startswith=searchtext,
-                                 boundary__id=boundary).values_list('id'
-                , flat=True)
+            Child.objects.filter(
+                last_name__startswith=searchtext,
+                boundary__id=boundary).values_list('id', flat=True)
 
     if fieldName == 'dobyear':
-        child_list = Child.objects.filter(dob__year=searchtext,
-                boundary__id=boundary).values_list('id', flat=True)
+        child_list = Child.objects.filter(
+            dob__year=searchtext,
+            boundary__id=boundary).values_list('id', flat=True)
 
     if fieldName == 'dob':
         child_year = searchtext[0:4] + '-' + searchtext[4:6] + '-' \
             + searchtext[6:8]
-        child_list = Child.objects.filter(dob=searchtext,
+        child_list = \
+            Child.objects.filter(
+                dob=searchtext,
                 boundary__id=boundary).values_list('id', flat=True)
 
     if fieldName == 'gender':
         child_list = \
-            Child.objects.filter(gender__startswith=searchtext,
-                                 boundary__id=boundary).values_list('id'
-                , flat=True)
+            Child.objects.filter(
+                gender__startswith=searchtext,
+                boundary__id=boundary).values_list('id', flat=True)
 
     if fieldName == 'mt':
         child_list = \
-            Child.objects.filter(mt__name__startswith=searchtext,
-                                 boundary__id=boundary).values_list('id'
-                , flat=True)
+            Child.objects.filter(
+                mt__name__startswith=searchtext,
+                boundary__id=boundary).values_list('id', flat=True)
 
     if fieldName == 'mother':
         child_list = \
-            Child.objects.filter(relations__relation_type='Mother',
-                                 relations__name__startswith=searchtext,
-                                 boundary__id=boundary).values_list('id'
-                , flat=True)
+            Child.objects.filter(
+                relations__relation_type='Mother',
+                relations__name__startswith=searchtext,
+                boundary__id=boundary).values_list('id', flat=True)
 
     if fieldName == 'father':
         child_list = \
-            Child.objects.filter(relations__relation_type='Father',
-                                 relations__name__startswith=searchtext,
-                                 boundary__id=boundary).values_list('id'
-                , flat=True)
+            Child.objects.filter(
+                relations__relation_type='Father',
+                relations__name__startswith=searchtext,
+                boundary__id=boundary).values_list('id', flat=True)
 
-    studentslist = Student.objects.exclude(child__id__in=child_list,
-            school__isnull=True).values_list('child__id', flat=True)
-    queryset = Child.objects.filter(id__in=child_list,
-                                    boundary__id=boundary).exclude(id__in=studentslist).order_by('first_name'
-            )
+    studentslist = Student.objects.exclude(
+        child__id__in=child_list,
+        school__isnull=True).values_list('child__id', flat=True)
+    queryset = Child.objects.filter(
+        id__in=child_list,
+        boundary__id=boundary).exclude(
+            id__in=studentslist).order_by('first_name')
     return queryset
 
 
@@ -183,37 +197,44 @@ def ChildrenList(request, boundary_id):
                                     searchtext)
     else:
         studentslist = \
-            Student.objects.filter(school__isnull=False).values_list('child__id'
-                , flat=True)
-        queryset = Child.objects.exclude(id__in=studentslist,
-                boundary__id=boundary_id).order_by('first_name')
+            Student.objects.filter(
+                school__isnull=False).values_list('child__id', flat=True)
+        queryset = Child.objects.exclude(
+            id__in=studentslist,
+            boundary__id=boundary_id).order_by('first_name')
     boundary = Boundary.objects.get(pk=boundary_id)
-    val = Collection(queryset, permitted_methods=('GET', 'POST'),
-                     responder=TemplateResponder(paginate_by=10,
-                     template_dir='viewtemplates',
-                     template_object_name='child', extra_context={
-        'url': url,
-        'schools': schools,
-        'count': count,
-        'boundary': boundary,
-        'studentGroups': studentGroups,
-        }), entry_class=ChoiceEntry)
+    val = Collection(
+        queryset, permitted_methods=('GET', 'POST'),
+        responder=TemplateResponder(paginate_by=10,
+                                    template_dir='viewtemplates',
+                                    template_object_name='child',
+                                    extra_context={
+                                    'url': url,
+                                    'schools': schools,
+                                    'count': count,
+                                    'boundary': boundary,
+                                    'studentGroups':
+                                    studentGroups, }),
+        entry_class=ChoiceEntry)
     return HttpResponse(val(request))
 
 
 class StdGrpFilter(Resource):
 
-    """ To get  assessment under programme filter/(?P<programme_id>\d+)/programme/"""
+    """ To get  assessment under programme
+        filter/(?P<programme_id>\d+)/programme/"""
 
     def read(self, request, school_id):
         if 1:
             stdgrp_list = \
-                StudentGroup.objects.filter(content_type__model='school'
-                    , object_id=school_id, group_type='Class')
+                StudentGroup.objects.filter(
+                    content_type__model='school',
+                    object_id=school_id,
+                    group_type='Class')
             respStr = ''
             for stdgrp in stdgrp_list:
                 respStr += '%s$$%s %s&&' % (stdgrp.id, stdgrp.name,
-                        stdgrp.section)
+                                            stdgrp.section)
             return HttpResponse(respStr[0:len(respStr) - 2])
         else:
             return HttpResponse('fail')
@@ -230,7 +251,8 @@ def childsql(request, boundary_id):
     if children_id and studentgroup:
         studentgroup = StudentGroup.objects.get(pk=studentgroup)
         school = School.objects.get(pk=request.POST['school'])
-        academic = Academic_Year.objects.get(pk=current_academic().id)
+        academic = Academic_Year.objects.get(
+            pk=current_academic().id)
         for child_id in children_id:
             child = Child.objects.get(pk=child_id)
             studentparam = {
@@ -238,7 +260,7 @@ def childsql(request, boundary_id):
                 'child': child,
                 'school': school,
                 'active': 2,
-                }
+            }
             stdobj = Student.objects.get_or_create(**studentparam)
 
             param = {
@@ -247,7 +269,7 @@ def childsql(request, boundary_id):
                 'student_group': studentgroup,
                 'academic': academic,
                 'active': 2,
-                }
+            }
             stdgrp_rels = \
                 Student_StudentGroupRelation.objects.get_or_create(**param)
             count = count + 1
@@ -265,7 +287,7 @@ def childsql(request, boundary_id):
                 'student_group': studentgroup,
                 'academic': academic,
                 'active': 2,
-                }
+            }
             stdgrp_rels = \
                 Student_StudentGroupRelation.objects.get_or_create(**param)
             count = count + 1
@@ -283,4 +305,4 @@ urlpatterns = patterns(
     url(r'^filter/(?P<school_id>\d+)/schgrp/$',
         StdGrpFilter(permitted_methods=('POST', 'GET'))),
     url(r'^childsql/(?P<boundary_id>\d+)/$', childsql),
-    )
+)
