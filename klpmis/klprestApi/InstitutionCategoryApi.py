@@ -5,13 +5,13 @@ InstitutionCategoryApi is used to create new Institution Category
 """
 
 from django.conf.urls.defaults import *
-from django_restapi.resource import Resource
-from schools.models import *
-from schools.forms import *
-from django_restapi.model_resource import Collection, Entry
+
+from django_restapi.model_resource import Collection
 from django_restapi.responder import *
 from django_restapi.receiver import *
 from klprestApi.BoundaryApi import ChoiceEntry
+from schools.models import *
+from schools.forms import *
 
 
 class KLP_Institution_Category(Collection):
@@ -33,18 +33,18 @@ def KLP_Institution_Category_Create(request):
         # before Institution_Category.objects.all()
 
     KLP_Institution_Category_Create = \
-        KLP_Institution_Category(queryset=Institution_Category.objects.filter(pk=0),
-                                 permitted_methods=('GET', 'POST'),
-                                 responder=TemplateResponder(template_dir='viewtemplates'
-                                 ,
-                                 template_object_name='InstitutionCategory'
-                                 ,
-                                 extra_context={'buttonType': buttonType,
-                                 'category_type': category_type}),
-                                 receiver=XMLReceiver())
+        KLP_Institution_Category(
+            queryset=Institution_Category.objects.filter(pk=0),
+            permitted_methods=('GET', 'POST'),
+            responder=TemplateResponder(
+                template_dir='viewtemplates',
+                template_object_name='InstitutionCategory',
+                extra_context={'buttonType': buttonType,
+                               'category_type': category_type}),
+            receiver=XMLReceiver())
     response = \
-        KLP_Institution_Category_Create.responder.create_form(request,
-            form_class=Institution_Category_Form)
+        KLP_Institution_Category_Create.responder.create_form(
+            request, form_class=Institution_Category_Form)
 
     return HttpResponse(response)
 
