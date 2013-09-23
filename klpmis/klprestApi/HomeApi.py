@@ -8,8 +8,8 @@ from django.shortcuts import render
 from django.contrib.auth import logout
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
-
 from django_restapi.resource import Resource
+
 from schools.models import Boundary_Type, Programme
 
 
