@@ -25,7 +25,8 @@ class KLP_Institution_Management(Collection):
 
 
 def KLP_Institution_Management_Create(request):
-    """ To Create new institution management institution-management/creator/"""
+    """ To Create new institution management
+        institution-management/creator/"""
 
     buttonType = request.POST.get('form-buttonType')
 
