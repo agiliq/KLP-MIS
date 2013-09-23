@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 """
-ProgrammeApi is used 
+ProgrammeApi is used
 1) To view Individual Programme details.
 2) To create new Programme
 3) To update existing Programme
@@ -12,7 +12,7 @@ from django.conf.urls.defaults import *
 from django_restapi.resource import Resource
 from schools.models import *
 from schools.forms import *
-from django_restapi.model_resource import Collection, Entry
+from django_restapi.model_resource import Collection
 from django_restapi.responder import *
 from django_restapi.receiver import *
 from klprestApi.BoundaryApi import ChoiceEntry
@@ -41,9 +41,11 @@ def KLP_Programme_View(request, programme_id):
     resp = \
         KLP_Programme(queryset=Programme.objects.filter(pk=programme_id),
                       permitted_methods=('GET', 'POST'),
-                      responder=TemplateResponder(template_dir='viewtemplates'
-                      , template_object_name='programme'))(request,
-            programme_id, **kwrg)
+                      responder=TemplateResponder(
+                          template_dir='viewtemplates',
+                          template_object_name='programme'))(request,
+                                                             programme_id,
+                                                             **kwrg)
     return HttpResponse(resp)
 
 
@@ -68,17 +70,17 @@ def KLP_Programme_Create(request):
     KLP_Create_Programme = \
         KLP_Programme(queryset=Programme.objects.filter(pk=0),
                       permitted_methods=('GET', 'POST'),
-                      responder=TemplateResponder(template_dir='viewtemplates'
-                      , template_object_name='programme',
-                      extra_context={
-        'buttonType': buttonType,
-        'end_date': 30,
-        'endYear': endYear,
-        'endMonth': 'APRIL',
-        }), receiver=XMLReceiver())
-    response = KLP_Create_Programme.responder.create_form(request,
-            form_class=Programme_Form)
-
+                      responder=TemplateResponder(
+                          template_dir='viewtemplates',
+                          template_object_name='programme',
+                          extra_context={'buttonType': buttonType,
+                                         'end_date': 30,
+                                         'endYear': endYear,
+                                         'endMonth': 'APRIL', }),
+                      receiver=XMLReceiver())
+    response = \
+        KLP_Create_Programme.responder.create_form(request,
+                                                   form_class=Programme_Form)
     return HttpResponse(response)
 
 
@@ -103,23 +105,26 @@ def KLP_Programme_Update(request, programme_id):
     KLP_Edit_Programme = \
         KLP_Programme(queryset=Programme.objects.filter(pk=programme_id),
                       permitted_methods=('GET', 'POST'),
-                      responder=TemplateResponder(template_dir='edittemplates'
-                      , template_object_name='programme',
-                      extra_context={
-        'buttonType': buttonType,
-        'end_date': 30,
-        'endYear': endYear,
-        'endMonth': 'APRIL',
-        }), receiver=XMLReceiver())
-    response = KLP_Edit_Programme.responder.update_form(request,
-            pk=programme_id, form_class=Programme_Form)
+                      responder=TemplateResponder(
+                          template_dir='edittemplates',
+                          template_object_name='programme',
+                          extra_context={'buttonType': buttonType,
+                                         'end_date': 30,
+                                         'endYear': endYear,
+                                         'endMonth': 'APRIL', }),
+                      receiver=XMLReceiver())
+    response = \
+        KLP_Edit_Programme.responder.update_form(request,
+                                                 pk=programme_id,
+                                                 form_class=Programme_Form)
 
     return HttpResponse(response)
 
 
 class KLP_Get_Programms(Resource):
 
-    """ To get  programmes based on type selected filter/(?P<type_id>\d+)/programme/"""
+    """ To get  programmes based on type selected
+            filter/(?P<type_id>\d+)/programme/"""
 
     def read(self, request, type_id):
         try:
@@ -127,9 +132,11 @@ class KLP_Get_Programms(Resource):
             # Query for active programmes based on category
 
             programme_list = \
-                Programme.objects.filter(programme_institution_category=type_id,
-                    active=2).order_by('-start_date', '-end_date', 'name'
-                    ).only('id', 'name')
+                Programme.objects.filter(
+                    programme_institution_category=type_id,
+                    active=2).order_by('-start_date',
+                                       '-end_date',
+                                       'name').only('id', 'name')
             respStr = ''
             for programme in programme_list:
                 respStr += '%s$$%s&&' % (programme.id, programme)
@@ -140,10 +147,11 @@ class KLP_Get_Programms(Resource):
 
 urlpatterns = patterns('',
                        url(r'^programme/(?P<programme_id>\d+)/view/?$',
-                       KLP_Programme_View), url(r'^programme/creator/?$'
-                       , KLP_Programme_Create),
-                       url(r'^programme/(?P<programme_id>\d+)/update/$'
-                       , KLP_Programme_Update),
+                           KLP_Programme_View),
+                       url(r'^programme/creator/?$',
+                           KLP_Programme_Create),
+                       url(r'^programme/(?P<programme_id>\d+)/update/$',
+                           KLP_Programme_Update),
                        url(r'^filter/(?P<type_id>\d+)/programms/$',
-                       KLP_Get_Programms(permitted_methods=('POST',
-                       'GET'))))
+                           KLP_Get_Programms(
+                               permitted_methods=('POST', 'GET'))))
