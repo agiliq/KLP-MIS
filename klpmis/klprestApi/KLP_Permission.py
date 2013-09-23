@@ -192,8 +192,8 @@ def assignPermission(inst_list, deUserList, permissions,
                             requestcopy = {}  # request.POST.copy()
                             requestcopy['form-0-user'] = userObj.id
                             requestcopy['form-0-instituion'] = instObj.id
-                            requestcopy['form-0-assessment'] =
-                            assessmentObj.id
+                            requestcopy[
+                                'form-0-assessment'] = assessmentObj.id
                             requestcopy['form-TOTAL_FORMS'] = 1
                             requestcopy['form-MAX_NUM_FORMS'] = 1000
                             requestcopy['form-0-access'] = True
