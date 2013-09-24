@@ -1,31 +1,18 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 """
-Data format classes ("responders") that can be plugged 
+Data format classes ("responders") that can be plugged
 into model_resource.ModelResource and determine how
 the objects of a ModelResource instance are rendered
 (e.g. serialized to XML, rendered by templates, ...).
 """
+import simplejson
 
 from django.core import serializers
 from django.core.handlers.wsgi import STATUS_CODE_TEXT
 from django.core.paginator import QuerySetPaginator, InvalidPage
-
-# the correct paginator for Model objects is the QuerySetPaginator,
-# not the Paginator! (see Django doc)
-
-from django.core.xheaders import populate_xheaders
-from django import forms
-from django.http import Http404, HttpResponse
+from django.http import HttpResponse
 from django.forms.util import ErrorDict
-from django.shortcuts import render_to_response
-from django.template import loader, RequestContext
-import  simplejson
-from django.utils.xmlutils import SimplerXMLGenerator
-from django.views.generic import TemplateView
-import json
-from schools.models import StudentGroup, Answer, \
-    Student_StudentGroupRelation
 
 
 class TreeSerializeResponder(object):
@@ -35,20 +22,14 @@ class TreeSerializeResponder(object):
     with Django's serializer framework.
     """
 
-    def __init__(
-        self,
-        CDict,
-        format,
-        mimetype=None,
-        paginate_by=None,
-        allow_empty=False,
-        ):
+    def __init__(self, CDict, format, mimetype=None, paginate_by=None,
+                 allow_empty=False):
         """
         format:
             may be every format that works with Django's serializer
             framework. By default: xml, python, json, (yaml).
         mimetype:
-            if the default None is not changed, any HttpResponse calls 
+            if the default None is not changed, any HttpResponse calls
             use settings.DEFAULT_CONTENT_TYPE and settings.DEFAULT_CHARSET
         paginate_by:
             Number of elements per page. Default: All elements.
@@ -73,8 +54,7 @@ class TreeSerializeResponder(object):
 
         for obj in list(object_list):
             for field in obj._meta.fields:
-                if not field.name in self.expose_fields \
-                    and field.serialize:
+                if not field.name in self.expose_fields and field.serialize:
                     field.serialize = False
                     hidden_fields.append(field)
 
@@ -83,32 +63,33 @@ class TreeSerializeResponder(object):
         # Show unexposed fields again
 
         response1 = serializers.serialize(self.format, object_list,
-                use_natural_keys=True)
+                                          use_natural_keys=True)
         response1 = simplejson.loads(response)
         response2 = []
-        
-        for index,k in enumerate(response1):
+
+        for index, k in enumerate(response1):
 
             modelName = k['model'].split('.')[-1]
             childkey = modelName + '_' + str(k['pk'])
             temval = self.CDict[childkey]
-        
+
             if temval:
                 childval = temval[0]
                 if type(childval)() == []:
                     childval = childval[0]
 
-                    for index,c in enumerate(temval):
+                    for index, c in enumerate(temval):
                         copyk = k.copy()
                         if childval:
 
-                                          # if object has childval(has child objects) pass haschildren true
+                # if object has childval(has child objects)
+                    # pass haschildren true
 
                             copyk['hasChildren'] = 'true'
                         copyk['id'] = childkey+'_'+str(index)
                         names = copyk['fields']
 
-                                     # get names of object to show in tree structure
+                # get names of object to show in tree structure
 
                         try:
                             titleval = names['name']
@@ -122,7 +103,7 @@ class TreeSerializeResponder(object):
                 else:
                     if childval:
 
-                          # if object has childval(has child objects) pass haschildren true
+            # if object has childval(has child objects) pass haschildren true
 
                         k['hasChildren'] = 'true'
                     k['id'] = childkey
@@ -148,12 +129,7 @@ class TreeSerializeResponder(object):
 
         return HttpResponse(self.render([elem]), self.mimetype)
 
-    def error(
-        self,
-        request,
-        status_code,
-        error_dict=None,
-        ):
+    def error(self, request, status_code, error_dict=None):
         """
         Handles errors in a RESTful way.
         - appropriate status code
@@ -175,12 +151,7 @@ Errors:
         response.status_code = status_code
         return response
 
-    def list(
-        self,
-        request,
-        queryset,
-        page=None,
-        ):
+    def list(self, request, queryset, page=None):
         """
         Renders a list of model objects to HttpResponse.
         """
@@ -208,27 +179,13 @@ class TreeResponder(TreeSerializeResponder):
     JSON data format class.
     """
 
-    def __init__(
-        self,
-        CDict,
-        paginate_by=None,
-        allow_empty=False,
-        ):
-        TreeSerializeResponder.__init__(
-            self,
-            CDict,
-            'json',
-            'application/json',
-            paginate_by=paginate_by,
-            allow_empty=allow_empty,
-            )
+    def __init__(self, CDict, paginate_by=None, allow_empty=False):
+        TreeSerializeResponder.__init__(self, CDict, 'json',
+                                        'application/json',
+                                        paginate_by=paginate_by,
+                                        allow_empty=allow_empty)
 
-    def error(
-        self,
-        request,
-        status_code,
-        error_dict=None,
-        ):
+    def error(self, request, status_code, error_dict=None):
         """
         Return JSON error response that includes a human readable error
         message, application-specific errors and a machine readable
@@ -245,5 +202,3 @@ class TreeResponder(TreeSerializeResponder):
                          'model-errors': error_dict.as_ul()}
         simplejson.dump(response_dict, response)
         return response
-
-
