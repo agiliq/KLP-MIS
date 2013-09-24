@@ -4,7 +4,8 @@ Django Extensions abstract base model classes.
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django_extensions.db.fields import (ModificationDateTimeField,
-                                         CreationDateTimeField, AutoSlugField)
+                                         CreationDateTimeField,
+                                         AutoSlugField)
 
 try:
     from django.utils.timezone import now as datetime_now
@@ -43,29 +44,45 @@ class TitleSlugDescriptionModel(models.Model):
 
 class ActivatorModelManager(models.Manager):
     """ ActivatorModelManager
-    Manager to return instances of ActivatorModel: SomeModel.objects.active() / .inactive()
+    Manager to return instances of ActivatorModel:
+        SomeModel.objects.active() / .inactive()
     """
     def active(self):
-        """ Returns active instances of ActivatorModel: SomeModel.objects.active() """
-        return self.get_query_set().filter(status=ActivatorModel.ACTIVE_STATUS)
+        """ Returns active instances of ActivatorModel:
+                SomeModel.objects.active() """
+        return self.get_query_set().filter(
+            status=ActivatorModel.ACTIVE_STATUS)
 
     def inactive(self):
-        """ Returns inactive instances of ActivatorModel: SomeModel.objects.inactive() """
-        return self.get_query_set().filter(status=ActivatorModel.INACTIVE_STATUS)
+        """ Returns inactive instances of ActivatorModel:
+                SomeModel.objects.inactive() """
+        return self.get_query_set().filter(
+            status=ActivatorModel.INACTIVE_STATUS)
 
 
 class ActivatorModel(models.Model):
     """ ActivatorModel
-    An abstract base class model that provides activate and deactivate fields.
+    An abstract base class model that provides
+            activate and deactivate fields.
     """
     INACTIVE_STATUS, ACTIVE_STATUS = range(2)
     STATUS_CHOICES = (
         (INACTIVE_STATUS, _('Inactive')),
         (ACTIVE_STATUS, _('Active')),
     )
-    status = models.IntegerField(_('status'), choices=STATUS_CHOICES, default=ACTIVE_STATUS)
-    activate_date = models.DateTimeField(blank=True, null=True, help_text=_('keep empty for an immediate activation'))
-    deactivate_date = models.DateTimeField(blank=True, null=True, help_text=_('keep empty for indefinite activation'))
+    status = models.IntegerField(('status'),
+                                 choices=STATUS_CHOICES,
+                                 default=ACTIVE_STATUS)
+    activate_date = \
+        models.DateTimeField(blank=True,
+                             null=True,
+                             help_text=
+                             ('keep empty for an immediate activation'))
+    deactivate_date = \
+        models.DateTimeField(blank=True,
+                             null=True,
+                             help_text=
+                             ('keep empty for indefinite activation'))
     objects = ActivatorModelManager()
 
     class Meta:
