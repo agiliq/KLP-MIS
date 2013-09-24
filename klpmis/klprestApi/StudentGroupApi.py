@@ -369,19 +369,16 @@ def KLP_StudentGroup_Answer_Entry(
                     else:
                         # else show input box
                         ansDict['iBox'] = True
-                    if dEntry is 2 and
-                    Adouble_entry is False and firstUser == user.id:
+                    if dEntry is 2 and Adouble_entry is False and firstUser == user.id:
                 # if dEntry is 2 and assesment double entry is false and first
                 # user is matched with logged in user then input box will show
                 # (refer ticket 322)x
                         ansDict['iBox'] = True
-                    if AssObj.primary_field_type == 4 and
-                    AssObj.flexi_assessment:
+                    if AssObj.primary_field_type == 4 and AssObj.flexi_assessment:
 
                         ansDict['lookupname'] = lookupfieldsnames[
                             int(ansObj['flexi_data'])]
-                    if AssObj.flexi_assessment and
-                    AssObj.primary_field_type != 4:
+                    if AssObj.flexi_assessment and AssObj.primary_field_type != 4:
                         ansDict['lookupname'] = ansObj['flexi_data']
                     status = ansObj['status']
                     if status == -99999:
@@ -410,8 +407,7 @@ def KLP_StudentGroup_Answer_Entry(
                         # first user who enter data, then make dE attribute
                         # true to do validation while doubleentry
                         ansDict['dE'] = True
-                    elif (firstUser == user.id and dEntry == 1)
-                    or (dEntry == 2 and Adouble_entry is False and firstUser == user.id):
+                    elif (firstUser == user.id and dEntry == 1) or (dEntry == 2 and Adouble_entry is False and firstUser == user.id):
                         # if dEntry is 1, (first entry finished doubleentry is
                         # not finished) and logged in user is match with first
                         # user who enter data, then make shVal attribute true
