@@ -22,7 +22,8 @@ def describe_form(label, fields=None):
     try:
         app_name, model_name = label.split('.')[-2:]
     except (IndexError, ValueError):
-        raise CommandError("Need application and model name in the form: appname.model")
+        raise CommandError("Need application and model \
+            name in the form: appname.model")
     model = get_model(app_name, model_name)
 
     opts = model._meta
@@ -36,7 +37,10 @@ def describe_form(label, fields=None):
         if not '__dict__' in dir(formfield):
             continue
         attrs = {}
-        valid_fields = ['required', 'initial', 'max_length', 'min_length', 'max_value', 'min_value', 'max_digits', 'decimal_places', 'choices', 'help_text', 'label']
+        valid_fields = ['required', 'initial', 'max_length',
+                        'min_length', 'max_value', 'min_value',
+                        'max_digits', 'decimal_places', 'choices',
+                        'help_text', 'label']
         for k, v in formfield.__dict__.items():
             if k in valid_fields and v is not None:
                 # ignore defaults, to minimize verbosity
@@ -63,4 +67,5 @@ from %(app_name)s.models import %(object_name)s
 
 class %(object_name)sForm(forms.Form):
 %(field_list)s
-''' % {'app_name': app_name, 'object_name': opts.object_name, 'field_list': '\n'.join(field_list)}
+''' % {'app_name': app_name, 'object_name': opts.object_name,
+       'field_list': '\n'.join(field_list)}

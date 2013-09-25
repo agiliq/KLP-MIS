@@ -3,6 +3,7 @@ from optparse import make_option
 from os.path import join as _j
 
 from django.core.management.base import NoArgsCommand
+
 from django_extensions.management.utils import get_project_root
 
 

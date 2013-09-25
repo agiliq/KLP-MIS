@@ -1,9 +1,11 @@
-from django.core.management.base import NoArgsCommand
-from django_extensions.management.utils import get_project_root
-from optparse import make_option
+import os
 from os.path import join as _j
 import py_compile
-import os
+from optparse import make_option
+
+from django.core.management.base import NoArgsCommand
+
+from django_extensions.management.utils import get_project_root
 
 
 class Command(NoArgsCommand):
