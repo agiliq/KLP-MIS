@@ -1,7 +1,8 @@
+import sys
+
 from django.core.management.base import LabelCommand
 from django.template import loader
 from django.template import TemplateDoesNotExist
-import sys
 
 
 def get_template_path(path):
