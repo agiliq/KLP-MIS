@@ -1,6 +1,7 @@
+import getpass
+
 from django.core.management.base import BaseCommand, CommandError
 from django.contrib.auth.models import User
-import getpass
 
 
 class Command(BaseCommand):
@@ -10,7 +11,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         if len(args) > 1:
-            raise CommandError("need exactly one or zero arguments for username")
+            raise CommandError("need exactly one or zero \
+                arguments for username")
 
         if args:
             username, = args

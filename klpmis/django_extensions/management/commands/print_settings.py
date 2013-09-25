@@ -2,12 +2,13 @@
 print_settings
 ==============
 
-Django command similar to 'diffsettings' but shows all active Django settings.
+Django command similar to 'diffsettings' but
+shows all active Django settings.
 """
+from optparse import make_option
 
 from django.core.management.base import NoArgsCommand
 from django.conf import settings
-from optparse import make_option
 
 
 class Command(NoArgsCommand):

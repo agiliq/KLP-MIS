@@ -1,21 +1,26 @@
 from __future__ import with_statement
-from django.core.management.base import BaseCommand
-from django.conf import settings
 import os
 import re
+
+from django.core.management.base import BaseCommand
+from django.conf import settings
+
 
 ANNOTATION_RE = re.compile("\{?#[\s]*?(TODO|FIXME|HACK|XXX)[\s:]?(.+)")
 ANNOTATION_END_RE = re.compile("(.*)#\}(.*)")
 
 
 class Command(BaseCommand):
-    help = 'Show all annotations like TODO, FIXME, HACK or XXX in your py and HTML files.'
+    help = 'Show all annotations like TODO, FIXME,\
+     HACK or XXX in your py and HTML files.'
     args = 'tag'
     label = 'annotation tag (TODO, FIXME, HACK, XXX)'
 
     def handle(self, *args, **options):
         # don't add django internal code
-        apps = filter(lambda app: not app.startswith('django.contrib'), settings.INSTALLED_APPS)
+        apps = filter(
+            lambda app: not app.startswith('django.contrib'),
+            settings.INSTALLED_APPS)
         for app_dir in apps:
             for top, dirs, files in os.walk(app_dir):
                 for f in files:
@@ -34,9 +39,12 @@ class Command(BaseCommand):
                                             break
 
                                     if ANNOTATION_END_RE.search(msg.strip()):
-                                        msg = ANNOTATION_END_RE.findall(msg.strip())[0][0]
+                                        msg = ANNOTATION_END_RE.findall(
+                                            msg.strip())[0][0]
 
-                                    annotation_lines.append("[%3s] %-5s %s" % (i, tag, msg.strip()))
+                                    annotation_lines.append(
+                                        "[%3s] %-5s %s" %
+                                        (i, tag, msg.strip()))
                             if annotation_lines:
                                 print "%s:" % fpath
                                 for annotation in annotation_lines:
