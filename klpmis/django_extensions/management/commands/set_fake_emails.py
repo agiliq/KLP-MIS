@@ -16,22 +16,33 @@ DEFAULT_FAKE_EMAIL = '%(username)s@example.com'
 
 class Command(NoArgsCommand):
     option_list = NoArgsCommand.option_list + (
-        make_option('--email', dest='default_email', default=DEFAULT_FAKE_EMAIL,
-                    help='Use this as the new email format.'),
-        make_option('-a', '--no-admin', action="store_true", dest='no_admin', default=False,
-                    help='Do not change administrator accounts'),
-        make_option('-s', '--no-staff', action="store_true", dest='no_staff', default=False,
-                    help='Do not change staff accounts'),
+        make_option(
+            '--email', dest='default_email',
+            default=DEFAULT_FAKE_EMAIL,
+            help='Use this as the new email format.'),
+        make_option(
+            '-a', '--no-admin', action="store_true",
+            dest='no_admin', default=False,
+            help='Do not change administrator accounts'),
+        make_option(
+            '-s', '--no-staff', action="store_true",
+            dest='no_staff', default=False,
+            help='Do not change staff accounts'),
         make_option('--include', dest='include_regexp', default=None,
                     help='Include usernames matching this regexp.'),
         make_option('--exclude', dest='exclude_regexp', default=None,
                     help='Exclude usernames matching this regexp.'),
         make_option('--include-groups', dest='include_groups', default=None,
-                    help='Include users matching this group. (use comma seperation for multiple groups)'),
+                    help='Include users matching this \
+                    group. (use comma seperation for multiple groups)'),
         make_option('--exclude-groups', dest='exclude_groups', default=None,
-                    help='Exclude users matching this group. (use comma seperation for multiple groups)'),
+                    help='Exclude users matching this group. \
+                    (use comma seperation for multiple groups)'),
     )
-    help = '''DEBUG only: give all users a new email based on their account data ("%s" by default). Possible parameters are: username, first_name, last_name''' % (DEFAULT_FAKE_EMAIL, )
+    help = '''DEBUG only: give all users a new email based on \
+    their account data ("%s" by default). Possible parameters \
+    are: username, first_name, last_name''' % (
+        DEFAULT_FAKE_EMAIL, )
     requires_model_validation = False
 
     def handle_noargs(self, **options):
@@ -57,13 +68,17 @@ class Command(NoArgsCommand):
             if groups:
                 users = users.exclude(groups__in=groups)
             else:
-                raise CommandError("No group matches filter: %s" % exclude_groups)
+                raise CommandError(
+                    "No group matches filter: %s" %
+                    exclude_groups)
         if include_groups:
             groups = Group.objects.filter(name__in=include_groups.split(","))
             if groups:
                 users = users.filter(groups__in=groups)
             else:
-                raise CommandError("No groups matches filter: %s" % include_groups)
+                raise CommandError(
+                    "No groups matches filter: %s" %
+                    include_groups)
         if exclude_regexp:
             users = users.exclude(username__regex=exclude_regexp)
         if include_regexp:

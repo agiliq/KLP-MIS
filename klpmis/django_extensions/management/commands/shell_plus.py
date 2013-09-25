@@ -10,7 +10,8 @@ from django_extensions.management.shells import import_objects
 class Command(NoArgsCommand):
     option_list = NoArgsCommand.option_list + (
         make_option('--plain', action='store_true', dest='plain',
-                    help='Tells Django to use plain Python, not BPython nor IPython.'),
+                    help='Tells Django to use plain Python, \
+                    not BPython nor IPython.'),
         make_option('--bpython', action='store_true', dest='bpython',
                     help='Tells Django to use BPython, not IPython.'),
         make_option('--ipython', action='store_true', dest='ipython',
@@ -21,12 +22,17 @@ class Command(NoArgsCommand):
                     help='Tells Django not to execute PYTHONSTARTUP file'),
         make_option('--print-sql', action='store_true', default=False,
                     help="Print SQL queries as they're executed"),
-        make_option('--dont-load', action='append', dest='dont_load', default=[],
-                    help='Ignore autoloading of some apps/models. Can be used several times.'),
-        make_option('--quiet-load', action='store_true', default=False, dest='quiet_load',
-                    help='Do not display loaded models messages'),
+        make_option(
+            '--dont-load', action='append', dest='dont_load', default=[],
+            help='Ignore autoloading of some apps/models.\
+             Can be used several times.'),
+        make_option(
+            '--quiet-load', action='store_true', default=False,
+            dest='quiet_load',
+            help='Do not display loaded models messages'),
     )
-    help = "Like the 'shell' command but autoloads the models of all installed Django apps."
+    help = "Like the 'shell' command but autoloads the models of \
+    all installed Django apps."
 
     requires_model_validation = True
 
@@ -47,19 +53,22 @@ class Command(NoArgsCommand):
                 pass
 
             class PrintQueryWrapper(util.CursorDebugWrapper):
+
                 def execute(self, sql, params=()):
                     starttime = time.time()
                     try:
                         return self.cursor.execute(sql, params)
                     finally:
                         execution_time = time.time() - starttime
-                        raw_sql = self.db.ops.last_executed_query(self.cursor, sql, params)
+                        raw_sql = self.db.ops.last_executed_query(
+                            self.cursor, sql, params)
                         if sqlparse:
                             print sqlparse.format(raw_sql, reindent=True)
                         else:
                             print raw_sql
                         print
-                        print 'Execution time: %.6fs [Database: %s]' % (execution_time, self.db.alias)
+                        print 'Execution time: %.6fs \
+                        [Database: %s]' % (execution_time, self.db.alias)
                         print
 
             util.CursorDebugWrapper = PrintQueryWrapper
@@ -68,7 +77,11 @@ class Command(NoArgsCommand):
             from django.conf import settings
             from IPython.frontend.html.notebook import notebookapp
             app = notebookapp.NotebookApp.instance()
-            ipython_arguments = getattr(settings, 'IPYTHON_ARGUMENTS', ['--ext', 'django_extensions.management.notebook_extension'])
+            ipython_arguments = getattr(
+                settings,
+                'IPYTHON_ARGUMENTS',
+                ['--ext',
+                 'django_extensions.management.notebook_extension'])
             app.initialize(ipython_arguments)
             app.start()
 
@@ -82,13 +95,17 @@ class Command(NoArgsCommand):
             except ImportError:
                 pass
             else:
-                # We don't have to wrap the following import in a 'try', because
+                # We don't have to wrap the following
+                # import in a 'try', because
                 # we already know 'readline' was imported successfully.
                 import rlcompleter
-                readline.set_completer(rlcompleter.Completer(imported_objects).complete)
+                readline.set_completer(
+                    rlcompleter.Completer(
+                        imported_objects).complete)
                 readline.parse_and_bind("tab:complete")
 
-            # We want to honor both $PYTHONSTARTUP and .pythonrc.py, so follow system
+            # We want to honor both $PYTHONSTARTUP and .pythonrc.py,
+            # so follow system
             # conventions and get $PYTHONSTARTUP first then import user.
             if use_pythonrc:
                 pythonrc = os.environ.get("PYTHONSTARTUP")
@@ -113,7 +130,8 @@ class Command(NoArgsCommand):
                 embed(user_ns=imported_objects)
             except ImportError:
                 # IPython < 0.11
-                # Explicitly pass an empty list as arguments, because otherwise
+                # Explicitly pass an empty list as arguments,
+                # because otherwise
                 # IPython would use sys.argv from this script.
                 # Notebook not supported for IPython < 0.11.
                 from IPython.Shell import IPShell
@@ -140,5 +158,5 @@ class Command(NoArgsCommand):
             else:
                 import traceback
                 traceback.print_exc()
-                print self.style.ERROR("Could not load any interactive Python environment.")
-
+                print self.style.ERROR("Could not load any \
+                    interactive Python environment.")

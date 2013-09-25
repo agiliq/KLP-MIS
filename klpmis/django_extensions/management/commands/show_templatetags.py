@@ -1,7 +1,8 @@
-from django.conf import settings
-from django.template import get_library
 import os
 import inspect
+
+from django.conf import settings
+from django.template import get_library
 from django.core.management.base import BaseCommand
 from django.core.management import color
 from django.utils import termcolors
@@ -54,7 +55,8 @@ def format_block(block, nlspaces=0):
 
 
 class Command(BaseCommand):
-    help = "Displays template tags and filters available in the current project."
+    help = "Displays template tags and filters available\
+     in the current project."
     results = ""
 
     def add_result(self, s, depth=0):
@@ -67,19 +69,25 @@ class Command(BaseCommand):
         style = color_style()
 
         if settings.ADMIN_FOR:
-            settings_modules = [__import__(m, {}, {}, ['']) for m in settings.ADMIN_FOR]
+            settings_modules = [__import__(m, {}, {}, [''])
+                                for m in settings.ADMIN_FOR]
         else:
             settings_modules = [settings]
 
         for settings_mod in settings_modules:
             for app in settings_mod.INSTALLED_APPS:
                 try:
-                    templatetag_mod = __import__(app + '.templatetags', {}, {}, [''])
+                    templatetag_mod = __import__(
+                        app + '.templatetags',
+                        {},
+                        {},
+                        [''])
                 except ImportError:
                     continue
                 mod_path = inspect.getabsfile(templatetag_mod)
                 mod_files = os.listdir(os.path.dirname(mod_path))
-                tag_files = [i.rstrip('.py') for i in mod_files if i.endswith('.py') and i[0] != '_']
+                tag_files = [i.rstrip('.py')
+                             for i in mod_files if i.endswith('.py') and i[0] != '_']
                 app_labeled = False
                 for taglib in tag_files:
                     try:
@@ -90,9 +98,14 @@ class Command(BaseCommand):
                         self.add_result('\nApp: %s' % style.MODULE_NAME(app))
                         app_labeled = True
                     self.add_result('load: %s' % style.TAGLIB(taglib), 1)
-                    for items, label, style_func in [(lib.tags, 'Tag:', style.TAG), (lib.filters, 'Filter:', style.FILTER)]:
+                    for items, label, style_func in [(lib.tags, 'Tag:',
+                                                     style.TAG),
+                                                     (lib.filters, 'Filter:',
+                                                         style.FILTER)]:
                         for item in items:
-                            self.add_result('%s %s' % (label, style_func(item)), 2)
+                            self.add_result(
+                                '%s %s' %
+                                (label, style_func(item)), 2)
                             doc = inspect.getdoc(items[item])
                             if doc:
                                 self.add_result(format_block(doc, 12))
