@@ -9,12 +9,13 @@
   $Revision: 217 $
 
 Description:
-    Generates a Python script that will repopulate the database using objects.
+    Generates a Python script that will repopulate the database using
+    objects.
     The advantage of this approach is that it is easy to understand, and more
     flexible than directly populating the database, or using XML.
 
-    * It also allows for new defaults to take effect and only transfers what is
-      needed.
+    * It also allows for new defaults to take effect and only transfers
+    what is needed.
     * If a new database schema has a NEW ATTRIBUTE, it is simply not
       populated (using a default value will make the transition smooth :)
     * If a new database schema REMOVES AN ATTRIBUTE, it is simply ignored
@@ -23,7 +24,8 @@ Description:
     * Problems may only occur if there is a new model and is now a required
       ForeignKey for an existing model. But this is easy to fix by editing the
       populate script. Half of the job is already done as all ForeingKey
-      lookups occur though the locate_object() function in the generated script.
+      lookups occur though the locate_object() function in the
+      generated script.
 
 Improvements:
     See TODOs and FIXMEs scattered throughout :-)
@@ -31,20 +33,23 @@ Improvements:
 """
 
 import sys
+import datetime
+
 import django
 from django.db.models import AutoField, BooleanField, FileField, ForeignKey
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.management.base import BaseCommand
 from django.utils.encoding import smart_unicode, force_unicode
 from django.contrib.contenttypes.models import ContentType
-import datetime
 
 
 def orm_item_locator(orm_obj):
     """
-    This function is called every time an object that will not be exported is required.
+    This function is called every time an object that
+    will not be exported is required.
     Where orm_obj is the referred object.
-    We postpone the lookup to locate_object() which will be run on the generated script
+    We postpone the lookup to locate_object() which will
+    run on the generated script
 
     """
 
@@ -54,7 +59,10 @@ def orm_item_locator(orm_obj):
     original_pk_name = pk_name
     pk_value = getattr(orm_obj, pk_name)
 
-    while hasattr(pk_value, "_meta") and hasattr(pk_value._meta, "pk") and hasattr(pk_value._meta.pk, "name"):
+    while hasattr(
+        pk_value, "_meta") and hasattr(
+            pk_value._meta,
+            "pk") and hasattr(pk_value._meta.pk, "name"):
         the_class = pk_value._meta.object_name
         pk_name = pk_value._meta.pk.name
         pk_value = getattr(pk_value, pk_name)
@@ -83,12 +91,17 @@ class Command(BaseCommand):
         models = get_models(app_labels)
 
         # A dictionary is created to keep track of all the processed objects,
-        # so that foreign key references can be made using python variable names.
+        # so that foreign key references can be made using
+        # python variable names.
         # This variable "context" will be passed around like the town bicycle.
         context = {}
 
         # Create a dumpscript object and let it format itself as a string
-        self.stdout.write(str(Script(models=models, context=context, stdout=self.stdout, stderr=self.stderr)))
+        self.stdout.write(
+            str(Script(models=models,
+                       context=context,
+                       stdout=self.stdout,
+                       stderr=self.stderr)))
         self.stdout.write("\n")
 
 
@@ -101,7 +114,8 @@ def get_models(app_labels):
     from django.db.models import get_app, get_apps, get_model
     from django.db.models import get_models as get_all_models
 
-    # These models are not to be output, e.g. because they can be generated automatically
+    # These models are not to be output, e.g. because
+        # they can be generated automatically
     # TODO: This should be "appname.modelname" string
     EXCLUDED_MODELS = (ContentType, )
 
@@ -110,7 +124,9 @@ def get_models(app_labels):
     # If no app labels are given, return all
     if not app_labels:
         for app in get_apps():
-            models += [m for m in get_all_models(app) if m not in EXCLUDED_MODELS]
+            models += [
+                m for m in get_all_models(
+                    app) if m not in EXCLUDED_MODELS]
 
     # Get all relevant apps
     for app_label in app_labels:
@@ -120,15 +136,18 @@ def get_models(app_labels):
             models.append(get_model(app_label, model_name))
         # Get all models for a given app
         else:
-            models += [m for m in get_all_models(get_app(app_label)) if m not in EXCLUDED_MODELS]
+            models += [m for m in get_all_models(
+                get_app(app_label)) if m not in EXCLUDED_MODELS]
 
     return models
 
 
 class Code(object):
+
     """ A snippet of python script.
         This keeps track of import statements and can be output to a string.
-        In the future, other features such as custom indentation might be included
+        In the future, other features such as custom
+        indentation might be included
         in this class.
     """
 
@@ -148,7 +167,11 @@ class Code(object):
         """
         if self.imports:
             self.stderr.write(repr(self.import_lines))
-            return flatten_blocks([""] + self.import_lines + [""] + self.lines, num_indents=self.indent)
+            return (
+                flatten_blocks(
+                    [""] + self.import_lines + [""] + self.lines,
+                    num_indents=self.indent)
+            )
         else:
             return flatten_blocks(self.lines, num_indents=self.indent)
 
@@ -156,17 +179,23 @@ class Code(object):
         """ Takes the stored imports and converts them to lines
         """
         if self.imports:
-            return ["from %s import %s" % (value, key) for key, value in self.imports.items()]
+            return (
+                ["from %s import %s" % (value, key)
+                 for key, value in self.imports.items()]
+            )
         else:
             return []
     import_lines = property(get_import_lines)
 
 
 class ModelCode(Code):
-    " Produces a python script that can recreate data for a given model class. "
+
+    " Produces a python script that can recreate \
+    data for a given model class. "
 
     def __init__(self, model, context=None, stdout=None, stderr=None):
-        super(ModelCode, self).__init__(indent=0, stdout=stdout, stderr=stderr)
+        super(ModelCode, self).__init__(indent=0, stdout=stdout,
+                                        stderr=stderr)
         self.model = model
         if context is None:
             context = {}
@@ -174,8 +203,8 @@ class ModelCode(Code):
         self.instances = []
 
     def get_imports(self):
-        """ Returns a dictionary of import statements, with the variable being
-            defined as the key.
+        """ Returns a dictionary of import statements, \
+        with the variable being defined as the key.
         """
         return {self.model.__name__: smart_unicode(self.model.__module__)}
     imports = property(get_imports)
@@ -187,7 +216,12 @@ class ModelCode(Code):
         code = []
 
         for counter, item in enumerate(self.model._default_manager.all()):
-            instance = InstanceCode(instance=item, id=counter + 1, context=self.context, stdout=self.stdout, stderr=self.stderr)
+            instance = InstanceCode(
+                instance=item,
+                id=counter + 1,
+                context=self.context,
+                stdout=self.stdout,
+                stderr=self.stderr)
             self.instances.append(instance)
             if instance.waiting_list:
                 code += instance.lines
@@ -204,12 +238,16 @@ class ModelCode(Code):
 
 
 class InstanceCode(Code):
-    " Produces a python script that can recreate data for a given model instance. "
+
+    " Produces a python script that can recreate data for \
+    a given model instance. "
 
     def __init__(self, instance, id, context=None, stdout=None, stderr=None):
         """ We need the instance in question and an id """
 
-        super(InstanceCode, self).__init__(indent=0, stdout=stdout, stderr=stderr)
+        super(
+            InstanceCode,
+            self).__init__(indent=0, stdout=stdout, stderr=stderr)
         self.imports = {}
 
         self.instance = instance
@@ -225,15 +263,17 @@ class InstanceCode(Code):
 
         self.many_to_many_waiting_list = {}
         for field in self.model._meta.many_to_many:
-            self.many_to_many_waiting_list[field] = list(getattr(self.instance, field.name).all())
+            self.many_to_many_waiting_list[field] = list(
+                getattr(self.instance, field.name).all())
 
     def get_lines(self, force=False):
         """ Returns a list of lists or strings, representing the code body.
             Each list is a block, each string is a statement.
 
             force (True or False): if an attribute object cannot be included,
-            it is usually skipped to be processed later. With 'force' set, there
-            will be no waiting: a get_or_create() call is written instead.
+            it is usually skipped to be processed later. With 'force' set,
+            there will be no waiting: a get_or_create() call is
+            written instead.
         """
         code_lines = []
 
@@ -299,7 +339,8 @@ class InstanceCode(Code):
 
         if get_skip_version() == 1:
             try:
-                # Django trunk since r7722 uses CollectedObjects instead of dict
+                # Django trunk since r7722 uses CollectedObjects instead of
+                # dict
                 from django.db.models.query import CollectedObjects
                 sub_objects = CollectedObjects()
             except ImportError:
@@ -328,10 +369,16 @@ class InstanceCode(Code):
 
         sub_objects_parents = [so._meta.parents for so in sub_objects]
         if [self.model in p for p in sub_objects_parents].count(True) == 1:
-            # since this instance isn't explicitly created, it's variable name
-            # can't be referenced in the script, so record None in context dict
+            # since this instance isn't explicitly
+                # created, it's variable name
+            # can't be referenced in the script,
+            # so record None in context dict
             pk_name = self.instance._meta.pk.name
-            key = '%s_%s' % (self.model.__name__, getattr(self.instance, pk_name))
+            key = '%s_%s' % (
+                self.model.__name__,
+                getattr(
+                    self.instance,
+                    pk_name))
             self.context[key] = None
             self.skip_me = True
         else:
@@ -345,12 +392,18 @@ class InstanceCode(Code):
         code_lines = []
 
         if not self.instantiated:
-            code_lines.append("%s = %s()" % (self.variable_name, self.model.__name__))
+            code_lines.append(
+                "%s = %s()" %
+                (self.variable_name, self.model.__name__))
             self.instantiated = True
 
             # Store our variable name for future foreign key references
             pk_name = self.instance._meta.pk.name
-            key = '%s_%s' % (self.model.__name__, getattr(self.instance, pk_name))
+            key = '%s_%s' % (
+                self.model.__name__,
+                getattr(
+                    self.instance,
+                    pk_name))
             self.context[key] = self.variable_name
 
         return code_lines
@@ -363,9 +416,16 @@ class InstanceCode(Code):
         # Process normal fields
         for field in list(self.waiting_list):
             try:
-                # Find the value, add the line, remove from waiting list and move on
-                value = get_attribute_value(self.instance, field, self.context, force=force)
-                code_lines.append('%s.%s = %s' % (self.variable_name, field.name, value))
+                # Find the value, add the line, remove from waiting list and
+                # move on
+                value = get_attribute_value(
+                    self.instance,
+                    field,
+                    self.context,
+                    force=force)
+                code_lines.append(
+                    '%s.%s = %s' %
+                    (self.variable_name, field.name, value))
                 self.waiting_list.remove(field)
             except SkipValue:
                 # Remove from the waiting list and move on
@@ -378,7 +438,8 @@ class InstanceCode(Code):
         return code_lines
 
     def get_many_to_many_lines(self, force=False):
-        """ Generates lines that define many to many relations for this instance. """
+        """ Generates lines that define many to many
+        relations for this instance. """
 
         lines = []
 
@@ -386,16 +447,25 @@ class InstanceCode(Code):
             for rel_item in list(rel_items):
                 try:
                     pk_name = rel_item._meta.pk.name
-                    key = '%s_%s' % (rel_item.__class__.__name__, getattr(rel_item, pk_name))
+                    key = '%s_%s' % (
+                        rel_item.__class__.__name__,
+                        getattr(rel_item,
+                                pk_name))
                     value = "%s" % self.context[key]
-                    lines.append('%s.%s.add(%s)' % (self.variable_name, field.name, value))
+                    lines.append(
+                        '%s.%s.add(%s)' %
+                        (self.variable_name, field.name, value))
                     self.many_to_many_waiting_list[field].remove(rel_item)
                 except KeyError:
                     if force:
                         item_locator = orm_item_locator(rel_item)
-                        self.context["__extra_imports"][rel_item._meta.object_name] = rel_item.__module__
-                        lines.append('%s.%s.add( %s )' % (self.variable_name, field.name, item_locator))
-                        self.many_to_many_waiting_list[field].remove(rel_item)
+                        self.context["__extra_imports"][
+                            rel_item._meta.object_name] = rel_item.__module__
+                        lines.append(
+                            '%s.%s.add( %s )' %
+                            (self.variable_name, field.name, item_locator))
+                        self.many_to_many_waiting_list[field].remove(
+                            rel_item)
 
         if lines:
             lines.append("")
@@ -404,7 +474,9 @@ class InstanceCode(Code):
 
 
 class Script(Code):
-    " Produces a complete python script that can recreate data for the given apps. "
+
+    " Produces a complete python script that can\
+     recreate data for the given apps. "
 
     def __init__(self, models, context=None, stdout=None, stderr=None):
         super(Script, self).__init__(stdout=stdout, stderr=stderr)
@@ -437,8 +509,13 @@ class Script(Code):
             model = models.pop(0)
 
             # If the model is ready to be processed, add it to the list
-            if check_dependencies(model, model_queue, context["__avaliable_models"]):
-                model_class = ModelCode(model=model, context=context, stdout=self.stdout, stderr=self.stderr)
+            if check_dependencies(model, model_queue,
+                                  context["__avaliable_models"]):
+                model_class = ModelCode(
+                    model=model,
+                    context=context,
+                    stdout=self.stdout,
+                    stderr=self.stderr)
                 model_queue.append(model_class)
 
             # Otherwise put the model back at the end of the list
@@ -452,8 +529,14 @@ class Script(Code):
             if number_remaining_models == previous_number_remaining_models:
                 allowed_cycles -= 1
                 if allowed_cycles <= 0:
-                    # Add the remaining models, but do not remove them from the model list
-                    missing_models = [ModelCode(model=m, context=context, stdout=self.stdout, stderr=self.stderr) for m in models]
+                    # Add the remaining models,
+                        # but do not remove them from the
+                    # model list
+                    missing_models = [ModelCode(
+                        model=m,
+                        context=context,
+                        stdout=self.stdout,
+                        stderr=self.stderr) for m in models]
                     model_queue += missing_models
                     # Replace the models with the model class objects
                     # (sure, this is a little bit of hackery)
@@ -471,7 +554,8 @@ class Script(Code):
         code = [self.FILE_HEADER.strip()]
 
         # Queue and process the required models
-        for model_class in self._queue_models(self.models, context=self.context):
+        for model_class in self._queue_models(self.models,
+                                              context=self.context):
             msg = 'Processing model: %s\n' % model_class.model.__name__
             self.stderr.write(msg)
             code.append("    #" + msg)
@@ -492,7 +576,9 @@ class Script(Code):
         code.insert(2, "")
         for key, value in self.context["__extra_imports"].items():
             code.insert(2, "    from %s import %s" % (value, key))
-        code.insert(2 + len(self.context["__extra_imports"]), self.locate_object_function)
+        code.insert(
+            2 + len(self.context["__extra_imports"]),
+            self.locate_object_function)
 
         return code
 
@@ -525,12 +611,16 @@ def run():
 """ % " ".join(sys.argv)
 
     locate_object_function = """
-    def locate_object(original_class, original_pk_name, the_class, pk_name, pk_value, obj_content):
-        #You may change this function to do specific lookup for specific objects
+    def locate_object(original_class, original_pk_name, the_class,
+        pk_name, pk_value, obj_content):
+        #You may change this function to do specific
+        lookup for specific objects
         #
-        #original_class class of the django orm's object that needs to be located
+        #original_class class of the django orm's object that
+        needs to be located
         #original_pk_name the primary key of original_class
-        #the_class      parent class of original_class which contains obj_content
+        #the_class      parent class of original_class which
+        contains obj_content
         #pk_name        the primary key of original_class
         #pk_value       value of the primary_key
         #obj_content    content of the object which was not exported.
@@ -539,11 +629,13 @@ def run():
         #
         #and example where original_class and the_class are different is
         #when original_class is Farmer and
-        #the_class is Person. The table may refer to a Farmer but you will actually
+        #the_class is Person. The table may refer to a
+        Farmer but you will actually
         #need to locate Person in order to instantiate that Farmer
         #
         #example:
-        #if the_class == SurveyResultFormat or the_class == SurveyType or the_class == SurveyState:
+        #if the_class == SurveyResultFormat or the_class ==
+            SurveyType or the_class == SurveyState:
         #    pk_name="name"
         #    pk_value=obj_content[pk_name]
         #if the_class == StaffGroup:
@@ -558,11 +650,11 @@ def run():
 
 
 # HELPER FUNCTIONS
-#-------------------------------------------------------------------------------
+#-------------------------------------------------------------------------
 
 def flatten_blocks(lines, num_indents=-1):
-    """ Takes a list (block) or string (statement) and flattens it into a string
-        with indentation.
+    """ Takes a list (block) or string (statement) and
+    flattens it into a string with indentation.
     """
 
     # The standard indent is four spaces
@@ -576,27 +668,34 @@ def flatten_blocks(lines, num_indents=-1):
         return INDENTATION * num_indents + lines
 
     # If this is not a string, join the lines and recurse
-    return "\n".join([flatten_blocks(line, num_indents + 1) for line in lines])
+    return "\n".join([flatten_blocks(
+        line, num_indents + 1) for line in lines])
 
 
 def get_attribute_value(item, field, context, force=False):
-    """ Gets a string version of the given attribute's value, like repr() might. """
+    """ Gets a string version of the given attribute's
+    value, like repr() might. """
 
     # Find the value of the field, catching any database issues
     try:
         value = getattr(item, field.name)
     except ObjectDoesNotExist:
-        raise SkipValue('Could not find object for %s.%s, ignoring.\n' % (item.__class__.__name__, field.name))
+        raise SkipValue(
+            'Could not find object for %s.%s, ignoring.\n' %
+            (item.__class__.__name__, field.name))
 
-    # AutoField: We don't include the auto fields, they'll be automatically recreated
+    # AutoField: We don't include the auto fields, they'll be automatically
+    # recreated
     if isinstance(field, AutoField):
         raise SkipValue()
 
-    # Some databases (eg MySQL) might store boolean values as 0/1, this needs to be cast as a bool
+    # Some databases (eg MySQL) might store boolean values as 0/1, this needs
+    # to be cast as a bool
     elif isinstance(field, BooleanField) and value is not None:
         return repr(bool(value))
 
-    # Post file-storage-refactor, repr() on File/ImageFields no longer returns the path
+    # Post file-storage-refactor, repr()
+    # on File/ImageFields no longer returns the path
     elif isinstance(field, FileField):
         return repr(force_unicode(value))
 
@@ -608,7 +707,10 @@ def get_attribute_value(item, field, context, force=False):
         # automatically.
         # NB: Not sure if "is" will always work
         if field.rel.to is ContentType:
-            return 'ContentType.objects.get(app_label="%s", model="%s")' % (value.app_label, value.model)
+            return (
+                'ContentType.objects.get(app_label="%s", model="%s")' % (
+                    value.app_label, value.model)
+            )
 
         # Generate an identifier (key) for this foreign object
         pk_name = value._meta.pk.name
@@ -623,11 +725,14 @@ def get_attribute_value(item, field, context, force=False):
             # Return the variable name listed in the context
             return "%s" % variable_name
         elif value.__class__ not in context["__avaliable_models"] or force:
-            context["__extra_imports"][value._meta.object_name] = value.__module__
+            context["__extra_imports"][
+                value._meta.object_name] = value.__module__
             item_locator = orm_item_locator(value)
             return item_locator
         else:
-            raise DoLater('(FK) %s.%s\n' % (item.__class__.__name__, field.name))
+            raise DoLater(
+                '(FK) %s.%s\n' %
+                (item.__class__.__name__, field.name))
 
     # A normal field (e.g. a python built-in)
     else:
@@ -643,10 +748,15 @@ def make_clean_dict(the_dict):
 
 
 def check_dependencies(model, model_queue, avaliable_models):
-    " Check that all the depenedencies for this model are already in the queue. "
+    " Check that all the depenedencies for this \
+    model are already in the queue. "
 
-    # A list of allowed links: existing fields, itself and the special case ContentType
-    allowed_links = [m.model.__name__ for m in model_queue] + [model.__name__, 'ContentType']
+    # A list of allowed links: existing fields, itself and the special case
+    # ContentType
+    allowed_links = [
+        m.model.__name__ for m in model_queue] + [
+        model.__name__,
+        'ContentType']
 
     # For each ForeignKey or ManyToMany field, check that a link is possible
 
@@ -664,11 +774,13 @@ def check_dependencies(model, model_queue, avaliable_models):
 
 
 # EXCEPTIONS
-#-------------------------------------------------------------------------------
+#-------------------------------------------------------------------------
 
 class SkipValue(Exception):
+
     """ Value could not be parsed or should simply be skipped. """
 
 
 class DoLater(Exception):
+
     """ Value could not be parsed or should simply be skipped. """
