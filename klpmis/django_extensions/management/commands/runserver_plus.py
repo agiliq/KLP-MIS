@@ -1,15 +1,18 @@
-from django.conf import settings
-from django.core.management.base import BaseCommand, CommandError
-from django_extensions.management.utils import setup_logger, RedirectHandler
-from optparse import make_option
 import os
 import sys
 import time
+from optparse import make_option
+
+from django.conf import settings
+from django.core.management.base import BaseCommand, CommandError
+
+from django_extensions.management.utils import setup_logger, RedirectHandler
+
 
 try:
     from django.contrib.staticfiles.handlers import StaticFilesHandler
     USE_STATICFILES = 'django.contrib.staticfiles' in settings.INSTALLED_APPS
-except ImportError, e:
+except ImportError as e:
     USE_STATICFILES = False
 
 import logging
@@ -22,25 +25,34 @@ def null_technical_500_response(request, exc_type, exc_value, tb):
 
 class Command(BaseCommand):
     option_list = BaseCommand.option_list + (
-        make_option('--noreload', action='store_false', dest='use_reloader', default=True,
-                    help='Tells Django to NOT use the auto-reloader.'),
+        make_option(
+            '--noreload', action='store_false', dest='use_reloader',
+            default=True,
+            help='Tells Django to NOT use the auto-reloader.'),
         make_option('--browser', action='store_true', dest='open_browser',
                     help='Tells Django to open a browser.'),
         make_option('--adminmedia', dest='admin_media_path', default='',
-                    help='Specifies the directory from which to serve admin media.'),
+                    help='Specifies the directory from \
+                    which to serve admin media.'),
         make_option('--threaded', action='store_true', dest='threaded',
                     help='Run in multithreaded mode.'),
         make_option('--output', dest='output_file', default=None,
-                    help='Specifies an output file to send a copy of all messages (not flushed immediately).'),
+                    help='Specifies an output file to send a copy of all \
+                    messages (not flushed immediately).'),
         make_option('--print-sql', action='store_true', default=False,
                     help="Print SQL queries as they're executed"),
     )
     if USE_STATICFILES:
         option_list += (
-            make_option('--nostatic', action="store_false", dest='use_static_handler', default=True,
-                        help='Tells Django to NOT automatically serve static files at STATIC_URL.'),
-            make_option('--insecure', action="store_true", dest='insecure_serving', default=False,
-                        help='Allows serving static files even if DEBUG is False.'),
+            make_option(
+                '--nostatic', action="store_false",
+                dest='use_static_handler', default=True,
+                help='Tells Django to NOT automatically serve \
+                static files at STATIC_URL.'),
+            make_option(
+                '--insecure', action="store_true",
+                dest='insecure_serving', default=False,
+                help='Allows serving static files even if DEBUG is False.'),
         )
     help = "Starts a lightweight Web server for development."
     args = '[optional port number, or ipaddr:port]'
@@ -51,7 +63,11 @@ class Command(BaseCommand):
     def handle(self, addrport='', *args, **options):
         import django
 
-        setup_logger(logger, self.stderr, filename=options.get('output_file', None))  # , fmt="[%(name)s] %(message)s")
+        setup_logger(
+            logger,
+            self.stderr,
+            filename=options.get('output_file',
+                                 None))  # , fmt="[%(name)s] %(message)s")
         logredirect = RedirectHandler(__name__)
 
         # Redirect werkzeug log items
@@ -68,16 +84,23 @@ class Command(BaseCommand):
                 sqlparse = None  # noqa
 
             class PrintQueryWrapper(util.CursorDebugWrapper):
+
                 def execute(self, sql, params=()):
                     starttime = time.time()
                     try:
                         return self.cursor.execute(sql, params)
                     finally:
-                        raw_sql = self.db.ops.last_executed_query(self.cursor, sql, params)
+                        raw_sql = self.db.ops.last_executed_query(
+                            self.cursor, sql, params)
                         execution_time = time.time() - starttime
-                        therest = ' -- [Execution time: %.6fs] [Database: %s]' % (execution_time, self.db.alias)
+                        therest = ' -- [Execution time: %.6fs] [Database: %s]' % (
+                            execution_time, self.db.alias)
                         if sqlparse:
-                            logger.info(sqlparse.format(raw_sql, reindent=True) + therest)
+                            logger.info(
+                                sqlparse.format(
+                                    raw_sql,
+                                    reindent=True) +
+                                therest)
                         else:
                             logger.info(raw_sql + therest)
 
@@ -96,7 +119,10 @@ class Command(BaseCommand):
         try:
             from werkzeug import run_simple, DebuggedApplication
         except ImportError:
-            raise CommandError("Werkzeug is required to use runserver_plus.  Please visit http://werkzeug.pocoo.org/ or install via pip. (pip install Werkzeug)")
+            raise CommandError(
+                "Werkzeug is required to use runserver_plus.  \
+                Please visit http://werkzeug.pocoo.org/ or install via pip.\
+                 (pip install Werkzeug)")
 
         # usurp django's handler
         from django.views import debug
@@ -121,22 +147,30 @@ class Command(BaseCommand):
         threaded = options.get('threaded', False)
         use_reloader = options.get('use_reloader', True)
         open_browser = options.get('open_browser', False)
-        quit_command = (sys.platform == 'win32') and 'CTRL-BREAK' or 'CONTROL-C'
+        quit_command = (
+            sys.platform == 'win32') and 'CTRL-BREAK' or 'CONTROL-C'
 
         def inner_run():
             print "Validating models..."
             self.validate(display_num_errors=True)
-            print "\nDjango version %s, using settings %r" % (django.get_version(), settings.SETTINGS_MODULE)
-            print "Development server is running at http://%s:%s/" % (addr, port)
-            print "Using the Werkzeug debugger (http://werkzeug.pocoo.org/)"
+            print "\nDjango version %s, using settings \
+            %r" % (django.get_version(), settings.SETTINGS_MODULE)
+            print "Development server is running at\
+             http://%s:%s/" % (addr, port)
+            print "Using the Werkzeug debugger \
+            (http://werkzeug.pocoo.org/)"
             print "Quit the server with %s." % quit_command
             path = options.get('admin_media_path', '')
             if not path:
-                admin_media_path = os.path.join(django.__path__[0], 'contrib/admin/static/admin')
+                admin_media_path = os.path.join(
+                    django.__path__[0],
+                    'contrib/admin/static/admin')
                 if os.path.isdir(admin_media_path):
                     path = admin_media_path
                 else:
-                    path = os.path.join(django.__path__[0], 'contrib/admin/media')
+                    path = os.path.join(
+                        django.__path__[0],
+                        'contrib/admin/media')
             handler = WSGIHandler()
             if USE_ADMINMEDIAHANDLER:
                 handler = AdminMediaHandler(handler, path)
@@ -150,5 +184,6 @@ class Command(BaseCommand):
                 url = "http://%s:%s/" % (addr, port)
                 webbrowser.open(url)
             run_simple(addr, int(port), DebuggedApplication(handler, True),
-                       use_reloader=use_reloader, use_debugger=True, threaded=threaded)
+                       use_reloader=use_reloader, use_debugger=True,
+                       threaded=threaded)
         inner_run()
