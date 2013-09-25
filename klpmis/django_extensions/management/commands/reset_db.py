@@ -1,35 +1,42 @@
 """
 originally from http://www.djangosnippets.org/snippets/828/ by dnordberg
 """
+import re
+import logging
+from optparse import make_option
 
+import django
 from django.conf import settings
 from django.core.management.base import CommandError, BaseCommand
-import django
-import logging
-import re
-from optparse import make_option
 
 
 class Command(BaseCommand):
     option_list = BaseCommand.option_list + (
         make_option('--noinput', action='store_false',
                     dest='interactive', default=True,
-                    help='Tells Django to NOT prompt the user for input of any kind.'),
+                    help='Tells Django to NOT prompt the\
+                     user for input of any kind.'),
         make_option('--no-utf8', action='store_true',
                     dest='no_utf8_support', default=False,
-                    help='Tells Django to not create a UTF-8 charset database'),
+                    help='Tells Django to not create a \
+                    UTF-8 charset database'),
         make_option('-U', '--user', action='store',
                     dest='user', default=None,
-                    help='Use another user for the database then defined in settings.py'),
+                    help='Use another user for the database \
+                    then defined in settings.py'),
         make_option('-P', '--password', action='store',
                     dest='password', default=None,
-                    help='Use another password for the database then defined in settings.py'),
+                    help='Use another password for the database\
+                     then defined in settings.py'),
         make_option('-D', '--dbname', action='store',
                     dest='dbname', default=None,
-                    help='Use another database name then defined in settings.py (For PostgreSQL this defaults to "template1")'),
+                    help='Use another database name then defined in\
+                     settings.py (For PostgreSQL this defaults \
+                        to "template1")'),
         make_option('-R', '--router', action='store',
                     dest='router', default=None,
-                    help='Use this router-database other then defined in settings.py'),
+                    help='Use this router-database other then \
+                    defined in settings.py'),
     )
     help = "Resets the database for this project."
 
@@ -63,7 +70,11 @@ class Command(BaseCommand):
         if django.get_version() >= "1.2":
             got_db_settings = self.set_db_settings(*args, **options)
             if not got_db_settings:
-                raise CommandError("You are using Django %s which requires to specify the db-router.\nPlease specify the router by adding --router=<routername> to this command." % django.get_version())
+                raise CommandError(
+                    "You are using Django %s which requires to specify the \
+                    db-router.\nPlease specify the router by \
+                    adding --router=<routername> to this command." %
+                    django.get_version())
                 return
 
         verbosity = int(options.get('verbosity', 1))
@@ -113,8 +124,11 @@ Type 'yes' to continue, or 'no' to cancel: """ % (settings.DATABASE_NAME,))
 
             connection = Database.connect(**kwargs)
             drop_query = 'DROP DATABASE IF EXISTS `%s`' % settings.DATABASE_NAME
-            utf8_support = options.get('no_utf8_support', False) and '' or 'CHARACTER SET utf8'
-            create_query = 'CREATE DATABASE `%s` %s' % (settings.DATABASE_NAME, utf8_support)
+            utf8_support = options.get(
+                'no_utf8_support',
+                False) and '' or 'CHARACTER SET utf8'
+            create_query = 'CREATE DATABASE `%s` %s' % (
+                settings.DATABASE_NAME, utf8_support)
             logging.info('Executing... "' + drop_query + '"')
             connection.query(drop_query)
             logging.info('Executing... "' + create_query + '"')
@@ -128,7 +142,9 @@ Type 'yes' to continue, or 'no' to cancel: """ % (settings.DATABASE_NAME,))
 
             if settings.DATABASE_NAME == '':
                 from django.core.exceptions import ImproperlyConfigured
-                raise ImproperlyConfigured("You need to specify DATABASE_NAME in your Django settings file.")
+                raise ImproperlyConfigured(
+                    "You need to specify DATABASE_NAME \
+                    in your Django settings file.")
 
             database_name = options.get('dbname', 'template1')
             if options.get('dbname') is None:
@@ -151,16 +167,20 @@ Type 'yes' to continue, or 'no' to cancel: """ % (settings.DATABASE_NAME,))
 
             try:
                 cursor.execute(drop_query)
-            except Database.ProgrammingError, e:
+            except Database.ProgrammingError as e:
                 logging.info("Error: %s" % str(e))
 
-            # Encoding should be SQL_ASCII (7-bit postgres default) or prefered UTF8 (8-bit)
-            create_query = """CREATE DATABASE %s WITH OWNER = %s ENCODING = 'UTF8' """ % (settings.DATABASE_NAME, settings.DATABASE_USER)
+            # Encoding should be SQL_ASCII (7-bit postgres default) or prefered
+            # UTF8 (8-bit)
+            create_query = """CREATE DATABASE %s WITH OWNER = %s
+            ENCODING = 'UTF8' """ % (
+                settings.DATABASE_NAME, settings.DATABASE_USER)
 
             if postgis.match(engine):
                 create_query += 'TEMPLATE = template_postgis '
             if settings.DEFAULT_TABLESPACE:
-                create_query += 'TABLESPACE = %s;' % (settings.DEFAULT_TABLESPACE)
+                create_query += 'TABLESPACE = %s;' % (
+                    settings.DEFAULT_TABLESPACE)
             else:
                 create_query += ';'
             logging.info('Executing... "' + create_query + '"')
