@@ -1,8 +1,10 @@
+from optparse import make_option
+
 from django.conf import settings
 from django.core.exceptions import ViewDoesNotExist
 from django.core.urlresolvers import RegexURLPattern, RegexURLResolver
 from django.core.management.base import BaseCommand
-from optparse import make_option
+
 
 try:
     # 2008-05-30 admindocs found in newforms-admin brand
@@ -34,10 +36,16 @@ def extract_views_from_urlpatterns(urlpatterns, base=''):
                 patterns = p.url_patterns
             except ImportError:
                 continue
-            views.extend(extract_views_from_urlpatterns(patterns, base + p.regex.pattern))
+            views.extend(
+                extract_views_from_urlpatterns(
+                    patterns,
+                    base + p.regex.pattern))
         elif hasattr(p, '_get_callback'):
             try:
-                views.append((p._get_callback(), base + p.regex.pattern, p.name))
+                views.append(
+                    (p._get_callback(),
+                     base + p.regex.pattern,
+                     p.name))
             except ViewDoesNotExist:
                 continue
         elif hasattr(p, 'url_patterns') or hasattr(p, '_get_url_patterns'):
@@ -45,16 +53,22 @@ def extract_views_from_urlpatterns(urlpatterns, base=''):
                 patterns = p.url_patterns
             except ImportError:
                 continue
-            views.extend(extract_views_from_urlpatterns(patterns, base + p.regex.pattern))
+            views.extend(
+                extract_views_from_urlpatterns(
+                    patterns,
+                    base + p.regex.pattern))
         else:
-            raise TypeError("%s does not appear to be a urlpattern object" % p)
+            raise TypeError("%s does not appear to be a \
+                urlpattern object" % p)
     return views
 
 
 class Command(BaseCommand):
     option_list = BaseCommand.option_list + (
-        make_option("--unsorted", "-u", action="store_true", dest="unsorted",
-                    help="Show urls unsorted but same order as found in url patterns"),
+        make_option("--unsorted", "-u",
+                    action="store_true", dest="unsorted",
+                    help="Show urls unsorted but same order\
+                     as found in url patterns"),
     )
 
     help = "Displays all of the url matching routes for the project."
@@ -68,7 +82,8 @@ class Command(BaseCommand):
         style = color_style()
 
         if settings.ADMIN_FOR:
-            settings_modules = [__import__(m, {}, {}, ['']) for m in settings.ADMIN_FOR]
+            settings_modules = [__import__(m, {}, {}, [''])
+                                for m in settings.ADMIN_FOR]
         else:
             settings_modules = [settings]
 
@@ -76,13 +91,15 @@ class Command(BaseCommand):
         for settings_mod in settings_modules:
             try:
                 urlconf = __import__(settings_mod.ROOT_URLCONF, {}, {}, [''])
-            except Exception, e:
+            except Exception as e:
                 if options.get('traceback', None):
                     import traceback
                     traceback.print_exc()
-                print style.ERROR("Error occurred while trying to load %s: %s" % (settings_mod.ROOT_URLCONF, str(e)))
+                print style.ERROR("Error occurred while trying\
+                 to load %s: %s" % (settings_mod.ROOT_URLCONF, str(e)))
                 continue
-            view_functions = extract_views_from_urlpatterns(urlconf.urlpatterns)
+            view_functions = extract_views_from_urlpatterns(
+                urlconf.urlpatterns)
             for (func, regex, url_name) in view_functions:
                 if hasattr(func, '__name__'):
                     func_name = func.__name__
