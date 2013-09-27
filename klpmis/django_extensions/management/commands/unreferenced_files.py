@@ -1,5 +1,6 @@
-from collections import defaultdict
 import os
+from collections import defaultdict
+
 from django.conf import settings
 from django.core.management.base import NoArgsCommand
 from django.db import models
@@ -7,7 +8,8 @@ from django.db.models.loading import cache
 
 
 class Command(NoArgsCommand):
-    help = "Prints a list of all files in MEDIA_ROOT that are not referenced in the database."
+    help = "Prints a list of all files in MEDIA_ROOT that are \
+    not referenced in the database."
 
     def handle_noargs(self, **options):
 
@@ -41,7 +43,8 @@ class Command(NoArgsCommand):
                     if target_file:
                         referenced.append(os.path.abspath(target_file.path))
 
-        # Print each file in MEDIA_ROOT that is not referenced in the database
+        # Print each file in MEDIA_ROOT that
+             # is not referenced in the database
         for m in media:
             if m not in referenced:
                 print m
