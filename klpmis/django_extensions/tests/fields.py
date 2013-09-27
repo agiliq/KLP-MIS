@@ -13,6 +13,7 @@ class SluggedTestModel(models.Model):
 
 
 class AutoSlugFieldTest(unittest.TestCase):
+
     def setUp(self):
         self.old_installed_apps = settings.INSTALLED_APPS
         settings.INSTALLED_APPS = list(settings.INSTALLED_APPS)

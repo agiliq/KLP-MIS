@@ -5,11 +5,12 @@ from django.db.models import loading
 from django.utils import unittest
 
 # Only perform encrypted fields tests if keyczar is present
-# Resolves http://github.com/django-extensions/django-extensions/issues/#issue/17
+# Resolves
+# http://github.com/django-extensions/django-extensions/issues/#issue/17
 try:
-    from keyczar import keyczar, keyczart, keyinfo  # NOQA
+    from keyczar import keyczar  # NOQA
     from django_extensions.tests.models import Secret
-    from django_extensions.db.fields.encrypted import EncryptedTextField, EncryptedCharField  # NOQA
+    from django_extensions.db.fields.encrypted import EncryptedCharField  # NOQA
     keyczar_active = hasattr(settings, "ENCRYPTED_FIELD_KEYS_DIR")
 except ImportError:
     keyczar_active = False
@@ -19,7 +20,8 @@ class EncryptedFieldsTestCase(unittest.TestCase):
 
     def __init__(self, *args, **kwargs):
         if keyczar_active:
-            self.crypt = keyczar.Crypter.Read(settings.ENCRYPTED_FIELD_KEYS_DIR)
+            self.crypt = keyczar.Crypter.Read(
+                settings.ENCRYPTED_FIELD_KEYS_DIR)
         super(EncryptedFieldsTestCase, self).__init__(*args, **kwargs)
 
     def setUp(self):
@@ -38,10 +40,12 @@ class EncryptedFieldsTestCase(unittest.TestCase):
         test_val = "Test Secret"
         secret = Secret.objects.create(name=test_val)
         cursor = connection.cursor()
-        query = "SELECT name FROM %s WHERE id = %d" % (Secret._meta.db_table, secret.id)
+        query = "SELECT name FROM %s WHERE id = %d" % (
+            Secret._meta.db_table, secret.id)
         cursor.execute(query)
         db_val, = cursor.fetchone()
-        decrypted_val = self.crypt.Decrypt(db_val[len(EncryptedCharField.prefix):])
+        decrypted_val = self.crypt.Decrypt(
+            db_val[len(EncryptedCharField.prefix):])
         self.assertEqual(test_val, decrypted_val)
 
     def testCharFieldRead(self):
@@ -58,10 +62,12 @@ class EncryptedFieldsTestCase(unittest.TestCase):
         test_val = "Test Secret"
         secret = Secret.objects.create(text=test_val)
         cursor = connection.cursor()
-        query = "SELECT text FROM %s WHERE id = %d" % (Secret._meta.db_table, secret.id)
+        query = "SELECT text FROM %s WHERE id = %d" % (
+            Secret._meta.db_table, secret.id)
         cursor.execute(query)
         db_val, = cursor.fetchone()
-        decrypted_val = self.crypt.Decrypt(db_val[len(EncryptedCharField.prefix):])
+        decrypted_val = self.crypt.Decrypt(
+            db_val[len(EncryptedCharField.prefix):])
         self.assertEqual(test_val, decrypted_val)
 
     def testTextFieldRead(self):
@@ -71,4 +77,3 @@ class EncryptedFieldsTestCase(unittest.TestCase):
         secret = Secret.objects.create(text=test_val)
         retrieved_secret = Secret.objects.get(id=secret.id)
         self.assertEqual(test_val, retrieved_secret.text)
-
