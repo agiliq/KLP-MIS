@@ -14,7 +14,8 @@ def import_objects(options, style):
     from django.conf import settings
     imported_objects = {'settings': settings}
 
-    dont_load_cli = options.get('dont_load')  # optparse will set this to [] if it doensnt exists
+    # optparse will set this to [] if it doensnt exists
+    dont_load_cli = options.get('dont_load')
     dont_load_conf = getattr(settings, 'SHELL_PLUS_DONT_LOAD', [])
     dont_load = dont_load_cli + dont_load_conf
     quiet_load = options.get('quiet_load')
@@ -35,7 +36,12 @@ def import_objects(options, style):
 
         for model in app_models:
             try:
-                imported_object = getattr(__import__(app_mod.__name__, {}, {}, model.__name__), model.__name__)
+                imported_object = getattr(
+                    __import__(app_mod.__name__,
+                               {},
+                               {},
+                               model.__name__),
+                    model.__name__)
                 model_name = model.__name__
 
                 if "%s.%s" % (app_name, model_name) in dont_load:
@@ -48,11 +54,13 @@ def import_objects(options, style):
                 else:
                     model_labels.append("%s (as %s)" % (model_name, alias))
 
-            except AttributeError, e:
+            except AttributeError as e:
                 if not quiet_load:
-                    print style.ERROR("Failed to import '%s' from '%s' reason: %s" % (model.__name__, app_name, str(e)))
+                    print style.ERROR(
+                        "Failed to import '%s' from '%s' reason: %s" % (model.__name__, app_name, str(e)))
                 continue
         if not quiet_load:
-            print style.SQL_COLTYPE("From '%s' autoload: %s" % (app_mod.__name__.split('.')[-2], ", ".join(model_labels)))
+            print style.SQL_COLTYPE(
+                "From '%s' autoload: %s" % (app_mod.__name__.split('.')[-2], ", ".join(model_labels)))
 
     return imported_objects

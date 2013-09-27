@@ -1,7 +1,8 @@
-from django.conf import settings
 import os
 import sys
 import logging
+
+from django.conf import settings
 
 
 def get_project_root():
@@ -39,14 +40,18 @@ def setup_logger(logger, stream, filename=None, fmt=None):
         if filename:
             outfile = logging.FileHandler(filename)
             outfile.setLevel(logging.INFO)
-            outfile.setFormatter(logging.Formatter("%(asctime)s " + (fmt if fmt else '%(message)s')))
+            outfile.setFormatter(
+                logging.Formatter("%(asctime)s " + (fmt if fmt else '%(message)s')))
             logger.addHandler(outfile)
 
 
 class RedirectHandler(logging.Handler):
+
     """Redirect logging sent to one logger (name) to another."""
+
     def __init__(self, name, level=logging.DEBUG):
-        # Contemplate feasibility of copying a destination (allow original handler) and redirecting.
+        # Contemplate feasibility of copying a destination (allow original
+        # handler) and redirecting.
         logging.Handler.__init__(self, level)
         self.name = name
         self.logger = logging.getLogger(name)
