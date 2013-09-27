@@ -6,8 +6,8 @@ Django command that scans all files in your settings.MEDIA_ROOT folder and
 uploads them to S3 with the same directory structure.
 
 This command can optionally do the following but it is off by default:
-* gzip compress any CSS and Javascript files it finds and adds the appropriate
-  'Content-Encoding' header.
+* gzip compress any CSS and Javascript files it finds and
+adds the appropriate 'Content-Encoding' header.
 * set a far future 'Expires' header for optimal caching.
 
 Note: This script requires the Python boto library and valid Amazon Web
@@ -39,8 +39,8 @@ Command options are:
                         You can change the extension setting the
                         `SYNC_S3_RENAME_GZIP_EXT` var in your settings.py
                         file.
-  --invalidate          Invalidates the objects in CloudFront after uploaading
-                        stuff to s3.
+  --invalidate          Invalidates the objects in CloudFront after
+                        uploaading stuff to s3.
 
 
 TODO:
@@ -129,14 +129,21 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
 
         # Check for AWS keys in settings
-        if not hasattr(settings, 'AWS_ACCESS_KEY_ID') or not hasattr(settings, 'AWS_SECRET_ACCESS_KEY'):
-            raise CommandError('Missing AWS keys from settings file.  Please supply both AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY.')
+        if not hasattr(settings,
+                       'AWS_ACCESS_KEY_ID') or not hasattr(settings,
+                                                           'AWS_SECRET_ACCESS_KEY'):
+            raise CommandError(
+                'Missing AWS keys from settings file. \
+                 Please supply both AWS_ACCESS_KEY_ID and \
+                 AWS_SECRET_ACCESS_KEY.')
         else:
             self.AWS_ACCESS_KEY_ID = settings.AWS_ACCESS_KEY_ID
             self.AWS_SECRET_ACCESS_KEY = settings.AWS_SECRET_ACCESS_KEY
 
         if not hasattr(settings, 'AWS_BUCKET_NAME'):
-            raise CommandError('Missing bucket name from settings file. Please add the AWS_BUCKET_NAME to your settings file.')
+            raise CommandError(
+                'Missing bucket name from settings file. Please add the \
+                AWS_BUCKET_NAME to your settings file.')
         else:
             if not settings.AWS_BUCKET_NAME:
                 raise CommandError('AWS_BUCKET_NAME cannot be empty.')
@@ -148,7 +155,8 @@ class Command(BaseCommand):
             if not settings.MEDIA_ROOT:
                 raise CommandError('MEDIA_ROOT must be set in your settings.')
 
-        self.AWS_CLOUDFRONT_DISTRIBUTION = getattr(settings, 'AWS_CLOUDFRONT_DISTRIBUTION', '')
+        self.AWS_CLOUDFRONT_DISTRIBUTION = getattr(
+            settings, 'AWS_CLOUDFRONT_DISTRIBUTION', '')
 
         self.SYNC_S3_RENAME_GZIP_EXT = \
             getattr(settings, 'SYNC_S3_RENAME_GZIP_EXT', '.gz')
@@ -195,7 +203,8 @@ class Command(BaseCommand):
         if not self.AWS_CLOUDFRONT_DISTRIBUTION:
             raise CommandError(
                 'An object invalidation was requested but the variable '
-                'AWS_CLOUDFRONT_DISTRIBUTION is not present in your settings.')
+                'AWS_CLOUDFRONT_DISTRIBUTION is \
+                not present in your settings.')
 
         # We can't send more than 1000 objects in the same invalidation
         # request.
@@ -218,7 +227,13 @@ class Command(BaseCommand):
         Walks the media directory and syncs files to S3
         """
         bucket, key = self.open_s3()
-        os.path.walk(self.DIRECTORY, self.upload_s3, (bucket, key, self.AWS_BUCKET_NAME, self.DIRECTORY))
+        os.path.walk(
+            self.DIRECTORY,
+            self.upload_s3,
+            (bucket,
+             key,
+             self.AWS_BUCKET_NAME,
+             self.DIRECTORY))
 
     def compress_string(self, s):
         """Gzip a given string."""
@@ -232,7 +247,9 @@ class Command(BaseCommand):
         """
         Opens connection to S3 returning bucket and key
         """
-        conn = boto.connect_s3(self.AWS_ACCESS_KEY_ID, self.AWS_SECRET_ACCESS_KEY)
+        conn = boto.connect_s3(
+            self.AWS_ACCESS_KEY_ID,
+            self.AWS_SECRET_ACCESS_KEY)
         try:
             bucket = conn.get_bucket(self.AWS_BUCKET_NAME)
         except boto.exception.S3ResponseError:
@@ -241,13 +258,15 @@ class Command(BaseCommand):
 
     def upload_s3(self, arg, dirname, names):
         """
-        This is the callback to os.path.walk and where much of the work happens
+        This is the callback to os.path.walk and where much of the work \
+        happens
         """
         bucket, key, bucket_name, root_dir = arg
 
         # Skip directories we don't want to sync
         if os.path.basename(dirname) in self.FILTER_LIST:
-            # prevent walk from processing subfiles/subdirs below the ignored one
+            # prevent walk from processing subfiles/subdirs below the ignored
+            # one
             del names[:]
             return
 
@@ -280,7 +299,7 @@ class Command(BaseCommand):
                     if local_datetime < s3_datetime:
                         self.skip_count += 1
                         if self.verbosity > 1:
-                            print "File %s hasn't been modified since last " \
+                            print "File %s hasn't been modified since last "\
                                 "being uploaded" % (file_key)
                         continue
 
@@ -311,7 +330,8 @@ class Command(BaseCommand):
                             (file_size / 1024, len(filedata) / 1024)
             if self.do_expires:
                 # HTTP/1.0
-                headers['Expires'] = '%s GMT' % (email.Utils.formatdate(time.mktime((datetime.datetime.now() + datetime.timedelta(days=365 * 2)).timetuple())))
+                headers['Expires'] = '%s GMT' % (email.Utils.formatdate(
+                    time.mktime((datetime.datetime.now() + datetime.timedelta(days=365 * 2)).timetuple())))
                 # HTTP/1.1
                 headers['Cache-Control'] = 'max-age %d' % (3600 * 24 * 365 * 2)
                 if self.verbosity > 1:
@@ -322,9 +342,9 @@ class Command(BaseCommand):
                 key.name = file_key
                 key.set_contents_from_string(filedata, headers, replace=True)
                 key.set_acl('public-read')
-            except boto.exception.S3CreateError, e:
+            except boto.exception.S3CreateError as e:
                 print "Failed: %s" % e
-            except Exception, e:
+            except Exception as e:
                 print e
                 raise
             else:
@@ -338,5 +358,6 @@ if not [opt for opt in Command.option_list if opt.dest == 'verbosity']:
     Command.option_list += (
         make_option('-v', '--verbosity',
                     dest='verbosity', default=1, action='count',
-                    help="Verbose mode. Multiple -v options increase the verbosity."),
+                    help="Verbose mode. Multiple -v options increase \
+                    the verbosity."),
     )
