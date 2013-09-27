@@ -74,7 +74,11 @@ def get_lexer(value, arg):
 @stringfilter
 def colorize(value, arg=None):
     try:
-        return mark_safe(highlight(value, get_lexer(value, arg), HtmlFormatter()))
+        return (
+            mark_safe(highlight(value,
+                                get_lexer(value, arg),
+                                HtmlFormatter()))
+        )
     except ClassNotFound:
         return value
 
@@ -83,7 +87,11 @@ def colorize(value, arg=None):
 @stringfilter
 def colorize_table(value, arg=None):
     try:
-        return mark_safe(highlight(value, get_lexer(value, arg), HtmlFormatter(linenos='table')))
+        return (
+            mark_safe(
+                highlight(value, get_lexer(value, arg),
+                          HtmlFormatter(linenos='table')))
+        )
     except ClassNotFound:
         return value
 
@@ -92,6 +100,11 @@ def colorize_table(value, arg=None):
 @stringfilter
 def colorize_noclasses(value, arg=None):
     try:
-        return mark_safe(highlight(value, get_lexer(value, arg), HtmlFormatter(noclasses=True)))
+        return (
+            mark_safe(
+                highlight(value,
+                          get_lexer(value, arg),
+                          HtmlFormatter(noclasses=True)))
+        )
     except ClassNotFound:
         return value

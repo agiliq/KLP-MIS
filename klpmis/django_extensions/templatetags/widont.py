@@ -1,15 +1,20 @@
+import re
+
 from django.template import Library
 from django.utils.encoding import force_unicode
-import re
+
 
 register = Library()
 re_widont = re.compile(r'\s+(\S+\s*)$')
-re_widont_html = re.compile(r'([^<>\s])\s+([^<>\s]+\s*)(</?(?:address|blockquote|br|dd|div|dt|fieldset|form|h[1-6]|li|noscript|p|td|th)[^>]*>|$)', re.IGNORECASE)
+re_widont_html = re.compile(
+    r'([^<>\s])\s+([^<>\s]+\s*)(</?(?:address|blockquote|br|dd|div|dt|fieldset|form|h[1-6]|li|noscript|p|td|th)[^>]*>|$)',
+    re.IGNORECASE)
 
 
 def widont(value, count=1):
     """
-    Adds an HTML non-breaking space between the final two words of the string to
+    Adds an HTML non-breaking space between the final \
+    two words of the string to
     avoid "widowed" words.
 
     Examples:

@@ -32,6 +32,7 @@ Example:
 from pygments import highlight as pyghighlight
 from pygments.lexers import get_lexer_by_name
 from pygments.formatters import HtmlFormatter
+
 from django import template
 from django.template import Template, Context, Node, Variable, TemplateSyntaxError
 from django.template.defaultfilters import stringfilter
@@ -48,6 +49,7 @@ parse_template.is_safe = True
 
 
 class CodeNode(Node):
+
     def __init__(self, language, nodelist, name=''):
         self.language = Variable(language)
         self.nodelist = nodelist
@@ -87,5 +89,6 @@ def highlight(parser, token):
     parser.delete_first_token()
     bits = token.split_contents()[1:]
     if len(bits) < 1:
-        raise TemplateSyntaxError("'highlight' statement requires an argument")
+        raise TemplateSyntaxError("'highlight' \
+            statement requires an argument")
     return CodeNode(bits[0], nodelist, *bits[1:])
