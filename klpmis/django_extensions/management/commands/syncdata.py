@@ -3,9 +3,9 @@ SyncData
 ========
 
 Django command similar to 'loaddata' but also deletes.
-After 'syncdata' has run, the database will have the same data as the fixture - anything
-missing will of been added, anything different will of been updated,
-and anything extra will of been deleted.
+After 'syncdata' has run, the database will have the same data as the
+fixture - anything missing will of been added, anything different will
+of been updated, and anything extra will of been deleted.
 """
 
 from django.core.management.base import BaseCommand
@@ -16,15 +16,19 @@ import os
 
 
 class Command(BaseCommand):
+
     """ syncdata command """
 
-    help = 'Makes the current database have the same data as the fixture(s), no more, no less.'
+    help = 'Makes the current database have the same \
+    data as the fixture(s), no more, no less.'
     args = "fixture [fixture ...]"
 
     def remove_objects_not_in(self, objects_to_keep, verbosity):
         """
-        Deletes all the objects in the database that are not in objects_to_keep.
-        - objects_to_keep: A map where the keys are classes, and the values are a
+        Deletes all the objects in the database that \
+        are not in objects_to_keep.
+        - objects_to_keep: A map where the keys are classes,\
+         and the values are a
          set of the objects of that class we should keep.
         """
         for class_ in objects_to_keep.keys():
@@ -80,7 +84,9 @@ class Command(BaseCommand):
         transaction.enter_transaction_management()
         transaction.managed(True)
 
-        app_fixtures = [os.path.join(os.path.dirname(app.__file__), 'fixtures') for app in get_apps()]
+        app_fixtures = [os.path.join(
+            os.path.dirname(app.__file__),
+            'fixtures') for app in get_apps()]
         for fixture_label in fixture_labels:
             parts = fixture_label.split('.')
             if len(parts) == 1:
@@ -97,7 +103,11 @@ class Command(BaseCommand):
                 if verbosity > 1:
                     print "Loading '%s' fixtures..." % fixture_name
             else:
-                sys.stderr.write(self.style.ERROR("Problem installing fixture '%s': %s is not a known serialization format." % (fixture_name, format)))
+                sys.stderr.write(
+                    self.style.ERROR(
+                        "Problem installing fixture '%s': %s is not a known \
+                        serialization format." % (fixture_name,
+                                                  format)))
                 transaction.rollback()
                 transaction.leave_transaction_management()
                 return
@@ -105,23 +115,30 @@ class Command(BaseCommand):
             if os.path.isabs(fixture_name):
                 fixture_dirs = [fixture_name]
             else:
-                fixture_dirs = app_fixtures + list(settings.FIXTURE_DIRS) + ['']
+                fixture_dirs = app_fixtures + \
+                    list(settings.FIXTURE_DIRS) + ['']
 
             for fixture_dir in fixture_dirs:
                 if verbosity > 1:
-                    print "Checking %s for fixtures..." % humanize(fixture_dir)
+                    print "Checking %s for fixtures...\
+                    " % humanize(fixture_dir)
 
                 label_found = False
                 for format in formats:
                     #serializer = serializers.get_serializer(format)
                     if verbosity > 1:
-                        print "Trying %s for %s fixture '%s'..." % (humanize(fixture_dir), format, fixture_name)
+                        print "Trying %s for %s fixture \
+                        '%s'..." % (humanize(fixture_dir), format, fixture_name)
                     try:
-                        full_path = os.path.join(fixture_dir, '.'.join([fixture_name, format]))
+                        full_path = os.path.join(
+                            fixture_dir,
+                            '.'.join([fixture_name,
+                                      format]))
                         fixture = open(full_path, 'r')
                         if label_found:
                             fixture.close()
-                            print self.style.ERROR("Multiple fixtures named '%s' in %s. Aborting." % (fixture_name, humanize(fixture_dir)))
+                            print self.style.ERROR("Multiple fixtures named \
+                                '%s' in %s. Aborting." % (fixture_name, humanize(fixture_dir)))
                             transaction.rollback()
                             transaction.leave_transaction_management()
                             return
@@ -130,10 +147,12 @@ class Command(BaseCommand):
                             objects_per_fixture.append(0)
                             if verbosity > 0:
                                 print "Installing %s fixture '%s' from %s." % \
-                                    (format, fixture_name, humanize(fixture_dir))
+                                    (format, fixture_name, humanize(
+                                        fixture_dir))
                             try:
                                 objects_to_keep = {}
-                                objects = serializers.deserialize(format, fixture)
+                                objects = serializers.deserialize(
+                                    format, fixture)
                                 for obj in objects:
                                     object_count += 1
                                     objects_per_fixture[-1] += 1
@@ -146,7 +165,8 @@ class Command(BaseCommand):
                                     models.add(class_)
                                     obj.save()
 
-                                self.remove_objects_not_in(objects_to_keep, verbosity)
+                                self.remove_objects_not_in(
+                                    objects_to_keep, verbosity)
 
                                 label_found = True
                             except (SystemExit, KeyboardInterrupt):
@@ -160,7 +180,9 @@ class Command(BaseCommand):
                                     traceback.print_exc()
                                 else:
                                     sys.stderr.write(
-                                        self.style.ERROR("Problem installing fixture '%s': %s\n" % (full_path, traceback.format_exc())))
+                                        self.style.ERROR("Problem installing \
+                                            fixture '%s': %s\n" % (full_path,
+                                                                   traceback.format_exc())))
                                 return
                             fixture.close()
                     except:
@@ -172,7 +194,8 @@ class Command(BaseCommand):
         # error was encountered during fixture loading.
         if 0 in objects_per_fixture:
             sys.stderr.write(
-                self.style.ERROR("No fixture data found for '%s'. (File format may be invalid.)" % (fixture_name)))
+                self.style.ERROR("No fixture data found for \
+                    '%s'. (File format may be invalid.)" % (fixture_name)))
             transaction.rollback()
             transaction.leave_transaction_management()
             return
@@ -180,7 +203,8 @@ class Command(BaseCommand):
         # If we found even one object in a fixture, we need to reset the
         # database sequences.
         if object_count > 0:
-            sequence_sql = connection.ops.sequence_reset_sql(self.style, models)
+            sequence_sql = connection.ops.sequence_reset_sql(
+                self.style, models)
             if sequence_sql:
                 if verbosity > 1:
                     print "Resetting sequences"
@@ -195,7 +219,8 @@ class Command(BaseCommand):
                 print "No fixtures found."
         else:
             if verbosity > 0:
-                print "Installed %d object(s) from %d fixture(s)" % (object_count, fixture_count)
+                print "Installed %d object(s) from %d \
+                fixture(s)" % (object_count, fixture_count)
 
         # Close the DB connection. This is required as a workaround for an
         # edge case in MySQL: if the same connection is used to
@@ -208,5 +233,6 @@ if not [opt for opt in Command.option_list if opt.dest == 'verbosity']:
     Command.option_list += (
         make_option('--verbosity', '-v', action="store", dest="verbosity",
                     default='1', type='choice', choices=['0', '1', '2'],
-                    help="Verbosity level; 0=minimal output, 1=normal output, 2=all output"),
+                    help="Verbosity level; 0=minimal output, \
+                    1=normal output, 2=all output"),
     )

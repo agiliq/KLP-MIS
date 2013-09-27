@@ -19,6 +19,7 @@ KNOWN ISSUES:
    - Some of the 'fixes' to counter these problems might create false
      positives or false negatives.
 """
+from optparse import make_option
 
 from django.core.management.base import BaseCommand
 from django.core.management import sql as _sql
@@ -26,7 +27,7 @@ from django.core.management import CommandError
 from django.core.management.color import no_style
 from django.db import transaction, connection
 from django.db.models.fields import IntegerField
-from optparse import make_option
+
 
 ORDERING_FIELD = IntegerField('_order', null=True)
 
@@ -495,7 +496,7 @@ class SQLDiff(object):
             if not self.dense:
                 print style.NOTICE(
                     "|-+ Differences for model:"), style.SQL_TABLE(
-                        model_name)
+                    model_name)
             for diff in diffs:
                 diff_type, diff_args = diff
                 text = self.DIFF_TEXTS[diff_type] % dict(
@@ -509,8 +510,8 @@ class SQLDiff(object):
                 else:
                     print style.NOTICE(
                         "App"), style.SQL_TABLE(
-                            app_label), style.NOTICE(
-                                'Model'), style.SQL_TABLE(model_name), text
+                        app_label), style.NOTICE(
+                        'Model'), style.SQL_TABLE(model_name), text
 
     def print_diff_sql(self, style):
         cur_app_label = None
@@ -828,7 +829,7 @@ to check/debug ur models compared to the real database tables and columns."""
                 app_models.extend(models.get_models(app))
 
         # remove all models that are not managed by Django
-        #app_models = [model for model in app_models
+        # app_models = [model for model in app_models
         # if getattr(model._meta, 'managed', True)]
 
         if not app_models:
