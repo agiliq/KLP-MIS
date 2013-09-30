@@ -59,7 +59,7 @@ class FullHistoryManager(models.Manager):
                                            object_id=pk).order_by('revision')
 
     def audit(self, entry=None, model=None, pk=None,):
-        from fullhistory import get_all_data
+        from .fullhistory import get_all_data
         obj = self.get_version(entry, model, pk)
         if entry is not None:
             for (key, value) in get_all_data(entry).items():
@@ -117,8 +117,9 @@ class FullHistoryManager(models.Manager):
                 if isinstance(field[0], models.DateTimeField):
                     value = \
                         datetime.datetime.strptime(value,
-                                                   '%s %s' % (encoder.DATE_FORMAT,
-                                                   encoder.TIME_FORMAT))
+                                                   '%s %s' % (
+                                                       encoder.DATE_FORMAT,
+                                                       encoder.TIME_FORMAT))
                 elif isinstance(field[0], models.DateField):
                     value = \
                         datetime.datetime.strptime(value,
@@ -183,9 +184,13 @@ class FullHistory(models.Model):
                'D': u'%s Deleted'}[self.action] % user_name
         if self.action == 'U':
             for (key, value) in self.data.items():
-                if not isinstance(value, tuple) or len(value) != 2:  # fix for old admin
+                # fix for old admin
+                if not isinstance(value, tuple) or len(value) != 2:
                     continue
-                ret += u'\n"%s" changed from [%s] to [%s]' % (key, unicode(value[0])[:50], unicode(value[1])[:50])
+                ret += u'\n"%s" changed from [%s] to [%s]' % (
+                    key,
+                    unicode(value[0])[:50],
+                    unicode(value[1])[:50])
         return ret
 
     def previous(self):
@@ -194,7 +199,8 @@ class FullHistory(models.Model):
         '''
 
         return FullHistory.objects.get(content_type=self.content_type,
-                object_id=self.object_id, revision=self.revision - 1)
+                                       object_id=self.object_id,
+                                       revision=self.revision - 1)
 
     def next(self):
         '''
@@ -202,15 +208,20 @@ class FullHistory(models.Model):
         '''
 
         return FullHistory.objects.get(content_type=self.content_type,
-                object_id=self.object_id, revision=self.revision + 1)
+                                       object_id=self.object_id,
+                                       revision=self.revision + 1)
 
     def related_changes(self):
         '''
-        Returns a queryset of the changes that have also occurred with this change
+        Returns a queryset of the changes that have also
+        occurred with this change
         '''
 
         if self.request:
-            return FullHistory.objects.filter(request=self.request).exclude(pk=self.pk)
+            return (
+                FullHistory.objects.filter(
+                    request=self.request).exclude(pk=self.pk)
+            )
         return FullHistory.objects.none()
 
     def save(self, *args, **kwargs):
