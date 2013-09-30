@@ -20,8 +20,10 @@ def get_template_errors():
     return errors
 
 
-# Disable extends and include as they are not needed, slow parsing down, and cause duplicate errors
+# Disable extends and include as they are not needed,
+    # slow parsing down, and cause duplicate errors
 class NoOpNode(Node):
+
     def render(self, context):
         return ''
 
@@ -36,8 +38,8 @@ def include(parser, token):
     return NoOpNode()
 
 
-# We replace load to determine whether new style urls are in use and re-patch url after
-# a future version is loaded
+# We replace load to determine whether new style
+    # urls are in use and re-patch url after a future version is loaded
 @register.tag
 def load(parser, token):
     global new_style_url_tag
@@ -65,11 +67,15 @@ def old_style_url(parser, token):
     view = bits[1]
 
     if error_on_old_style_url_tag:
-        _error("Old style url tag used (only reported once per file): {%% %s %%}" % (" ".join(bits)), token)
+        _error(
+            "Old style url tag used (only reported once per file): {%% %s %%}" %
+            (" ".join(bits)), token)
         error_on_old_style_url_tag = False
 
     if view[0] in "\"'" and view[0] == view[-1]:
-        _error("Old style url tag with quotes around view name: {%% %s %%}" % (" ".join(bits)), token)
+        _error(
+            "Old style url tag with quotes around view name: {%% %s %%}" %
+            (" ".join(bits)), token)
 
     return defaulttags.url(parser, token)
 
@@ -79,7 +85,9 @@ def new_style_url(parser, token):
     view = bits[1]
 
     if view[0] not in "\"'" or view[0] != view[-1]:
-        _error("New style url tag without quotes around view name: {%% %s %%}" % (" ".join(bits)), token)
+        _error(
+            "New style url tag without quotes around view name: {%% %s %%}" %
+            (" ".join(bits)), token)
 
     return future.url(parser, token)
 
