@@ -1,7 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import django
-from django.contrib.auth.models import User  # this app requires auth, so we can do tests against it
+# this app requires auth, so we can do tests against it
+from django.contrib.auth.models import User
 from django.contrib import admin
 from django.test import TestCase
 
@@ -150,12 +151,16 @@ class FullHistoryTest(TestCase):
 
     def test_autofield_with_specified_obj(self):
         """
-        This fails due to the combination of an auto field and specifying an id that already is in use
-        Effectively we have no way of differing a record loaded from the database (which specifies an id)
+        This fails due to the combination of an auto
+        field and specifying an id that already is in use
+        Effectively we have no way of differing a record loaded
+        from the database (which specifies an id)
         or a record that we manually specify.
-        Another scenerio is creating specific object with an id and later setting another field before saving
-        In general, we should not specify the id of an object without first loading it
-        The alternative is to simply take a snapshot on save and not do differences
+        Another scenerio is creating specific object with an
+        id and later setting another field before saving
+        In general, we should not specify the
+        id of an object without first loading it. The alternative is to
+        simply take a snapshot on save and not do differences
         this would be easier but its nice to know what people changed
         """
 
@@ -187,8 +192,9 @@ class FullHistoryTest(TestCase):
         t3.delete()
 
         self.assertEqual('D',
-                         FullHistory.objects.actions_for_object(model=Test3Model,
-                         pk=pk).reverse()[0].action)
+                         FullHistory.objects.actions_for_object(
+                             model=Test3Model,
+                             pk=pk).reverse()[0].action)
         FullHistory.objects.audit(model=Test3Model, pk=pk)
 
         previous_revision = -1

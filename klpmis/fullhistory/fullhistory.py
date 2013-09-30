@@ -107,7 +107,7 @@ def adjust_history(obj, action='U'):
         ct = ContentType.objects.get_for_model(obj)
         try:
             history = get_active_histories().filter(content_type=ct,
-                    object_id=obj.pk).latest()
+                                                    object_id=obj.pk).latest()
         except FullHistory.DoesNotExist:
             history = FullHistory(content_object=obj,
                                   request=get_or_create_request(),
@@ -174,5 +174,3 @@ class FullHistoryMiddleware(object):
     def process_response(self, request, response):
         end_session()
         return response
-
-
