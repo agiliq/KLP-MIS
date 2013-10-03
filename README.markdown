@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/agiliq/klp-MIS.png?branch=develop)](https://travis-ci.org/agiliq/klp-MIS)
+[![Build Status](https://travis-ci.org/agiliq/KLP-MIS.png?branch=develop)](https://travis-ci.org/agiliq/KLP-MIS)
 
 # An Introduction to KLP
 
