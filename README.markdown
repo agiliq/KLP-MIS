@@ -68,7 +68,7 @@
   In any new environment as SUDO USER, run the following commands<br/>
   `[sudouser@server:~]$ sudo apt-get install python-setuptools python-dev build-essential checkinstall`<br/>
   `[sudouser@server:~]$ sudo apt-get install libpcre++-dev git gitosis libxml2-dev libssl-dev`<br/>
-  `[sudouser@server:~]$ sudo easy_install -U pip`<br/>
+  `[sudouser@server:~]$ sudo apt-get install python-pip`<br/>
   `[sudouser@server:~]$ sudo adduser klpdemo`<br/>
 
 ## Database related installation
@@ -78,7 +78,7 @@ In any new environment as SUDO USER, run the following commands<br/>
 
 ##  Set up Python environment
   `[sudouser@server:~]$ sudo pip install PIL`<br/>
-  `[sudouser@server:~]$ sudo pip install Django==1.2.5`<br/>
+  `[sudouser@server:~]$ sudo pip install Django==1.5.1`<br/>
 
 ##  Set up Apache and mod-wsgi
   Install Apache Worker MPM, which is recommended as it processes requests using threads.(Will produce results faster)<br/>
