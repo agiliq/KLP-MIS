@@ -10,8 +10,8 @@ from django.contrib.auth.forms import *
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 
-from django_restapi.responder import *
-from django_restapi.receiver import *
+from vendor.django_restapi.responder import *
+from vendor.django_restapi.receiver import *
 from schools.models import *
 from schools.receivers import KLP_user_Perm
 from fullhistory.models import FullHistory

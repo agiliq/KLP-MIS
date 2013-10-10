@@ -16,10 +16,10 @@ from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 
 
-from django_restapi.resource import Resource
-from django_restapi.model_resource import Collection
-from django_restapi.responder import TemplateResponder
-from django_restapi.receiver import XMLReceiver
+from vendor.django_restapi.resource import Resource
+from vendor.django_restapi.model_resource import Collection
+from vendor.django_restapi.responder import TemplateResponder
+from vendor.django_restapi.receiver import XMLReceiver
 
 from schools.forms import Assessment_Form, Assessment_Lookup_Form
 from schools.forms import Question_Form

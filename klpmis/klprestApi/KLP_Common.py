@@ -22,10 +22,10 @@ from django.core.mail import send_mail
 from schools.models import *
 from schools.forms import *
 from schools.receivers import KLP_user_Perm
-from django_restapi.model_resource import Collection, Entry
-from django_restapi.responder import *
-from django_restapi.receiver import *
-from django_restapi.resource import Resource
+from vendor.django_restapi.model_resource import Collection, Entry
+from vendor.django_restapi.responder import *
+from vendor.django_restapi.receiver import *
+from vendor.django_restapi.resource import Resource
 
 
 class KLP_Create_Node(Resource):

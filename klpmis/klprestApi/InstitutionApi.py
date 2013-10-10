@@ -13,9 +13,9 @@ from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 
-from django_restapi.model_resource import Collection
-from django_restapi.responder import *
-from django_restapi.receiver import *
+from vendor.django_restapi.model_resource import Collection
+from vendor.django_restapi.responder import *
+from vendor.django_restapi.receiver import *
 from klprestApi.BoundaryApi import ChoiceEntry
 from klprestApi.TreeMenu import *
 from schools.receivers import KLP_user_Perm

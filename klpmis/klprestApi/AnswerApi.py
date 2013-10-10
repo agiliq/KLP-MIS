@@ -9,10 +9,10 @@ from django.http import HttpResponse
 from django.forms.models import modelformset_factory
 from django.db import IntegrityError
 
-from django_restapi.authentication import *
-from django_restapi.resource import Resource
-from django_restapi.responder import *
-from django_restapi.receiver import *
+from vendor.django_restapi.authentication import *
+from vendor.django_restapi.resource import Resource
+from vendor.django_restapi.responder import *
+from vendor.django_restapi.receiver import *
 from schools.forms import *
 from schools.models import *
 from schools.receivers import KLP_obj_Perm

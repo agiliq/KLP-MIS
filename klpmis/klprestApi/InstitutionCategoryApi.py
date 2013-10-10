@@ -6,9 +6,9 @@ InstitutionCategoryApi is used to create new Institution Category
 
 from django.conf.urls.defaults import *
 
-from django_restapi.model_resource import Collection
-from django_restapi.responder import *
-from django_restapi.receiver import *
+from vendor.django_restapi.model_resource import Collection
+from vendor.django_restapi.responder import *
+from vendor.django_restapi.receiver import *
 from klprestApi.BoundaryApi import ChoiceEntry
 from schools.models import *
 from schools.forms import *

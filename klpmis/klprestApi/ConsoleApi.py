@@ -7,8 +7,8 @@ import psycopg2
 
 from django.conf.urls.defaults import *
 from django.shortcuts import render_to_response
-from django_restapi.responder import *
-from django_restapi.receiver import *
+from vendor.django_restapi.responder import *
+from vendor.django_restapi.receiver import *
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.contenttypes.models import *
 
