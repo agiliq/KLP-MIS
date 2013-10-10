@@ -11,10 +11,10 @@ from django.shortcuts import render_to_response
 from django.forms.models import modelformset_factory
 from django.contrib.contenttypes.models import ContentType
 
-from django_restapi.resource import Resource
-from django_restapi.model_resource import Collection, Entry
-from django_restapi.responder import *
-from django_restapi.receiver import *
+from vendor.django_restapi.resource import Resource
+from vendor.django_restapi.model_resource import Collection, Entry
+from vendor.django_restapi.responder import *
+from vendor.django_restapi.receiver import *
 from klprestApi.BoundaryApi import ChoiceEntry
 from schools.models import *
 from schools.forms import *

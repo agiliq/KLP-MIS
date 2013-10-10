@@ -7,16 +7,18 @@ ProgrammeApi is used
 3) To update existing Programme
 4) To list Programmes onchange of boundary type in filterbyprogramme link.
 """
+import datetime
 
 from django.conf.urls.defaults import *
-from django_restapi.resource import Resource
+
+from vendor.django_restapi.resource import Resource
+from vendor.django_restapi.model_resource import Collection
+from vendor.django_restapi.responder import *
+from vendor.django_restapi.receiver import *
 from schools.models import *
 from schools.forms import *
-from django_restapi.model_resource import Collection
-from django_restapi.responder import *
-from django_restapi.receiver import *
 from klprestApi.BoundaryApi import ChoiceEntry
-import datetime
+
 
 from schools.receivers import KLP_user_Perm
 

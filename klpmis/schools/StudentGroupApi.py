@@ -8,9 +8,9 @@ StudentGroupApi is used
 from django.conf.urls.defaults import *
 from django.http import HttpResponse
 from django.core.paginator import Paginator, EmptyPage
-from django_restapi.model_resource import Collection
-from django_restapi.responder import *
-from django_restapi.receiver import *
+from vendor.django_restapi.model_resource import Collection
+from vendor.django_restapi.responder import *
+from vendor.django_restapi.receiver import *
 
 from klprestApi.BoundaryApi import ChoiceEntry
 from schools.receivers import KLP_user_Perm

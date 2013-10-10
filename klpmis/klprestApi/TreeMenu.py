@@ -6,7 +6,7 @@ TreeMenu is used to filter all objects to genrate tree menu
 from django.conf.urls.defaults import patterns, url
 from django.http import *
 
-from django_restapi.model_resource import Collection
+from vendor.django_restapi.model_resource import Collection
 from schools.models import *
 from klprestApi.Treeresponder import *
 

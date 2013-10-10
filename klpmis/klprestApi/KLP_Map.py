@@ -3,8 +3,8 @@
 from django.conf.urls.defaults import *
 from django.http import HttpResponse
 
-from django_restapi.responder import *
-from django_restapi.receiver import *
+from vendor.django_restapi.responder import *
+from vendor.django_restapi.receiver import *
 from schools.models import *
 
 
