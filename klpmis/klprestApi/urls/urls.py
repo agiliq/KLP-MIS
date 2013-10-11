@@ -10,6 +10,8 @@ from klprestApi.views.AssessmentApi import \
     KLP_copy_Assessments, KLP_lookup_inlineEdit
 from klprestApi.views.BoundryApi import KLP_Boundary_View,\
     KLP_Boundary_Create, KLP_Boundary_Update
+from klprestApi.views.BoundaryTypeApi import \
+    template_boundary_type_view
 
 
 urlpatterns = patterns('', url(r'^KLP_activaterecords/$', KLP_Activation),
@@ -42,4 +44,7 @@ urlpatterns = patterns('', url(r'^KLP_activaterecords/$', KLP_Activation),
                        url(r'^assessment_lookup_value/inlineedit/?$', KLP_lookup_inlineEdit),
                        url(r'^boundary/(?P<boundary_id>\d+)/(?P<boundarytype_id>\d+)/view/$', KLP_Boundary_View),
                        url(r'^boundary/creator/?$', KLP_Boundary_Create),
-                       url(r'^boundary/(?P<boundary_id>\d+)/update/$', KLP_Boundary_Update))
+                       url(r'^boundary/(?P<boundary_id>\d+)/update/$', KLP_Boundary_Update),
+                       url(r'^boundary-type/creator/?$',
+                       template_boundary_type_view.responder.create_form,
+                       {'form_class': 'boundary_type'}))
