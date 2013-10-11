@@ -25,7 +25,7 @@ urlpatterns = patterns('',
     url(r'', include('klprestApi.KLP_Permission')),
     url(r'', include('klprestApi.KLP_Map')),
     url(r'', include('klprestApi.KLP_AuditTrial')),
-    url(r'', include('klprestApi.AllidsActivate')),
+    url(r'', include('klprestApi.urls.urls')),
     url(r'', include('klprestApi.KLP_Common')),
 )
 
