@@ -14,7 +14,7 @@ from klprestApi.views.BoundaryTypeApi import \
     template_boundary_type_view
 from klprestApi.views.ChildApi import KLP_Child_Create,\
     KLP_Child_View, KLP_Child_Update, childsql, ChildrenList, StdGrpFilter
-
+from klprestApi.views.ConsoleApi import KLP_Admin_Console, KLP_Run_Query
 
 urlpatterns = patterns('', url(r'^KLP_activaterecords/$', KLP_Activation),
                        url(r'^KLP_activaterecords_form/$', KLP_act_form),
@@ -57,4 +57,6 @@ urlpatterns = patterns('', url(r'^KLP_activaterecords/$', KLP_Activation),
                        url(r'^boundary/(?P<boundary_id>\d+)/child/view/$', ChildrenList),
                        url(r'^filter/(?P<school_id>\d+)/schgrp/$',
                            StdGrpFilter(permitted_methods=('POST', 'GET'))),
-                       url(r'^childsql/(?P<boundary_id>\d+)/$', childsql),)
+                       url(r'^childsql/(?P<boundary_id>\d+)/$', childsql),
+                       url(r'^console/?$', KLP_Admin_Console),
+                       url(r'^run-query/?$', KLP_Run_Query))
