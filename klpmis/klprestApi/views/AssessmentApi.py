@@ -9,7 +9,6 @@ Assessment Api file is used
 
 import datetime
 
-from django.conf.urls import patterns, url
 from django.db import IntegrityError
 from django.http import HttpResponse
 from django.shortcuts import render
@@ -26,7 +25,7 @@ from schools.forms import Question_Form
 from schools.models import Assessment, Assessment_Lookup, Question
 from schools.receivers import KLP_user_Perm
 
-from klprestApi.BoundaryApi import ChoiceEntry
+from klprestApi.views.BoundaryApi import ChoiceEntry
 
 
 class KLP_Assessment(Collection):

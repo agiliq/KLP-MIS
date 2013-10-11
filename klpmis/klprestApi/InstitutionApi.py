@@ -16,7 +16,7 @@ from django.template import RequestContext
 from vendor.django_restapi.model_resource import Collection
 from vendor.django_restapi.responder import *
 from vendor.django_restapi.receiver import *
-from klprestApi.BoundaryApi import ChoiceEntry
+from klprestApi.views.BoundaryApi import ChoiceEntry
 from klprestApi.TreeMenu import *
 from schools.receivers import KLP_user_Perm
 from schools.models import *

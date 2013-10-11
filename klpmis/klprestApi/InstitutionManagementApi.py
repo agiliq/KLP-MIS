@@ -11,7 +11,7 @@ from schools.forms import *
 from vendor.django_restapi.model_resource import Collection
 from vendor.django_restapi.responder import *
 from vendor.django_restapi.receiver import *
-from klprestApi.BoundaryApi import ChoiceEntry
+from klprestApi.views.BoundaryApi import ChoiceEntry
 
 
 class KLP_Institution_Management(Collection):
