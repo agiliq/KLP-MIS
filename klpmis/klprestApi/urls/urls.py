@@ -1,12 +1,15 @@
-from django.conf.urls.defaults import patterns, url
+from django.conf.urls import patterns, url
 
 from klprestApi.views.AllidsActivate import KLP_Activation, KLP_act_form
 from klprestApi.views.AnswerApi import \
     KLP_DataEnry, KLP_DataValidation, KLP_getAnswers
-from klprestApi.views.AssessmentApi import AssessmentView, AssessmentCreate, AssessmentLookupCreate, AssessmentLookupCopy, \
-    AssessmentLookupList, AssessmentLookupMultieditor, AssessmentUpdate, \
-    KLP_Assessment_Lookup_Update, KLP_Get_Assessments, KLP_copy_Assessments,\
-    KLP_lookup_inlineEdit
+from klprestApi.views.AssessmentApi import \
+    AssessmentView, AssessmentCreate, AssessmentLookupCreate,\
+    AssessmentLookupCopy, AssessmentLookupList, AssessmentLookupMultieditor,\
+    AssessmentUpdate, KLP_Assessment_Lookup_Update, KLP_Get_Assessments, \
+    KLP_copy_Assessments, KLP_lookup_inlineEdit
+from klprestApi.views.BoundryApi import KLP_Boundary_View,\
+    KLP_Boundary_Create, KLP_Boundary_Update
 
 
 urlpatterns = patterns('', url(r'^KLP_activaterecords/$', KLP_Activation),
@@ -36,4 +39,7 @@ urlpatterns = patterns('', url(r'^KLP_activaterecords/$', KLP_Activation),
                            KLP_Get_Assessments(permitted_methods=('POST', 'GET'))),
                        url(r'^assessment/(?P<assessment_id>\d+)/copy/?$',
                            KLP_copy_Assessments),
-                       url(r'^assessment_lookup_value/inlineedit/?$', KLP_lookup_inlineEdit),)
+                       url(r'^assessment_lookup_value/inlineedit/?$', KLP_lookup_inlineEdit),
+                       url(r'^boundary/(?P<boundary_id>\d+)/(?P<boundarytype_id>\d+)/view/$', KLP_Boundary_View),
+                       url(r'^boundary/creator/?$', KLP_Boundary_Create),
+                       url(r'^boundary/(?P<boundary_id>\d+)/update/$', KLP_Boundary_Update))
