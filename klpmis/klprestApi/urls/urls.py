@@ -30,6 +30,8 @@ from klprestApi.views.KLP_Permission import KLP_Assign_Permissions,\
     KLP_User_Permissions, KLP_Show_Permissions, KLP_Revoke_Permissions,\
     KLP_ReAssign_Permissions, KLP_Show_User_Permissions
 from klprestApi.views.LanguageApi import KLP_Language_Create
+from klprestApi.views.ProgrammeApi import KLP_Programme_View,\
+    KLP_Programme_Create, KLP_Programme_Update, KLP_Get_Programms
 
 
 urlpatterns = patterns('', url(r'^KLP_activaterecords/$', KLP_Activation),
@@ -112,4 +114,12 @@ urlpatterns = patterns('', url(r'^KLP_activaterecords/$', KLP_Activation),
                            KLP_ReAssign_Permissions),
                        url(r'^show/(?P<boundary_id>\d+)/user/(?P<user_id>\d+)/permissions/?$',
                            KLP_Show_User_Permissions),
-                       url(r'^language/creator/?$', KLP_Language_Create))
+                       url(r'^language/creator/?$', KLP_Language_Create),
+                       url(r'^programme/(?P<programme_id>\d+)/view/?$',
+                           KLP_Programme_View),
+                       url(r'^programme/creator/?$',
+                           KLP_Programme_Create),
+                       url(r'^programme/(?P<programme_id>\d+)/update/$',
+                           KLP_Programme_Update),
+                       url(r'^filter/(?P<type_id>\d+)/programms/$',
+                           KLP_Get_Programms(permitted_methods=('POST', 'GET'))))
