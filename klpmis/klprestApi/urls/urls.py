@@ -29,6 +29,7 @@ from klprestApi.views.KLP_Permission import KLP_Assign_Permissions,\
     KLP_Users_list, KLP_User_Delete, KLP_User_Activate,\
     KLP_User_Permissions, KLP_Show_Permissions, KLP_Revoke_Permissions,\
     KLP_ReAssign_Permissions, KLP_Show_User_Permissions
+from klprestApi.views.LanguageApi import KLP_Language_Create
 
 
 urlpatterns = patterns('', url(r'^KLP_activaterecords/$', KLP_Activation),
@@ -110,4 +111,5 @@ urlpatterns = patterns('', url(r'^KLP_activaterecords/$', KLP_Activation),
                        url(r'^assign/user/(?P<permissionType>\w+)/?$',
                            KLP_ReAssign_Permissions),
                        url(r'^show/(?P<boundary_id>\d+)/user/(?P<user_id>\d+)/permissions/?$',
-                           KLP_Show_User_Permissions),)
+                           KLP_Show_User_Permissions),
+                       url(r'^language/creator/?$', KLP_Language_Create))
