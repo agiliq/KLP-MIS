@@ -15,6 +15,9 @@ from klprestApi.views.BoundaryTypeApi import \
 from klprestApi.views.ChildApi import KLP_Child_Create,\
     KLP_Child_View, KLP_Child_Update, childsql, ChildrenList, StdGrpFilter
 from klprestApi.views.ConsoleApi import KLP_Admin_Console, KLP_Run_Query
+from klprestApi.views.InstitutionApi import KLP_Institution_Create,\
+    KLP_Institution_View, KLP_Institution_Update, KLP_Institution_Boundary
+
 
 urlpatterns = patterns('', url(r'^KLP_activaterecords/$', KLP_Activation),
                        url(r'^KLP_activaterecords_form/$', KLP_act_form),
@@ -59,4 +62,14 @@ urlpatterns = patterns('', url(r'^KLP_activaterecords/$', KLP_Activation),
                            StdGrpFilter(permitted_methods=('POST', 'GET'))),
                        url(r'^childsql/(?P<boundary_id>\d+)/$', childsql),
                        url(r'^console/?$', KLP_Admin_Console),
-                       url(r'^run-query/?$', KLP_Run_Query))
+                       url(r'^run-query/?$', KLP_Run_Query),
+                       url(r'^boundary/(?P<referKey>\d+)/institution/creator/$',
+                           KLP_Institution_Create),
+                       url(r'^institution/(?P<institution_id>\d+)/view/?$',
+                           KLP_Institution_View),
+                       url(r'^institution/(?P<institution_id>\d+)/update/?$',
+                           KLP_Institution_Update),
+                       url(r'^boundary/(?P<boundary_id>\d+)/(?P<permissionType>\w+)/?$',
+                           KLP_Institution_Boundary),
+                       url(r'^boundary/(?P<boundary_id>\d+)/(?P<permissionType>\w+)/(?P<assessment_id>\d+)/?$',
+                           KLP_Institution_Boundary),)
