@@ -9,13 +9,9 @@ urlpatterns = patterns('',
     url(r'', include('accounts.urls')),
     url(r'', include('utils.urls')),
     url(r'', include('klprestApi.TreeMenu')),
-    url(r'', include('klprestApi.LanguageApi')),
-    url(r'', include('klprestApi.ProgrammeApi')),
-    url(r'', include('klprestApi.QuestionApi')),
     url(r'', include('klprestApi.StudentGroupApi')),
     url(r'', include('klprestApi.StudentApi')),
     url(r'', include('klprestApi.StaffApi')),
-    url(r'', include('klprestApi.KLP_Permission')),
     url(r'', include('klprestApi.urls.urls')),
 )
 
