@@ -25,6 +25,10 @@ from klprestApi.views.KLP_AuditTrial import KLP_audit
 from klprestApi.views.KLP_Common import KLP_Create_Node, KLP_Delete,\
     KLP_flogin, KLP_glogin
 from klprestApi.views.KLP_Map import KLP_Map_SG
+from klprestApi.views.KLP_Permission import KLP_Assign_Permissions,\
+    KLP_Users_list, KLP_User_Delete, KLP_User_Activate,\
+    KLP_User_Permissions, KLP_Show_Permissions, KLP_Revoke_Permissions,\
+    KLP_ReAssign_Permissions, KLP_Show_User_Permissions
 
 
 urlpatterns = patterns('', url(r'^KLP_activaterecords/$', KLP_Activation),
@@ -92,4 +96,18 @@ urlpatterns = patterns('', url(r'^KLP_activaterecords/$', KLP_Activation),
                            KLP_Create_Node(permitted_methods=('POST', 'GET'))),
                        url(r'^google/Secure/$', KLP_glogin),
                        url(r'^facebook/login.php/$', KLP_flogin),
-                       url(r'^map/sg/as/$', KLP_Map_SG))
+                       url(r'^map/sg/as/$', KLP_Map_SG),
+                       url(r'^assign/permissions/?$', KLP_Assign_Permissions),
+                       url(r'^list/users/?$', KLP_Users_list),
+                       url(r'^user/(?P<user_id>\d+)/delete?$', KLP_User_Delete),
+                       url(r'^user/(?P<user_id>\d+)/activateuser?$', KLP_User_Activate),
+                       url(r'^user/(?P<user_id>\d+)/permissions/?$',
+                           KLP_User_Permissions),
+                       url(r'^list/(?P<boundary_id>\d+)/user/(?P<user_id>\d+)/permissions/?$',
+                           KLP_Show_Permissions),
+                       url(r'^revoke/user/(?P<permissionType>\w+)/?$',
+                           KLP_Revoke_Permissions),
+                       url(r'^assign/user/(?P<permissionType>\w+)/?$',
+                           KLP_ReAssign_Permissions),
+                       url(r'^show/(?P<boundary_id>\d+)/user/(?P<user_id>\d+)/permissions/?$',
+                           KLP_Show_User_Permissions),)
