@@ -32,6 +32,8 @@ from klprestApi.views.KLP_Permission import KLP_Assign_Permissions,\
 from klprestApi.views.LanguageApi import KLP_Language_Create
 from klprestApi.views.ProgrammeApi import KLP_Programme_View,\
     KLP_Programme_Create, KLP_Programme_Update, KLP_Get_Programms
+from klprestApi.views.QuestionApi import KLP_Question_Create,\
+    KLP_Question_View, KLP_Question_Update
 
 
 urlpatterns = patterns('', url(r'^KLP_activaterecords/$', KLP_Activation),
@@ -122,4 +124,10 @@ urlpatterns = patterns('', url(r'^KLP_activaterecords/$', KLP_Activation),
                        url(r'^programme/(?P<programme_id>\d+)/update/$',
                            KLP_Programme_Update),
                        url(r'^filter/(?P<type_id>\d+)/programms/$',
-                           KLP_Get_Programms(permitted_methods=('POST', 'GET'))))
+                           KLP_Get_Programms(permitted_methods=('POST', 'GET'))),
+                       url(r'^assessment/question/(?P<referKey>\d+)/creator/?$',
+                           KLP_Question_Create),
+                       url(r'^question/(?P<question_id>\d+)/view/?$',
+                           KLP_Question_View),
+                       url(r'^question/(?P<question_id>\d+)/update/?$',
+                           KLP_Question_Update))
