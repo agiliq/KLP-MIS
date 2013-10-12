@@ -17,6 +17,8 @@ from klprestApi.views.ChildApi import KLP_Child_Create,\
 from klprestApi.views.ConsoleApi import KLP_Admin_Console, KLP_Run_Query
 from klprestApi.views.InstitutionApi import KLP_Institution_Create,\
     KLP_Institution_View, KLP_Institution_Update, KLP_Institution_Boundary
+from klprestApi.views.InstitutionCategoryApi import\
+    KLP_Institution_Category_Create
 
 
 urlpatterns = patterns('', url(r'^KLP_activaterecords/$', KLP_Activation),
@@ -72,4 +74,6 @@ urlpatterns = patterns('', url(r'^KLP_activaterecords/$', KLP_Activation),
                        url(r'^boundary/(?P<boundary_id>\d+)/(?P<permissionType>\w+)/?$',
                            KLP_Institution_Boundary),
                        url(r'^boundary/(?P<boundary_id>\d+)/(?P<permissionType>\w+)/(?P<assessment_id>\d+)/?$',
-                           KLP_Institution_Boundary),)
+                           KLP_Institution_Boundary),
+                       url(r'^institution-category/creator/?$',
+                           KLP_Institution_Category_Create))
