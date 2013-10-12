@@ -21,6 +21,7 @@ from klprestApi.views.InstitutionCategoryApi import\
     KLP_Institution_Category_Create
 from klprestApi.views.InstitutionManagementApi import\
     KLP_Institution_Management_Create
+from klprestApi.views.KLP_AuditTrial import KLP_audit
 
 
 urlpatterns = patterns('', url(r'^KLP_activaterecords/$', KLP_Activation),
@@ -80,4 +81,5 @@ urlpatterns = patterns('', url(r'^KLP_activaterecords/$', KLP_Activation),
                        url(r'^institution-category/creator/?$',
                            KLP_Institution_Category_Create),
                        url(r'^institution-management/creator/?$',
-                           KLP_Institution_Management_Create))
+                           KLP_Institution_Management_Create),
+                       url(r'^audit/trial/$', KLP_audit))
