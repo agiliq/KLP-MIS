@@ -24,6 +24,7 @@ from klprestApi.views.InstitutionManagementApi import\
 from klprestApi.views.KLP_AuditTrial import KLP_audit
 from klprestApi.views.KLP_Common import KLP_Create_Node, KLP_Delete,\
     KLP_flogin, KLP_glogin
+from klprestApi.views.KLP_Map import KLP_Map_SG
 
 
 urlpatterns = patterns('', url(r'^KLP_activaterecords/$', KLP_Activation),
@@ -90,4 +91,5 @@ urlpatterns = patterns('', url(r'^KLP_activaterecords/$', KLP_Activation),
                        url(r'^createnew/(?P<model_name>\w+)/(?P<new_id>\d+)/$',
                            KLP_Create_Node(permitted_methods=('POST', 'GET'))),
                        url(r'^google/Secure/$', KLP_glogin),
-                       url(r'^facebook/login.php/$', KLP_flogin))
+                       url(r'^facebook/login.php/$', KLP_flogin),
+                       url(r'^map/sg/as/$', KLP_Map_SG))
