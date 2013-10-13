@@ -39,6 +39,9 @@ from klprestApi.views.StaffApi import KLP_Staff_View, KLP_Staff_Create,\
 from klprestApi.views.StudentApi import KLP_Student_Create, KLP_Student_View,\
     KLP_Student_Update, KLP_Student_Call, KLP_DeleteStudnet,\
     KLP_Student_Edit_Call
+from klprestApi.views.StudentGroupApi import KLP_StudentGroup_Create,\
+    KLP_StudentGroup_View, KLP_StudentGroup_Update,\
+    KLP_StudentGroup_Answer_Entry, MapStudents
 
 
 urlpatterns = patterns('', url(r'^KLP_activaterecords/$', KLP_Activation),
@@ -160,4 +163,13 @@ urlpatterns = patterns('', url(r'^KLP_activaterecords/$', KLP_Activation),
                            KLP_DeleteStudnet),
                        url(r'^studentgroup/(?P<studentgroup_id>.*)/student/editCall/$',
                            KLP_Student_Edit_Call),
+                       url(r'^boundary/institution/(?P<referKey>.*)/studentgroup/creator/$',
+                           KLP_StudentGroup_Create),
+                       url(r'^studentgroup/(?P<studentgroup_id>\d+)/view/?$',
+                           KLP_StudentGroup_View),
+                       url(r'^studentgroup/(?P<studentgroup_id>\d+)/update/?$',
+                           KLP_StudentGroup_Update),
+                       url(r'^studentgroup/(?P<studentgroup_id>\d+)/programme/(?P<programme_id>\d+)/assessment/(?P<assessment_id>\d+)/view/?$',
+                           KLP_StudentGroup_Answer_Entry),
+                       url(r'^mapstudents/(?P<id>\d+)/$', MapStudents),
                        )
