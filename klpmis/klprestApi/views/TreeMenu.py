@@ -7,7 +7,7 @@ from django.http import *
 
 from vendor.django_restapi.model_resource import Collection
 from schools.models import *
-from klprestApi.Treeresponder import *
+from klprestApi.views.Treeresponder import *
 
 asstable = {2: Assessment_StudentGroup_Association,
             3: Assessment_Class_Association,
