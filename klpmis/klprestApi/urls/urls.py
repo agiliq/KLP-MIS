@@ -42,7 +42,7 @@ from klprestApi.views.StudentApi import KLP_Student_Create, KLP_Student_View,\
 from klprestApi.views.StudentGroupApi import KLP_StudentGroup_Create,\
     KLP_StudentGroup_View, KLP_StudentGroup_Update,\
     KLP_StudentGroup_Answer_Entry, MapStudents
-
+from klprestApi.views.TreeMenu import tree
 
 urlpatterns = patterns('', url(r'^KLP_activaterecords/$', KLP_Activation),
                        url(r'^KLP_activaterecords_form/$', KLP_act_form),
@@ -172,4 +172,4 @@ urlpatterns = patterns('', url(r'^KLP_activaterecords/$', KLP_Activation),
                        url(r'^studentgroup/(?P<studentgroup_id>\d+)/programme/(?P<programme_id>\d+)/assessment/(?P<assessment_id>\d+)/view/?$',
                            KLP_StudentGroup_Answer_Entry),
                        url(r'^mapstudents/(?P<id>\d+)/$', MapStudents),
-                       )
+                       url(r'^tree/$', tree))
