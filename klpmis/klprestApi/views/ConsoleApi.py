@@ -52,7 +52,6 @@ def KLP_Run_Query(request):
     connection = psycopg2.connect(database=datebase, user=user,
                                   password=password)
     cursor = connection.cursor()
-    print('s')
     isExecute = False
     if adminQuery:
         try:

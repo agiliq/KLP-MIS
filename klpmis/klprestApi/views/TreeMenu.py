@@ -61,8 +61,6 @@ def hasChild(query, typ, boundaryType, filterBy, secFilter,
                                                      'assessment',
                                                      'instituion')
 
-                         # print permObj  ,'*********',insObj
-
                     if permObj:
                         assemenperm = True
                     else:
@@ -428,8 +426,6 @@ def tree(request):
                 if filterBy != 'None':
 
                     studentgroup_list = getAssSG(secFilter, model[1])
-
-                                # print studentgroup_list
 
                     if int(boundaryType) == 1:
                         query = \

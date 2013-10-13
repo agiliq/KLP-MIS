@@ -47,8 +47,6 @@ def KLP_Assign_Permissions(request):
     bound_list = request.POST.getlist('boundaryName')
     assessmentPerm = request.POST.get('assessmentPerm')
 
-    print deUserList, permissions, message, permissionType, \
-        assessmentId, bound_cat, inst_list, bound_list, assessmentPerm
     (count, asmCount, assignedAsmIds) = (0, 0, [])
 
     bound_list = ','.join(str(v1) for v1 in bound_list if v1 > 0)
@@ -205,25 +203,6 @@ def assignPermission(inst_list, deUserList, permissions,
                                     user=userObj,
                                     instituion=instObj,
                                     assessment=assessmentObj)
-                            '''
-                            try:    print 'PPPPPPPP'
-                                paccess=True
-                                #permObj.access = True
-                                permObj.save()
-                                AssalreadyssignInst.append(inst_id)
-                            except:
-                                print 'new'
-                                permObj = \
-                                    UserAssessmentPermissions(user=userObj,
-                                        instituion=instObj,
-                                        assessment=assessmentObj,
-                                        access=True)
-                                AssnewlyassignInst.append(inst_id)
-                                #try:
-                                #    permObj.save()
-                                #except:
-                                #    pass
-                            '''
                             if permObj:
                                 requestcopy['form-INITIAL_FORMS'] = 1
                                 requestcopy['form-0-id'] = permObj[0].id

@@ -381,7 +381,6 @@ def KLP_DataValidation(request):
     listIds = validateId.split('_')
     AnsId = request.POST.get('ansId')
     # Query Answer object based on student and question id
-    print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", AnsId)
     if AnsId != "None":
         ansObj = Answer.objects.filter(
             id=AnsId).defer('object_id',
@@ -461,14 +460,12 @@ def KLP_getAnswers(request):
     resp = False
     aid = request.GET.get('aid')  # Get Assessment id
     obid = request.GET.get('obid')
-    print("Assessment id", aid)
     try:
         asobj = Answer.objects.filter(
             object_id=obid,
             question__assessment__id=aid)
     except:
         asobj = ''
-    print("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh", resp)
     if asobj:
         resp = True
     else:

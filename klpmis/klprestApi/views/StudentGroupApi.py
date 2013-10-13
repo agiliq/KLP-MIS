@@ -282,7 +282,6 @@ def KLP_StudentGroup_Answer_Entry(
 
     if len(ansflexObj) >= ordercounter:
         ordercounter = 20
-    print ansflexObj, 'FFFFFFFFFFFFFFFFFFFFL'
     qIdList = question_list.values_list('id', flat=True).distinct()
     qNamesList = question_list.values_list('name', flat=True).distinct()
     lookupfields = ''

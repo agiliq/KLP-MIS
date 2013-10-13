@@ -93,7 +93,6 @@ class KLP_Delete(Resource):
         # Get Object based on id and model to delete
         obj = modelDict[model_name1.lower()].objects.get(pk=referKey)
         cursor = connection.cursor()
-        print("----hfjdhfdhfdfjdf", model_name1.lower())
         if model_name1.lower() in ['class', 'center', 'studentgroup']:
             sgtype = StudentGroup.objects.get(id=referKey)
             if sgtype.group_type == "Class":
