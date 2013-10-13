@@ -24,7 +24,7 @@ from schools.models import Assessment_StudentGroup_Association
 from schools.models import Institution, StudentGroup, UserAssessmentPermissions
 from schools.forms import UserAssessmentPermissions_Form, Boundary_Type
 from schools.receivers import KLP_user_Perm
-from klprestApi.TreeMenu import getAssSG
+from klprestApi.views.TreeMenu import getAssSG
 from klpmis.settings import PROJECT_ROOT, PYTHON_PATH
 
 
