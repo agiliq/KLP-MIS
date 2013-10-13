@@ -4,7 +4,6 @@
 from django.core.management.base import BaseCommand, CommandError
 from datetime import datetime
 import psycopg2
-import pdb
 import subprocess
 
 DRY_RUN = 0
