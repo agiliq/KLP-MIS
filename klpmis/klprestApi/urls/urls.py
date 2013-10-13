@@ -34,6 +34,8 @@ from klprestApi.views.ProgrammeApi import KLP_Programme_View,\
     KLP_Programme_Create, KLP_Programme_Update, KLP_Get_Programms
 from klprestApi.views.QuestionApi import KLP_Question_Create,\
     KLP_Question_View, KLP_Question_Update
+from klprestApi.views.StaffApi import KLP_Staff_View, KLP_Staff_Create,\
+    KLP_staff_list, KLP_Staff_Update
 
 
 urlpatterns = patterns('', url(r'^KLP_activaterecords/$', KLP_Activation),
@@ -130,4 +132,12 @@ urlpatterns = patterns('', url(r'^KLP_activaterecords/$', KLP_Activation),
                        url(r'^question/(?P<question_id>\d+)/view/?$',
                            KLP_Question_View),
                        url(r'^question/(?P<question_id>\d+)/update/?$',
-                           KLP_Question_Update))
+                           KLP_Question_Update),
+                       url(r'^staff/(?P<staff_id>\d+)/view/$',
+                       KLP_Staff_View),
+                       url(r'institution/(?P<referKey>\d+)/staff/creator/?$',
+                           KLP_Staff_Create),
+                       url(r'^institution/(?P<institution_id>\d+)/staff/view/$',
+                           KLP_staff_list),
+                       url(r'^staff/(?P<staff_id>\d+)/update/$',
+                           KLP_Staff_Update))
