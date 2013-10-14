@@ -214,7 +214,6 @@ class Child_Form(Relations_Form):
     def save(self, commit=True):
         print(self.errors, 'ERRRRRRRRRRRRRR')
         childObj = CustomizeSave(self, Child_Form)
-        # print self.files,'kwars' ,self.instance.id,dir(self.instance)
         relationdatarequest = self.files
         childpostid = self.cleaned_data.get('id', '')
         relationlist = ['father', 'mother']
@@ -302,37 +301,6 @@ class StudentGroup_Form(ModelForm):
 
     def save(self, commit=True):
         return CustomizeSave(self, StudentGroup_Form)
-        '''
-          try:
-            instance = super(StudentGroup_Form, self).save(commit=commit)
-
-            instance.save()
-
-            return instance
-          except:
-
-            if self.cleaned_data.get('id','') is None:
-              connection = psycopg2.connect(database=datebase,
-                                            user=user,
-                                            password=password)
-              tableactive=self.cleaned_data.get('active',2)
-              cursor = connection.cursor()
-              Query="SELECT  column_default from
-                information_schema.columns where
-                    table_name='schools_studentgroup' and column_name='id'"
-              cursor.execute(Query)
-              Seqcolumn=cursor.fetchone()[0]
-              cursor.execute("select "+Seqcolumn)
-              insertedRow=cursor.fetchone()[0]-1
-              cursor.close()
-              createdObj=StudentGroup.objects.filter(id=insertedRow)
-              modelName=createdObj.model._meta.module_name
-              v=storeFullhistory(self.kwargs.get('files','nothing'),
-                                                 self.data,
-                                                 insertedRow,modelName)
-              print createdObj,'CrateObj'
-              return createdObj
-          '''
 
 
 class AcademicYear_Form(ModelForm):

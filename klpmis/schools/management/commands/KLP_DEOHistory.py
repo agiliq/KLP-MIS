@@ -137,7 +137,6 @@ class Command(BaseCommand):
                         59,
                         00,
                     )
-                    print sTime, eTime
                     for assessment in assessments:
 
                         answers = \
@@ -165,11 +164,7 @@ class Command(BaseCommand):
                             asmDict[assessmentId] = nList
                     historyFile2.writerow(headerList)
 
-                                        # historyFile2.close()
-
                     count = 00
-
-                    # print User.objects.filter(groups__name__in=['Data Entry E
 
                     for user in \
                         User.objects.filter(
@@ -178,9 +173,6 @@ class Command(BaseCommand):
                                 'Data Entry Operator'],
                             is_active=1).order_by('username'):
                         if user.id:
-                            print count, \
-                                '********************************************', \
-                                user.id
                             count += 1
                             userId = user.id
 
@@ -205,8 +197,6 @@ class Command(BaseCommand):
                             primarySchList = map(int, primarySchList)
                             for content in contentList:
 
-                                                        # print content
-
                                 (preList, primaryList) = ([00], [00])
                                 contObj = \
                                     ContentType.objects.get(
@@ -220,8 +210,6 @@ class Command(BaseCommand):
                                         preSchList, 'boundary')
                                     preBoundaryList.extend(list(BoundaryList))
 
-                                    # print
-                                    # preBoundaryList,'LLLLLLLLLLLLLLLLLLLLLLLl'
                                     BoundaryList = boundary_list_query(
                                         preBoundaryList, 2, 'parent')
                                     preBoundaryList.extend(list(BoundaryList))
@@ -268,13 +256,10 @@ class Command(BaseCommand):
                                                                                                     flat=True)
                                     preList = map(
                                         int,
-                                        preStaffList)  # ['%s' %i for i in preStaffList]
+                                        preStaffList)
                                     primaryList = map(int,
-                                                      primaryStaffList)  # ['%s' %i for i in primaryStaffList]
+                                                      primaryStaffList)
                                 elif content == 'student':
-
-                                                                # print
-                                                                # primaryList[:5]
 
                                     preSGList = \
                                         StudentGroup.objects.filter(
@@ -305,20 +290,10 @@ class Command(BaseCommand):
 
                                     primaryList = map(int, primaryList)
                                     data_appendList(primaryList)
-
-                                                        # print '13'
-                                    # print dataList....
-                                # dataList.extend([0, 0, 0, 0, 0, 0])
                             for asmId in asmList:
                                 answers = asmDict[asmId]
 
-                                                        # print
-                                                        # answers,sTime,eTime
-
                                 if answers:
-
-                                                                # print 'ans',answers[:5],asmId
-                                    # answers=[int(k) for k in answers]....
 
                                     crEntriesData = \
                                         FullHistory.objects.filter(
@@ -373,17 +348,12 @@ class Command(BaseCommand):
 
                                     vEntries = vEntries - rEntries
 
-                                    # print
-                                    # userId,crEntries,inCrEntries,vEntries,rEntries
-
                                     dataList.append(crEntries)
                                     dataList.append(inCrEntries)
                                     dataList.append(vEntries)
                                     dataList.append(rEntries)
 
                             # Written data into file.
-
-                            print dataList
                             historyFile2 = csv.writer(open(genFile, 'a'
                                                            ))
                             historyFile2.writerow(dataList)

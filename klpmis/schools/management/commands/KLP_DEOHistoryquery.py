@@ -181,7 +181,6 @@ class Command(BaseCommand):
                     answers = [c[00] for c in answersCur]
                     if 1:
                         if len(list(answers)):
-                            print assessment
                             assessmentId = assessment
                             headerList.append('Assess Id')
                             progname = Assessment.objects.get(id=assessmentId)
@@ -198,7 +197,6 @@ class Command(BaseCommand):
                                               + ' Num Of rectified Entries')
 
                             asmDict[assessmentId] = answers  # answerQuery
-                print 'header built'
                 historyFile.writerow(headerList)
                 count = 0
                 users = User.objects.filter(
@@ -326,7 +324,6 @@ class Command(BaseCommand):
                                 dataList = dataList + [00, 00, 00]
 
                     (loopList, preList, primaryList) = ([], [], [])
-                    print 'userId being processed: ', userId
                     for asmId in asmDict:
                         answers = tuple([i for i in asmDict[asmId]])
                         if len(answers) == 1:

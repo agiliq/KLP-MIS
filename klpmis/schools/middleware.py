@@ -24,7 +24,6 @@ class QueryLogMiddleware:
                 queries[sql] += 1
             duplicates = sum([count - 1 for count in queries.values()])
             print '------------------------------------------------------'
-            print
             for (query, count) in queries.items():
                 if count > 1:
                     print '%s x %s' % (count, query)
