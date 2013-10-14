@@ -13,7 +13,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
 
 from klpmis.settings import PROJECT_NAME, PROJECT_ROOT
-from klprestApi.KLP_Permission import assignPermission
+from klprestApi.views.KLP_Permission import assignPermission
 from schools.models import *
 
 
