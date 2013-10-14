@@ -11,7 +11,7 @@ from django.forms.models import modelformset_factory
 
 from schools.forms import *
 from schools.models import *
-from klprestApi.TreeMenu import KLP_assignedInstitutions
+from klprestApi.views.TreeMenu import KLP_assignedInstitutions
 
 
 def cmpT(t1, t2):

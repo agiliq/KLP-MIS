@@ -8,7 +8,7 @@ from django.db import transaction
 
 from schools.models import *
 from schools.models import *
-from klprestApi.TreeMenu import KLP_assignedInstitutions
+from klprestApi.views.TreeMenu import KLP_assignedInstitutions
 
 
 class Command(BaseCommand):

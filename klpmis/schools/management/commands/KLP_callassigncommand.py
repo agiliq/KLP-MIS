@@ -11,7 +11,7 @@ from django.conf import settings
 from django.core.management import call_command
 
 from schools.models import *
-from klprestApi.KLP_Permission import assignPermission
+from klprestApi.schools.KLP_Permission import assignPermission
 from schools.models import *
 
 
