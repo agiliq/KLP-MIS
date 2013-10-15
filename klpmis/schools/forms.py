@@ -34,7 +34,9 @@ def storeFullhistory(requestparam, data, objid, modelName, action='C'):
                        object_id=objid))
     except:
         revision = 0
-    revision = 0 if revision == 0 else revision + 1
+
+    if not revision is 0:
+        revision += 1
     fh = FullHistory(revision=revision, action=action,
                      content_type_id=content_type_id,
                      object_id=objid, data=data,
