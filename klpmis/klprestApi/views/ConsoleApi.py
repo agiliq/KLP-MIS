@@ -5,7 +5,7 @@ ConsoleApi is used to run raw sql queries from frontend.
 """
 import psycopg2
 
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 from vendor.django_restapi.responder import *
 from vendor.django_restapi.receiver import *
 from django.views.decorators.csrf import csrf_exempt
@@ -20,17 +20,13 @@ from schools.forms import *
 def KLP_Admin_Console(request):
     ''' To show the admin Console to run SQl Queries '''
 
-    # get logged in user
-
     user = request.user
-    respDict = {'title': 'Karnataka Learning Partnership ',
-                'user': user}
+    context = {'title': 'Karnataka Learning Partnership ',
+               'user': user}
 
-    # render admin console template
-
-    respTemplate = \
-        render_to_response('viewtemplates/admin_console.html', respDict)
-    return HttpResponse(respTemplate)
+    return render(request,
+                  'viewtemplates/admin_console.html',
+                  context)
 
 
 @csrf_exempt
