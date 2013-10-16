@@ -5,10 +5,11 @@ import django
 from django.contrib.auth.models import User
 from django.contrib import admin
 from django.test import TestCase
+from django.db import models
 
 import fullhistory
-from models import *
-from admin import *
+from models import HistoryField
+from admin import FullHistoryAdmin, FullHistory
 
 django1_1 = django.VERSION[0] == 1 and django.VERSION[1] >= 1
 
