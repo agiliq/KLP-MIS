@@ -10,6 +10,7 @@ from django.contrib.contenttypes import generic
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.core.serializers.json import DjangoJSONEncoder
+from .utils import get_all_data
 
 
 encoder = DjangoJSONEncoder()
@@ -59,7 +60,6 @@ class FullHistoryManager(models.Manager):
                                            object_id=pk).order_by('revision')
 
     def audit(self, entry=None, model=None, pk=None,):
-        from .fullhistory import get_all_data
         obj = self.get_version(entry, model, pk)
         if entry is not None:
             for (key, value) in get_all_data(entry).items():
