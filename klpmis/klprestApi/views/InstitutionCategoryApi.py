@@ -3,12 +3,15 @@
 """
 InstitutionCategoryApi is used to create new Institution Category
 """
+from django.http import HttpResponse
+
 from vendor.django_restapi.model_resource import Collection
-from vendor.django_restapi.responder import *
-from vendor.django_restapi.receiver import *
 from klprestApi.views.BoundaryApi import ChoiceEntry
-from schools.models import *
-from schools.forms import *
+from vendor.django_restapi.responder import TemplateResponder
+from vendor.django_restapi.receiver import XMLReceiver
+
+from schools.models import Institution_Category
+from schools.forms import Institution_Category_Form
 
 
 class KLP_Institution_Category(Collection):

@@ -12,13 +12,14 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 
 from vendor.django_restapi.model_resource import Collection
-from vendor.django_restapi.responder import *
-from vendor.django_restapi.receiver import *
-from klprestApi.views.BoundaryApi import ChoiceEntry
-from klprestApi.views.TreeMenu import *
 from schools.receivers import KLP_user_Perm
-from schools.models import *
-from schools.forms import *
+from klprestApi.views.BoundaryApi import ChoiceEntry
+from vendor.django_restapi.responder import TemplateResponder
+from vendor.django_restapi.receiver import XMLReceiver
+from schools.models import Institution, Boundary, Institution_Category
+from schools.forms import Institution_Form
+from fullhistory.models import User
+from .klprestApi.views.TreeMenu import getAssInst
 
 
 class KLP_Institution(Collection):

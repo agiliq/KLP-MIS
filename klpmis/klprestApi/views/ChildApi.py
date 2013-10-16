@@ -1,15 +1,18 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 
 from vendor.django_restapi.resource import Resource
-from schools.models import *
-from schools.forms import *
+from vendor.django_restapi.receiver import XMLReceiver
+from schools.models import Child
+from vendor.django_restapi.responder import TemplateResponder
+from schools.forms import Child_Form
 from vendor.django_restapi.model_resource import Collection
-from vendor.django_restapi.responder import *
-from vendor.django_restapi.receiver import *
+# from vendor.django_restapi.responder import *
+# from vendor.django_restapi.receiver import *
 from klprestApi.views.BoundaryApi import ChoiceEntry
-from schools.models import current_academic
+from schools.models import current_academic, Student, Boundary, StudentGroup,\
+    Academic_Year, Student_StudentGroupRelation
 
 
 class KLP_Child(Collection):

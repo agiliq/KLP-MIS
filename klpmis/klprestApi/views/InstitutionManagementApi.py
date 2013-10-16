@@ -3,11 +3,13 @@
 """
 InstitutionManagementApi is used to create new Institution Management
 """
-from schools.models import *
-from schools.forms import *
+from django.http import HttpResponse
+
 from vendor.django_restapi.model_resource import Collection
-from vendor.django_restapi.responder import *
-from vendor.django_restapi.receiver import *
+from schools.models import Institution_Management
+from vendor.django_restapi.responder import TemplateResponder
+from vendor.django_restapi.receiver import XMLReceiver
+from schools.forms import Institution_Management_Form
 from klprestApi.views.BoundaryApi import ChoiceEntry
 
 
@@ -17,7 +19,7 @@ class KLP_Institution_Management(Collection):
 
     def get_entry(self, institution_management_id):
         institution_management = \
-            Institution_Management.objects.all(id=management_id)
+            Institution_Management.objects.all(id=institution_management_id)
         return ChoiceEntry(self, institution_management)
 
 
