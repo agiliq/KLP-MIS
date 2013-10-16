@@ -4,18 +4,19 @@
 """ AnswerApi file is used to store answers entered by data
     entry operators And also do validation while double entry"""
 
-from django.conf.urls.defaults import *
+import simplejson
+
 from django.http import HttpResponse
 from django.forms.models import modelformset_factory
 from django.db import IntegrityError
+from django.contrib.contenttypes.models import ContentType
 
-from vendor.django_restapi.authentication import *
 from vendor.django_restapi.resource import Resource
-from vendor.django_restapi.responder import *
-from vendor.django_restapi.receiver import *
-from schools.forms import *
-from schools.models import *
+from schools.forms import Answer_Form
+from schools.models import Answer
 from schools.receivers import KLP_obj_Perm
+from schools.models import Institution, Assessment,\
+    Question, StudentGroup, Student
 
 
 def KLP_DataEnry(request):
