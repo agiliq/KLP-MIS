@@ -3,12 +3,12 @@
 """
 BoundaryTypeApi is used to create new boundary type
 """
-from schools.models import *
-from schools.forms import *
 from vendor.django_restapi.model_resource import Collection
-from vendor.django_restapi.responder import *
-from vendor.django_restapi.receiver import *
+from vendor.django_restapi.responder import TemplateResponder
+from vendor.django_restapi.receiver import XMLReceiver
 from klprestApi.views.BoundaryApi import ChoiceEntry
+
+from schools.models import Boundary_Type
 
 
 class BoundaryTypeView(Collection):
