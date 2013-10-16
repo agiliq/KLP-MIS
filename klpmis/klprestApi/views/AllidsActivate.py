@@ -16,9 +16,9 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.views.decorators.csrf import csrf_exempt
 
-from schools.models import *
-from schools.forms import *
-from klpmis.settings import *
+from schools.models import Boundary, Institution, Programme, Assessment,\
+    Question, StudentGroup, Student, Staff, Student_StudentGroupRelation,\
+    current_academic
 
 
 def KLP_act_form(request):
@@ -123,7 +123,7 @@ def KLP_Activation(request):
                 relObjects.update(active=1)
                 childlength = []
             if len(childlength) == 0:
-                obj2 = obj3  # modelDict[model_name1].objects.filter(id__in=allids)
+                obj2 = obj3
                 isExecute = True
                 idlist2 = obj2.values_list('id')
                 idstr = ','.join(str(v1[0]) for v1 in idlist2)
@@ -135,11 +135,13 @@ def KLP_Activation(request):
                 receiver = ','.join(str(v1) for v1 in receiver)
                 if not actiondic[actiontype] == "Deactivated":
                     message = \
-                        'A mail will be sent to %s as soon as all the records are activated .' \
+                        'A mail will be sent to %s as soon as all the \
+                        records are activated .' \
                         % receiver
                 else:
                     message = \
-                        'A mail will be sent to %s as soon as all the records are deactivated .' \
+                        'A mail will be sent to %s as soon as all the \
+                        records are deactivated .' \
                         % receiver
                 resStr = obj2.model._meta.module_name + ' Ids ' + idstr \
                     + ' are Successfully ' + actiondic[actiontype] \
@@ -147,7 +149,8 @@ def KLP_Activation(request):
             else:
                 idstr = ','.join(str(v1) for v1 in childlength)
                 resStr = model_name1 + ' Ids ' + idstr \
-                    + ' are having child objects.So can not delete it.First Deactivate the child objects ,then try to deactivate'
+                    + ' are having child objects.So can not delete it.\
+                    First Deactivate the child objects,then try to deactivate'
     respDict = {'respStr': resStr, 'isExecute': isExecute}
 
     return HttpResponse(simplejson.dumps(respDict),
