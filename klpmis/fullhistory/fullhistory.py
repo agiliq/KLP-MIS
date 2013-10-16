@@ -6,13 +6,9 @@ except ImportError:
     import dummy_thread as thread
 
 from django.db.models import signals
-from django.core import serializers
-
-from models import *
-from signals import *
-
-# The state is a dictionary of lists. The key to the dict is the current
-# thread and the list is handled as a stack of values.
+from .models import FullHistory, Request, ContentType
+from .signals import post_create, post_adjust
+from .utils import get_all_data
 
 state = {}
 
@@ -42,12 +38,6 @@ def get_difference(entry):
         if oldvalue != newvalue:
             ret[key] = (oldvalue, newvalue)
     return ret
-
-
-def get_all_data(entry):
-    serial = serializers.serialize('python', [entry])[0]
-    serial['fields'][entry._meta.pk.name] = serial['pk']
-    return serial['fields']
 
 
 def get_all_data_tuple(entry):
