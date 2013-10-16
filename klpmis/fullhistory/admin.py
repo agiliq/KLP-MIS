@@ -4,7 +4,6 @@ from django.contrib import admin
 from django.conf.urls.defaults import patterns, url
 
 import fullhistory
-from models import *
 import views
 
 
