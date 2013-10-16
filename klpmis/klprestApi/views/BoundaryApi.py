@@ -9,11 +9,11 @@ Boundary Api is used
 from django.http import HttpResponse
 
 from vendor.django_restapi.model_resource import Collection, Entry
-from vendor.django_restapi.responder import *
-from vendor.django_restapi.receiver import *
+from vendor.django_restapi.responder import TemplateResponder
+from vendor.django_restapi.receiver import XMLReceiver
 from schools.receivers import KLP_user_Perm
-from schools.models import *
-from schools.forms import *
+from schools.forms import Boundary_Form
+from schools.models import Boundary, Boundary_Type
 
 
 class ChoiceEntry(Entry):
