@@ -3,11 +3,13 @@
 """
 LanguageApi is used to create new language
 """
-from schools.models import *
-from schools.forms import *
+from django.http import HttpResponse
+
 from vendor.django_restapi.model_resource import Collection
-from vendor.django_restapi.responder import *
-from vendor.django_restapi.receiver import *
+from vendor.django_restapi.receiver import XMLReceiver
+from vendor.django_restapi.responder import TemplateResponder
+from schools.models import Moi_Type
+from schools.forms import Moi_Type_Form
 from klprestApi.views.BoundaryApi import ChoiceEntry
 
 
@@ -33,7 +35,7 @@ def KLP_Language_Create(request):
                      responder=TemplateResponder(
                          template_dir='viewtemplates',
                          template_object_name='Language',
-                     extra_context={'buttonType': buttonType}),
+                         extra_context={'buttonType': buttonType}),
                      receiver=XMLReceiver())
     response = KLP_Language_Create.responder.create_form(request,
                                                          form_class=
