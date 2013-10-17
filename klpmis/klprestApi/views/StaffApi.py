@@ -9,13 +9,14 @@ StaffApi is used
 """
 from django.http import HttpResponse
 
-from schools.models import *
-from schools.forms import *
+from schools.models import Staff, StudentGroup, Institution, Staff_Type
+from schools.forms import Staff_Form
 from vendor.django_restapi.model_resource import Collection
-from vendor.django_restapi.responder import *
-from vendor.django_restapi.receiver import *
+from vendor.django_restapi.responder import TemplateResponder
+from vendor.django_restapi.receiver import XMLReceiver
 from klprestApi.views.BoundaryApi import ChoiceEntry
 from schools.receivers import KLP_user_Perm
+from .BoundaryApi import KLP_Boundary
 
 
 class KLP_Staff(Collection):
