@@ -8,13 +8,14 @@ ProgrammeApi is used
 4) To list Programmes onchange of boundary type in filterbyprogramme link.
 """
 import datetime
+from django.http import HttpResponse
 
 from vendor.django_restapi.resource import Resource
 from vendor.django_restapi.model_resource import Collection
-from vendor.django_restapi.responder import *
-from vendor.django_restapi.receiver import *
-from schools.models import *
-from schools.forms import *
+from vendor.django_restapi.receiver import XMLReceiver
+from vendor.django_restapi.responder import TemplateResponder
+from schools.models import Programme
+from schools.forms import Programme_Form
 from klprestApi.views.BoundaryApi import ChoiceEntry
 from schools.receivers import KLP_user_Perm
 
