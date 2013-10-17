@@ -17,11 +17,11 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.forms.models import modelformset_factory
 
-from schools.models import Assessment, Assessment_Class_Association
-from schools.models import Assessment_Institution_Association
-from schools.models import Assessment_StudentGroup_Association
-from schools.models import Institution, StudentGroup, UserAssessmentPermissions
+from schools.models import Assessment, Assessment_Class_Association,\
+    Assessment_Institution_Association, Assessment_StudentGroup_Association,\
+    Institution, StudentGroup, UserAssessmentPermissions
 from schools.forms import UserAssessmentPermissions_Form, Boundary_Type
 from schools.receivers import KLP_user_Perm
 from klprestApi.views.TreeMenu import getAssSG

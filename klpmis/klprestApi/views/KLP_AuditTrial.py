@@ -5,13 +5,10 @@ KLP_AuditTrial is used to generate audit trail report using fullhistory.
 """
 import datetime
 
-from django.contrib.auth.forms import *
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 
-from vendor.django_restapi.responder import *
-from vendor.django_restapi.receiver import *
-from schools.models import *
+from fullhistory.models import User
 from schools.receivers import KLP_user_Perm
 from fullhistory.models import FullHistory
 

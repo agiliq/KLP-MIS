@@ -19,7 +19,7 @@ from vendor.django_restapi.receiver import XMLReceiver
 from schools.models import Institution, Boundary, Institution_Category
 from schools.forms import Institution_Form
 from fullhistory.models import User
-from .klprestApi.views.TreeMenu import getAssInst
+from klprestApi.views.TreeMenu import getAssInst
 
 
 class KLP_Institution(Collection):

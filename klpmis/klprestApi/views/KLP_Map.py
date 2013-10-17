@@ -2,9 +2,8 @@
 # -*- coding: utf-8 -*-
 from django.http import HttpResponse
 
-from vendor.django_restapi.responder import *
-from vendor.django_restapi.receiver import *
-from schools.models import *
+from schools.models import Assessment, StudentGroup,\
+    Assessment_StudentGroup_Association
 
 
 def KLP_Map_SG(request):
