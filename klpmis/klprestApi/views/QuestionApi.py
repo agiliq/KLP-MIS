@@ -6,15 +6,13 @@ QuestionApi is used
 2) To create new Question
 3) To update existing Question
 """
-
-from django.conf.urls.defaults import *
 from django.http import HttpResponse
 
-from schools.models import *
-from schools.forms import *
+from schools.models import Question
+from schools.forms import Question_Form
 from vendor.django_restapi.model_resource import Collection
-from vendor.django_restapi.responder import *
-from vendor.django_restapi.receiver import *
+from vendor.django_restapi.responder import TemplateResponder
+from vendor.django_restapi.receiver import XMLReceiver
 from klprestApi.views.BoundaryApi import ChoiceEntry
 from schools.receivers import KLP_user_Perm
 
