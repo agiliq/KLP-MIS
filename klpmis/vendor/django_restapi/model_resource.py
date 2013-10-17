@@ -3,17 +3,17 @@
 """
 Model-bound resource class.
 """
-from resource import ResourceBase, load_put_and_files, reverse, \
-    HttpMethodNotAllowed
+from resource import ResourceBase
 from receiver import FormReceiver
 
-from django import forms
-from django.conf.urls.defaults import patterns
-from django.http import *
+from django.http import Http404, HttpResponse
 from django.forms import ModelForm, models
 from django.forms.util import ErrorDict
 from django.utils.functional import curry
 from django.utils.translation.trans_null import _
+from django.core.urlresolvers import reverse
+
+from .resource import HttpMethodNotAllowed
 
 
 class InvalidModelData(Exception):
