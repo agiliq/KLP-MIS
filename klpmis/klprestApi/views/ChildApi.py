@@ -8,8 +8,6 @@ from schools.models import Child
 from vendor.django_restapi.responder import TemplateResponder
 from schools.forms import Child_Form
 from vendor.django_restapi.model_resource import Collection
-# from vendor.django_restapi.responder import *
-# from vendor.django_restapi.receiver import *
 from klprestApi.views.BoundaryApi import ChoiceEntry
 from schools.models import current_academic, Student, Boundary, StudentGroup,\
     Academic_Year, Student_StudentGroupRelation
