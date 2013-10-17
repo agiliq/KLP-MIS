@@ -5,18 +5,18 @@ StudentGroupApi is used
 3) To update existing StudentGroup
 4) To view assessment entry screen or grid to enter answers data.
 """
-from django.http import HttpResponse
-from django.shortcuts import render_to_response
+from django.http import HttpResponse, HttpResponseRedirect
 from django.forms.models import modelformset_factory
-from django.contrib.contenttypes.models import ContentType
+from django.core.paginator import Paginator, EmptyPage, InvalidPage
 
-from vendor.django_restapi.resource import Resource
-from vendor.django_restapi.model_resource import Collection, Entry
-from vendor.django_restapi.responder import *
-from vendor.django_restapi.receiver import *
+from vendor.django_restapi.model_resource import Collection
+from vendor.django_restapi.responder import TemplateResponder
+from vendor.django_restapi.receiver import XMLReceiver
 from klprestApi.views.BoundaryApi import ChoiceEntry
-from schools.models import *
-from schools.forms import *
+from schools.models import StudentGroup, Institution,\
+    Student_StudentGroupRelation, current_academic, Child, Assessment,\
+    Question, Answer, Student, Relations, Assessment_Lookup, Academic_Year
+from schools.forms import StudentGroup_Form, Answer_Form
 from schools.receivers import KLP_user_Perm
 from klpmis.settings import NUM_OF_FLEXI_ANSWER_FORM_RECORDS
 
@@ -148,8 +148,6 @@ def KLP_StudentGroup_Update(request, studentgroup_id):
         pk=studentgroup_id,
         form_class=StudentGroup_Form)
     return HttpResponse(response)
-
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 def KLP_StudentGroup_Answer_Entry(
