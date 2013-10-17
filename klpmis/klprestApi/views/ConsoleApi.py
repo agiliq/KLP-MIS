@@ -4,17 +4,15 @@
 ConsoleApi is used to run raw sql queries from frontend.
 """
 import psycopg2
+from django.http import HttpResponse
+import simplejson
 
 from django.shortcuts import render
-from vendor.django_restapi.responder import *
-from vendor.django_restapi.receiver import *
 from django.views.decorators.csrf import csrf_exempt
-from django.contrib.contenttypes.models import *
+from django.contrib.contenttypes.models import ContentType
 
-from klpmis.settings import *
-from fullhistory.models import *
-from schools.models import *
-from schools.forms import *
+from fullhistory.models import Request, FullHistory
+from django.conf import settings
 
 
 def KLP_Admin_Console(request):
@@ -33,8 +31,8 @@ def KLP_Admin_Console(request):
 def KLP_Run_Query(request):
     ''' To run SQl Queries Entered by admin'''
 
+    DATABASES = settings.DATABASES
     # get query to perform
-
     adminQuery = request.POST.get('form-staging-query')
 
     # connection = sqlite.connect('/home/klp/klp/klp.db')
