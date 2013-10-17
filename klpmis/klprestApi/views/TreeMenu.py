@@ -3,11 +3,15 @@
 """
 TreeMenu is used to filter all objects to genrate tree menu
 """
-from django.http import *
+from django.http import HttpResponse
 
 from vendor.django_restapi.model_resource import Collection
-from schools.models import *
-from klprestApi.views.Treeresponder import *
+from fullhistory.models import User
+from schools.models import Assessment_StudentGroup_Association,\
+    Assessment_Class_Association, Assessment_Institution_Association,\
+    Assessment, StudentGroup, UserAssessmentPermissions, Institution,\
+    Boundary, Programme, Question
+from klprestApi.views.Treeresponder import TreeResponder
 
 asstable = {2: Assessment_StudentGroup_Association,
             3: Assessment_Class_Association,
