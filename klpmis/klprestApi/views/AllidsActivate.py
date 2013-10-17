@@ -13,7 +13,7 @@ import simplejson
 from django.core.mail import send_mail
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 
 from schools.models import Boundary, Institution, Programme, Assessment,\
@@ -31,15 +31,11 @@ def KLP_act_form(request):
         return HttpResponseRedirect('/login/')
     else:
 
-        respDict = {'title': 'Karnataka Learning Partnership ',
-                    'user': user}
-        respTemplate = \
-            render_to_response('viewtemplates/AllidsActivate_html.html',
-                               respDict)
-
-             # render admin console template
-
-        return HttpResponse(respTemplate)
+        context = {'title': 'Karnataka Learning Partnership ',
+                   'user': user}
+        return render(request,
+                      'viewtemplates/AllidsActivate_html.html',
+                      context)
 
 
 @csrf_exempt
