@@ -6,7 +6,6 @@ into model_resource.ModelResource and determine how
 the objects of a ModelResource instance are rendered
 (e.g. serialized to XML, rendered by templates, ...).
 """
-import datetime
 import simplejson
 
 from django.core import serializers
@@ -15,18 +14,21 @@ from django.core.paginator import QuerySetPaginator, InvalidPage
 # the correct paginator for Model objects is the QuerySetPaginator,
 # not the Paginator! (see Django doc)
 from django.core.xheaders import populate_xheaders
-from django import forms
-from django.http import Http404, HttpResponse, HttpResponseRedirect
+from django.http import Http404, HttpResponse
 from django.forms.util import ErrorDict
 from django.shortcuts import render_to_response
 from django.template import loader, RequestContext
 from django.utils.xmlutils import SimplerXMLGenerator
 from django.views.generic import TemplateView
 from django.forms.models import modelformset_factory
-from django.db import transaction
 
-from schools.models import *
-from schools.forms import *
+from schools.models import Assessment, Institution_address, Boundary,\
+    StudentGroup, Staff_StudentGroupRelation, current_academic, Question,\
+    Answer, Student_StudentGroupRelation
+from schools.forms import Assessment_Form, Question_Form, Institution_Form,\
+    Staff_Form, Institution_Category_Form, Institution_Management_Form,\
+    Moi_Type_Form, Assessment_Lookup_Form, Child_Form
+from fullhistory.models import User
 
 
 class SerializeResponder(object):
@@ -586,7 +588,7 @@ class TemplateResponder(object):
                                 'showsuccess': True}
 
                     if modulename == 'child':
-	                     if request.POST['form-0-ModelName'] == 'student':
+                        if request.POST['form-0-ModelName'] == 'student':
 
 				    # if current model is Chils and ModelName is Student
 
@@ -1152,5 +1154,3 @@ class TemplateResponder(object):
             self.template_object_name: elem,
             'extra_context': self.extra_context,
             }, context_instance=RequestContext(request))
-
-
