@@ -13,10 +13,9 @@ from django.contrib.contenttypes.models import ContentType
 
 from vendor.django_restapi.resource import Resource
 from schools.forms import Answer_Form
-from schools.models import Answer
 from schools.receivers import KLP_obj_Perm
 from schools.models import Institution, Assessment,\
-    Question, StudentGroup, Student
+    Question, StudentGroup, Student, Answer
 
 
 def KLP_DataEnry(request):
