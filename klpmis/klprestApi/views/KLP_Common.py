@@ -7,23 +7,18 @@ KLP_common is used
 2) To Delete (deactive object) boundary, institution, sg, staff,
     programme, assessment and question.
 """
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from django.db import connection
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import redirect
 from django.core.mail import send_mail
-from django.views.decorators.csrf import csrf_exempt
-from django.shortcuts import redirect
-from django.core.mail import send_mail
 
-from schools.models import *
-from schools.forms import *
-from schools.receivers import KLP_user_Perm
-from vendor.django_restapi.model_resource import Collection, Entry
-from vendor.django_restapi.responder import *
-from vendor.django_restapi.receiver import *
 from vendor.django_restapi.resource import Resource
+from schools.models import Institution, Boundary, Assessment,\
+    Programme, Question, StudentGroup, Student, Staff,\
+    Student_StudentGroupRelation, current_academic
+from schools.receivers import KLP_user_Perm
 
 
 class KLP_Create_Node(Resource):
