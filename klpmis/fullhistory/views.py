@@ -1,10 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-from django.shortcuts import get_object_or_404, render_to_response
+from django.shortcuts import get_object_or_404, render
 from django.http import Http404
 from django.utils.encoding import force_unicode
 from django.utils.text import capfirst
-from django.template import RequestContext
 from django.utils.translation import ugettext as _
 
 from models import FullHistory
@@ -24,8 +23,9 @@ def history_log(request, object_id, model,
         'object': obj,
         'app_label': app_label, }
     context.update(extra_context or {})
-    return render_to_response(template, context,
-                              context_instance=RequestContext(request))
+    return render(request,
+                  template,
+                  context)
 
 
 def history_audit(request, object_id, model,
@@ -45,8 +45,9 @@ def history_audit(request, object_id, model,
         'app_label': app_label,
         'failure': failure, }
     context.update(extra_context or {})
-    return render_to_response(template, context,
-                              context_instance=RequestContext(request))
+    return render(request,
+                  template,
+                  context)
 
 
 def history_version(request, object_id, version,
@@ -74,5 +75,6 @@ def history_version(request, object_id, version,
         'object': obj, 'app_label': app_label,
         'version': version, 'action': action, }
     context.update(extra_context or {})
-    return render_to_response(template, context,
-                              context_instance=RequestContext(request))
+    return render(request,
+                  template,
+                  context)
