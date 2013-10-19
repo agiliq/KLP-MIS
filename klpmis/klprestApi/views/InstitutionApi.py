@@ -8,8 +8,7 @@ Institution Api is used
 4) To list boundaries/institutions while assign permissions
 """
 from django.http import HttpResponse
-from django.shortcuts import render_to_response
-from django.template import RequestContext
+from django.shortcuts import render
 
 from vendor.django_restapi.model_resource import Collection
 from schools.receivers import KLP_user_Perm
@@ -191,7 +190,7 @@ def KLP_Institution_Boundary(
         # get Selected boundary object....
 
         boundaryObj = Boundary.objects.get(id=boundary_id)
-        respDict = {
+        context = {
             'users': users,
             'boundary': boundaryObj,
             'permissionType': permissionType,
@@ -202,7 +201,7 @@ def KLP_Institution_Boundary(
 
         bound_cat = \
             boundaryObj.boundary_category.boundary_category.lower()
-        respDict['bound_cat'] = bound_cat
+        context['bound_cat'] = bound_cat
         if permissionType == 'permissions':
 
             # If permissionType is permissions do..
@@ -212,14 +211,14 @@ def KLP_Institution_Boundary(
                 # if bound_cat in "district, block, project" get active(2)
                 # child boundaries
 
-                respDict['boundary_list'] = \
+                context['boundary_list'] = \
                     Boundary.objects.filter(parent=boundaryObj,
                                             active=2).distinct()
             else:
 
                 # else get all active(2) child Institutions
 
-                respDict['institution_list'] = \
+                context['institution_list'] = \
                     Institution.objects.filter(boundary=boundaryObj,
                                                active=2).distinct()
         else:
@@ -248,7 +247,7 @@ def KLP_Institution_Boundary(
                             'parent__id',
                             flat=
                             True).distinct()
-                respDict['boundary_list'] = \
+                context['boundary_list'] = \
                     Boundary.objects.filter(id__in=boundary_list,
                                             active=2).distinct()
             elif bound_cat in ['block', 'project']:
@@ -256,7 +255,7 @@ def KLP_Institution_Boundary(
                 # if bound_cat in block or project query circle or cluster
                 # level  boundaries
 
-                respDict['boundary_list'] = \
+                context['boundary_list'] = \
                     Boundary.objects.filter(
                         institution__pk__in=map_institutions_list,
                         active=2, parent=boundaryObj).distinct()
@@ -264,14 +263,14 @@ def KLP_Institution_Boundary(
 
                 # else Query Institutions
 
-                respDict['institution_list'] = \
+                context['institution_list'] = \
                     Institution.objects.filter(id__in=map_institutions_list,
                                                boundary=boundaryObj,
                                                active=2).distinct()
-            respDict['assessmentId'] = assessment_id
+            context['assessmentId'] = assessment_id
 
-        return render_to_response(
-            'viewtemplates/institution_list.html', respDict,
-            context_instance=RequestContext(request))
+        return render(request,
+                      'viewtemplates/institution_list.html',
+                      context)
     else:
         return HttpResponse('Insufficient Priviliges!')
