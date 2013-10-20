@@ -5,9 +5,7 @@ KLP_AuditTrial is used to generate audit trail report using fullhistory.
 """
 import datetime
 
-from django.shortcuts import render_to_response
-from django.template import RequestContext
-
+from django.shortcuts import render
 from fullhistory.models import User
 from schools.receivers import KLP_user_Perm
 from fullhistory.models import FullHistory
@@ -26,8 +24,8 @@ def KLP_audit(request):
     # get all active(1) user to show in drop down.
 
     userList = User.objects.filter(is_active=1)
-    respDict = {'userList': userList,
-                'title': 'Karanataka Learning Partnership'}
+    context = {'userList': userList,
+               'title': 'Karanataka Learning Partnership'}
 
     # check requested method
 
@@ -52,9 +50,9 @@ def KLP_audit(request):
             start_date = defaultDate
         if not end_date:
             end_date = defaultDate
-        respDict['start_date'] = start_date
-        respDict['end_date'] = end_date
-        respDict['selUser'] = int(selUser)
+        context['start_date'] = start_date
+        context['end_date'] = end_date
+        context['selUser'] = int(selUser)
         strDate = start_date.split('-')
         enDate = end_date.split('-')
 
@@ -70,14 +68,13 @@ def KLP_audit(request):
                                         int(enDate[2]), int(enDate[1]),
                                         int(enDate[0]))),
                 request__user_pk=selUser)
-        respDict['fullHistoryList'] = fullHistoryList
+        context['fullHistoryList'] = fullHistoryList
 
         # return reponse to template
 
-        return render_to_response('viewtemplates/auditTrial.html',
-                                  respDict,
-                                  context_instance=
-                                  RequestContext(request))
-    return render_to_response('viewtemplates/auditTrial.html',
-                              respDict,
-                              context_instance=RequestContext(request))
+        return render(request,
+                      'viewtemplates/auditTrial.html',
+                      context)
+    return render(request,
+                  'viewtemplates/auditTrial.html',
+                  context)
