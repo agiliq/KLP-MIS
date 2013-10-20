@@ -7,25 +7,29 @@ the objects of a ModelResource instance are rendered
 (e.g. serialized to XML, rendered by templates, ...).
 """
 import datetime
+import simplejson
 # the correct paginator for Model objects is the QuerySetPaginator,
 # not the Paginator! (see Django doc)
 from django.core.paginator import QuerySetPaginator, InvalidPage
 from django.core import serializers
 from django.core.handlers.wsgi import STATUS_CODE_TEXT
 from django.core.xheaders import populate_xheaders
-from django import forms
-from django.http import Http404, HttpResponse, HttpResponseRedirect
+from django.http import Http404, HttpResponse
 from django.forms.util import ErrorDict
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 from django.template import loader, RequestContext
 from django.utils.xmlutils import SimplerXMLGenerator
 from django.views.generic import TemplateView
 from django.forms.models import modelformset_factory
-from django.db import transaction
 from django.conf import settings
 
-from schools.models import *
-from schools.forms import *
+from fullhistory.models import User
+from schools.models import Assessment, Institution_address, Boundary,\
+    StudentGroup, Staff_StudentGroupRelation, current_academic, Child,\
+    Relations, Question, Answer, Student, Student_StudentGroupRelation
+from schools.forms import Assessment_Form, Question_Form, Institution_Form,\
+    Staff_Form, Institution_Category_Form, Moi_Type_Form,\
+    Institution_Management_Form, Child_Form
 
 
 class SerializeResponder(object):
@@ -601,7 +605,7 @@ class TemplateResponder(object):
 
                 # If Button type is Save
 
-                    respDict = {modulename.lower(): obj,
+                    context = {modulename.lower(): obj,
                                 'showsuccess': True}
 
                     if modulename == 'child':
@@ -609,7 +613,7 @@ class TemplateResponder(object):
 
                         # if current model is Chils and ModelName is Student
 
-                            respDict['student'] = True
+                            context['student'] = True
 
                     # Create Student Object With as foreign key
 
@@ -719,9 +723,8 @@ class TemplateResponder(object):
 
                     template_name = '%s/%s_detail.html' \
                         % (self.template_dir, modulename)
-                    response = render_to_response(template_name,
-                                                  respDict,
-                                                  context_instance=RequestContext(request))
+                    response = render(request, template_name,
+                                      context)
                     return response
                 elif buttonType == 'save and continue':
 
@@ -739,12 +742,10 @@ class TemplateResponder(object):
                     template_name = '%s/%s_form.html' % (
                         'edittemplates',
                         modulename)
-                    return render_to_response(template_name, {
-                        'form': form,
-                        'update': True,
-                        self.template_object_name: elem,
-                        'extra_context': self.extra_context,
-                    }, context_instance=RequestContext(request))
+                    context = {'form': form, 'update': True,
+                               self.template_object_name: elem,
+                               'extra_context': self.extra_context}
+                    return render(request, template_name, context)
                 elif buttonType == 'save and add another':
 
                 # If buttonType is save and add another show new entry form
@@ -755,14 +756,16 @@ class TemplateResponder(object):
                     # If it is a question form pass order
 
                         self.extra_context['order'] = \
-                            Question.objects.filter(assessment__id=self.extra_context['referKey'
-                                                                                      ]).count() + 1
+                            Question.objects.filter(
+                                assessment__id=self.extra_context['referKey'
+                                                                  ]).count() + 1
 
                     form = \
                         ResourceForm(queryset=queryset.model.objects.none())
                 else:
                     if form_class in [Institution_Category_Form,
-                                      Moi_Type_Form, Institution_Management_Form,
+                                      Moi_Type_Form,
+                                      Institution_Management_Form,
                                       Assessment_Form]:
                         response = \
                             '<input type=hidden id=success_status size=15 value=True /><input type=hidden value=%s id=obj_id />' \
@@ -812,11 +815,9 @@ class TemplateResponder(object):
                         request.POST.get('form-0-otherId')
                 template_name = '%s/%s_form.html' % (self.template_dir,
                                                      queryset.model._meta.module_name)
-                response = render_to_response(template_name,
-                                              {'form': form,
-                                               'extra_context': self.extra_context},
-                                              context_instance=RequestContext(request))
-                return response
+                context = {'form': form,
+                           'extra_context': self.extra_context}
+                return render(request, template_name, context)
         else:
 
         # If request method is not post get form for the model
@@ -826,9 +827,9 @@ class TemplateResponder(object):
     # Show the form
         template_name = '%s/%s_form.html' % (self.template_dir,
                                              queryset.model._meta.module_name)
-        return render_to_response(template_name, {'form': form,
-                                  'extra_context': self.extra_context},
-                                  context_instance=RequestContext(request))
+        context = {'form': form,
+                   'extra_context': self.extra_context}
+        return render(request, template_name, context)
 
     def update_form(
         self,
@@ -1052,12 +1053,12 @@ class TemplateResponder(object):
                 # If Button type is Save show detail information about updated
                 # object
 
-                    respDict = {elem._meta.module_name.lower(): obj,
-                                'showsuccess': True}
+                    context = {elem._meta.module_name.lower(): obj,
+                               'showsuccess': True}
 
                     if modelName == 'child':
                         if request.POST['ModelName'] == 'student':
-                            respDict['student'] = True
+                            context['student'] = True
 
                     if form_class == Staff_Form:
                         template_name = '%s/%s_detail.html' \
@@ -1065,9 +1066,8 @@ class TemplateResponder(object):
                     else:
                         template_name = '%s/%s_detail.html' \
                             % ('viewtemplates', elem._meta.module_name)
-                    response = render_to_response(template_name,
-                                                  respDict,
-                                                  context_instance=RequestContext(request))
+                    response = render(request, template_name,
+                                      context)
 
                     return response
                 elif buttonType == 'save and continue':
@@ -1095,11 +1095,10 @@ class TemplateResponder(object):
                     template_name = '%s/%s_form.html' % (
                         'viewtemplates',
                         elem._meta.module_name)
-                    response = render_to_response(template_name,
-                                                  {'form': form,
-                                                   'extra_context': self.extra_context},
-                                                  context_instance=RequestContext(request))
-                    return response
+                    context = {'form': form,
+                               'extra_context': self.extra_context}
+                    return render(request, template_name,
+                                  context)
             else:
 
             # If form is not valid response back to Edit form
@@ -1135,12 +1134,10 @@ class TemplateResponder(object):
                 template_name = '%s/%s_form.html' % (self.template_dir,
                                                      elem._meta.module_name)
 
-                return render_to_response(template_name, {
-                    'form': form,
-                    'update': True,
-                    self.template_object_name: elem,
-                    'extra_context': self.extra_context,
-                }, context_instance=RequestContext(request))
+                context = {'form': form, 'update': True,
+                           self.template_object_name: elem,
+                           'extra_context': self.extra_context}
+                return render(template_name, context)
         else:
 
         # If request method is not post get form for the model based on pk
@@ -1158,9 +1155,7 @@ class TemplateResponder(object):
 
         template_name = '%s/%s_form.html' % (self.template_dir,
                                              elem._meta.module_name)
-        return render_to_response(template_name, {
-            'form': form,
-            'update': True,
-            self.template_object_name: elem,
-            'extra_context': self.extra_context,
-        }, context_instance=RequestContext(request))
+        context = {'form': form, 'update': True,
+                   self.template_object_name: elem,
+                   'extra_context': self.extra_context}
+        return render(request, template_name, context)
