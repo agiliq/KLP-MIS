@@ -7,7 +7,7 @@ StudentApi is used
 5) To delete selected students
 """
 from django.http import HttpResponse
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 
 from schools.models import Student, StudentGroup, Institution, Child
 from schools.forms import Child_Form
@@ -69,20 +69,21 @@ def KLP_Student_Create(request, studentgroup_id, counter=0):
 
 def KLP_Student_Call(request, studentgroup_id):
     """ To show Bulk Students to create"""
+    context = {'studentgroup_id': studentgroup_id, 'totStudents': range(10)}
     return (
-        render_to_response(
-            'viewtemplates/student_form.html',
-            {'studentgroup_id': studentgroup_id, 'totStudents': range(10)})
+        render(request,
+            'viewtemplates/student_form.html', context)
     )
 
 
 def KLP_Student_Edit_Call(request, studentgroup_id):
     """ To show Bulk Students to update """
     studentList = request.GET.getlist("students")
+    context = {'studentgroup_id': studentgroup_id,
+               'studentList': studentList}
     return (
-        render_to_response(
-            'edittemplates/student_form.html',
-            {'studentgroup_id': studentgroup_id, 'studentList': studentList})
+        render(request,
+               'edittemplates/student_form.html', context)
     )
 
 
