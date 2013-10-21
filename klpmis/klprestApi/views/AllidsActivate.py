@@ -42,20 +42,15 @@ def KLP_act_form(request):
 def KLP_Activation(request):
     """ To actiave the records>"""
 
-    # Checking user Permissions
-        # KLP_user_Perm(request.user, "Institution", "Add")
-        # Get Button Type
-
     isExecute = True
 
     selCategoryTyp = request.POST.get('form-staging-modelname')
     selCategoryids = request.POST.get('form-staging-allids')
 
-    if selCategoryids == '':
+    if selCategoryids is None:
         isExecute = False
-        resStr = 'Please give atleast on id'
+        resStr = 'Please give atleast one id'
     else:
-
         isExecute = False
         allids1 = selCategoryids.split(',')
         model_name1 = selCategoryTyp
@@ -114,8 +109,11 @@ def KLP_Activation(request):
             if model_name1.lower() == 'student' and actiontype == 1 and model_name1 != 'assessment':
                 childi = obj3.values_list('id', flat=True)
                 relObjects = \
-                    Student_StudentGroupRelation.objects.filter(student__id__in=childi,
-                                                                academic=current_academic, active=2)
+                    Student_StudentGroupRelation.objects.filter(student__id__in=
+                                                                childi,
+                                                                academic=
+                                                                current_academic,
+                                                                active=2)
                 relObjects.update(active=1)
                 childlength = []
             if len(childlength) == 0:
