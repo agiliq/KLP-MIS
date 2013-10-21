@@ -1,18 +1,15 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 """
-This file contains user defined template tags to used templates to render values
+This file contains user defined template tags to used
+templates to render values
 """
-
-from schools.models import *
-from schools.forms import *
 from django import template
-from django.http import HttpResponse
-from django.shortcuts import render_to_response
+
 register = template.Library()
 
-
 # This filter is used for to return range value for pagination
+
 
 @register.filter
 def KLPrange(value):
@@ -54,7 +51,8 @@ def dictValue(dictionary, key):
         return ''
 
 
-# This filter is used to display key value from dictionary by adding '_u' to key.
+# This filter is used to display key value
+    # from dictionary by adding '_u' to key.
 
 @register.filter(name='assesmentUpdation')
 def assesmentUpdation(dictionary, key):
@@ -68,9 +66,9 @@ def assesmentUpdation(dictionary, key):
 
 @register.inclusion_tag('render_field.html')
 def render_field(field, attributes=''):
-    """ render a field with its errors, optionally passing in 
+    """ render a field with its errors, optionally passing in
 
-        attributes eg.:  
+        attributes eg.:
 
         {% render_field form.name "cols=40,rows=5,class=text,tabindex=2" %}
 
@@ -107,5 +105,3 @@ def make_widget(field, attributes):
                 attr[key] = value
 
     return field.as_widget(attrs=attr)
-
-
