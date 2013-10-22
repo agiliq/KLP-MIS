@@ -1,13 +1,13 @@
 <div  id="searchRes">
 <div style="width:95%;padding:5px 5px 20px 5px;">
 	<span style="font-weight:bold; font-size:15px; padding:5px">
-		<a style="width:auto;padding: 5px 15px;background: url(/static_media/images/price_bg.jpg) center right; color:#fff"  href="/studentgroup/{{studentgroup.id}}/update/" onclick="return KLP_View(this);">Edit</a>
+		<a style="width:auto;padding: 5px 15px;background: url(/{{ STATIC_URL }}/images/price_bg.jpg) center right; color:#fff"  href="/studentgroup/{{studentgroup.id}}/update/" onclick="return KLP_View(this);">Edit</a>
 	</span>
 	<span style="font-weight:bold; font-size:15px; padding:5px">
-		<span style="width:auto;padding: 5px 15px;background: url(/static_media/images/price_bg.jpg) center right; color:#fff;cursor:pointer"  onclick="KLP_Del('{{studentgroup.id}}', 'studentgroup', '{{studentgroup.name}}')">Delete</span>
+		<span style="width:auto;padding: 5px 15px;background: url(/{{ STATIC_URL }}/images/price_bg.jpg) center right; color:#fff;cursor:pointer"  onclick="KLP_Del('{{studentgroup.id}}', 'studentgroup', '{{studentgroup.name}}')">Delete</span>
 	</span>
 	<span style="font-weight:bold; font-size:15px; padding:5px">
-		<a style="width:auto;padding: 5px 15px;background: url(/static_media/images/price_bg.jpg) center right; color:#fff" href="/studentgroup/{{studentgroup.id}}/student/creator/?keepThis=true&TB_iframe=true&height=400&width=800" title="Add Student" class="thickbox">Add Student</a>
+		<a style="width:auto;padding: 5px 15px;background: url(/{{ STATIC_URL }}/images/price_bg.jpg) center right; color:#fff" href="/studentgroup/{{studentgroup.id}}/student/creator/?keepThis=true&TB_iframe=true&height=400&width=800" title="Add Student" class="thickbox">Add Student</a>
 	</span>
 </div>
 
@@ -48,12 +48,12 @@
     </tr>
     {% for student in students_list %}
     <tr id = "student_{{student.id}}">
-	<td>{{student.name.first_name}}</td> <td>{{student.name.last_name}}</td> <td>{{student.name.dob}}</td> <td>{{student.name.gender}}</td> <td>{{student.name.relations.mother}}</td> <td>{{student.name.relations.father}}</td> <td>{{student.name.mt}}</td> <td>{{student.academic}}</td> 
+	<td>{{student.name.first_name}}</td> <td>{{student.name.last_name}}</td> <td>{{student.name.dob}}</td> <td>{{student.name.gender}}</td> <td>{{student.name.relations.mother}}</td> <td>{{student.name.relations.father}}</td> <td>{{student.name.mt}}</td> <td>{{student.academic}}</td>
 
 	<td>
-		<a href="/student/{{student.id}}/update/?keepThis=true&TB_iframe=true&height=400&width=800" title="Edit Student" title="Edit Student" class="thickbox"><img title="Edit" src="/static_media/images/pagebuilder_edit.gif"></a>
+		<a href="/student/{{student.id}}/update/?keepThis=true&TB_iframe=true&height=400&width=800" title="Edit Student" title="Edit Student" class="thickbox"><img title="Edit" src="/{{ STATIC_URL }}/images/pagebuilder_edit.gif"></a>
 
-		<span style="color:blue;cursor:pointer"  onclick="KLP_Del('{{student.id}}', 'student', '{{student.name.first_name}}')"><img width="11" title="Delete" src="/static_media/images/PageRow_delete.gif" title="Delete"></span>
+		<span style="color:blue;cursor:pointer"  onclick="KLP_Del('{{student.id}}', 'student', '{{student.name.first_name}}')"><img width="11" title="Delete" src="/{{ STATIC_URL }}/images/PageRow_delete.gif" title="Delete"></span>
 	</td>
     </tr>
     {% endfor %}

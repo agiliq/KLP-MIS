@@ -18,7 +18,7 @@
 		    <th class="tot-border3">Name</th>  <th class="tot-border3">Date of Joining</th>  <th class="tot-border3">Gender</th>  <th class="tot-border3">Mother Tongue</th> <th class="tot-border3">Qualifiaction</th> <th class="tot-border3">Staff Type</th> <th class="tot-border3">Classes</th>
 		    {%if map%}<th class="tot-border3">Map</th>{% else %}<th class="tot-border3">Edit</th><th class="tot-border4">Delete</th>{% endif %}
 		    <!-- Staff Details -->
-		    {% for staff in staff_list %}		    	
+		    {% for staff in staff_list %}
 			<tr id='staff_{{staff.id}}'>
 				<td  class="tot-border1">{{staff.first_name}} {{staff.middle_name}} {{staff.last_name}}</td>
 				<td  class="tot-border1">{{staff.doj|date:"d-m-Y"}}</td>
@@ -44,16 +44,16 @@
 				{% else %}
 					<td  class="tot-border1">
 						<a href="/staff/{{staff.id}}/update/?keepThis=True&TB_iframe=True&height=400&width=800" title="Edit Staff" class="thickbox">
-							<img title="Edit" src="/static_media/images/pagebuilder_edit.gif">
+							<img title="Edit" src="/{{ STATIC_URL }}/images/pagebuilder_edit.gif">
 						</a>
 					</td>
 					<td  class="tot-border2">
 						<span onclick="KLP_Del('{{staff.id}}', 'staff', '{{staff.first_name}} {{staff.last_name}}')" style="color: blue; cursor: pointer;">
-							<img width="11" title="Delete" src="/static_media/images/PageRow_delete.gif">
+							<img width="11" title="Delete" src="/{{ STATIC_URL }}/images/PageRow_delete.gif">
 						</span>
 					</td>
 				{% endif %}
-			
+
 			</tr>
 		    {% endfor %}
 		</table>
@@ -69,7 +69,7 @@
 			<input type="submit" value="Map" id="map_staff_studentGroup"/>
 		</div>
 	{% endif %}
-	
+
 </form>
 </div>
 
@@ -99,7 +99,7 @@ function Pagination(thisObj){
 
 
 $(document).ready(function(){
-	
+
 $('#staffForm').submit(function (){
 	$.post(
 		'/map/staff_studentgroup/',

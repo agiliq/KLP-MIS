@@ -5,14 +5,14 @@
 <head>
 <title>{{title}}</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<script type="text/javascript" src="/static_media/js/jquery.js"></script>
-<script language="javascript" type="text/javascript" src="/static_media/js/niceforms.js"></script>
-<script type="text/javascript" src="/static_media/js/thickbox.js" charset="utf-8"></script>
+<script type="text/javascript" src="/{{ STATIC_URL }}/js/jquery.js"></script>
+<script language="javascript" type="text/javascript" src="/{{ STATIC_URL }}/js/niceforms.js"></script>
+<script type="text/javascript" src="/{{ STATIC_URL }}/js/thickbox.js" charset="utf-8"></script>
 
 
-<link rel="stylesheet" type="text/css" media="all" href="/static_media/css/thickbox.css" charset="utf-8"/>
-<link rel="stylesheet" type="text/css" media="all" href="/static_media/css/form.css" />
-<link rel="stylesheet" type="text/css" media="all" href="/static_media/css/style.css" />
+<link rel="stylesheet" type="text/css" media="all" href="/{{ STATIC_URL }}/css/thickbox.css" charset="utf-8"/>
+<link rel="stylesheet" type="text/css" media="all" href="/{{ STATIC_URL }}/css/form.css" />
+<link rel="stylesheet" type="text/css" media="all" href="/{{ STATIC_URL }}/css/style.css" />
 
 </head>
 
@@ -29,12 +29,12 @@
 <div id="popData">
 <div class="detailHead">
 	<span class="hedText">Entry Form</span>
-       <span class="KLP_DE_AdStudent"><a class="KLP_Button thickbox" href="/studentgroup/{{studentgroup_id}}/student/call/?keepThis=true&TB_iframe=true&height=600&width=950" title="Add Students">Add Students</a></span>   
+       <span class="KLP_DE_AdStudent"><a class="KLP_Button thickbox" href="/studentgroup/{{studentgroup_id}}/student/call/?keepThis=true&TB_iframe=true&height=600&width=950" title="Add Students">Add Students</a></span>
 	<span class="KLP_DE_AdStudent"><a href="#" onclick="closeForm()"> Click here to Close </a></span>
 </div>
 <!-- This to show bulk Students -->
 {% for student in totStudents %}
-<IFRAME SRC="/studentgroup/{{studentgroup_id}}/student/creator/{{forloop.counter}}/" 
+<IFRAME SRC="/studentgroup/{{studentgroup_id}}/student/creator/{{forloop.counter}}/"
      WIDTH=800 HEIGHT=180 style="clear:both;float:none;border:none"
      ALIGN=RIGHT
      >
@@ -48,9 +48,9 @@
     			setTimeout(function(){
 				$('body', $(firstIframe).contents()).find("#id_form-0-first_name").focus();
     		        },200);
-    			
+
     		});
-    		
+
     	});
     </script>
 {% endif %}
