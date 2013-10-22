@@ -5,14 +5,14 @@
 <head>
 <title>{{title}}</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<script type="text/javascript" src="/static_media/js/jquery.js"></script>
-<script language="javascript" type="text/javascript" src="/static_media/js/niceforms.js"></script>
-<script type="text/javascript" src="/static_media/js/thickbox.js" charset="utf-8"></script>
+<script type="text/javascript" src="/{{ STATIC_URL }}/js/jquery.js"></script>
+<script language="javascript" type="text/javascript" src="/{{ STATIC_URL }}/js/niceforms.js"></script>
+<script type="text/javascript" src="/{{ STATIC_URL }}/js/thickbox.js" charset="utf-8"></script>
 
 
-<link rel="stylesheet" type="text/css" media="all" href="/static_media/css/thickbox.css" charset="utf-8"/>
-<link rel="stylesheet" type="text/css" media="all" href="/static_media/css/form.css" />
-<link rel="stylesheet" type="text/css" media="all" href="/static_media/css/style.css" />
+<link rel="stylesheet" type="text/css" media="all" href="/{{ STATIC_URL }}/css/thickbox.css" charset="utf-8"/>
+<link rel="stylesheet" type="text/css" media="all" href="/{{ STATIC_URL }}/css/form.css" />
+<link rel="stylesheet" type="text/css" media="all" href="/{{ STATIC_URL }}/css/style.css" />
 
 </head>
 
@@ -32,8 +32,8 @@
 </div>
 <!-- This to show bulk Students to edit -->
 {% for student in studentList %}
-	 
-		<IFRAME SRC="/student/{{student}}/update/{{forloop.counter}}/" 
+
+		<IFRAME SRC="/student/{{student}}/update/{{forloop.counter}}/"
 	     		WIDTH=800 HEIGHT=180 style="clear:both;float:none;border:none"
 	     		ALIGN=RIGHT
 	     	>
@@ -46,13 +46,13 @@
     			setTimeout(function(){
 				$('body', $(firstIframe).contents()).find("#id_form-0-first_name").focus();
     		        },200);
-    			
+
     		});
-    		
+
     	});
     </script>
 {% endif %}
-	
+
 {% endfor %}
 
 <script>

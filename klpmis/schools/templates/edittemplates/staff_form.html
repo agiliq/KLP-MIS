@@ -5,14 +5,14 @@
 <head>
 <title>{{title}}</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<script type="text/javascript" src="/static_media/js/jquery.js"></script>
-<script language="javascript" type="text/javascript" src="/static_media/js/niceforms.js"></script>
-<script type="text/javascript" src="/static_media/js/thickbox.js" charset="utf-8"></script>
+<script type="text/javascript" src="/{{ STATIC_URL }}/js/jquery.js"></script>
+<script language="javascript" type="text/javascript" src="/{{ STATIC_URL }}/js/niceforms.js"></script>
+<script type="text/javascript" src="/{{ STATIC_URL }}/js/thickbox.js" charset="utf-8"></script>
 
 
-<link rel="stylesheet" type="text/css" media="all" href="/static_media/css/thickbox.css" charset="utf-8"/>
-<link rel="stylesheet" type="text/css" media="all" href="/static_media/css/form.css" />
-<link rel="stylesheet" type="text/css" media="all" href="/static_media/css/style.css" />
+<link rel="stylesheet" type="text/css" media="all" href="/{{ STATIC_URL }}/css/thickbox.css" charset="utf-8"/>
+<link rel="stylesheet" type="text/css" media="all" href="/{{ STATIC_URL }}/css/form.css" />
+<link rel="stylesheet" type="text/css" media="all" href="/{{ STATIC_URL }}/css/style.css" />
 </head>
 
 <body>
@@ -66,8 +66,8 @@
 	                                		<span class="editErr">{{ error }}</span>
 	                                	{% endfor %}
                                     	</td>
-					
-					
+
+
                                 </tr>
                                 <tr>
 					<td><label>Last Name:</label></td>
@@ -82,8 +82,8 @@
 	                                		<span class="editErr">{{ error }}</span>
 	                                	{% endfor %}
                                     	</td>
-					
-					
+
+
                                 </tr>
                                 <tr>
 					<td><label>UID:</label></td>
@@ -98,8 +98,8 @@
 	                                		<span class="editErr">{{ error }}</span>
 	                                	{% endfor %}
                                     	</td>
-					
-					
+
+
                                 </tr>
                                 <tr>
 				    <td><label for="address">Date of Joining:</label></td>
@@ -146,12 +146,12 @@
 	                                	<span class="editErr">{{ error }}</span>
 	                                {% endfor %}
                                     </td>
-				</tr>				
+				</tr>
                                 <tr>
 				    <td><label class="KLP_required">Staff Type:</label></td>
 				    <td>
 				    	<!-- Staff type  Field -->
-					<select name="form-0-staff_type" id="id_form-0-staff_type" tabindex=9>						
+					<select name="form-0-staff_type" id="id_form-0-staff_type" tabindex=9>
 						{% for staff_type in extra_context|displayValue:'Staff_Types' %}
 							<option value="{{staff_type.id}}" {%if staff.staff_type == staff_type %}selected="selected"{% endif %}>{{staff_type.staff_type}}</option>
 						{% endfor %}
@@ -171,12 +171,12 @@
 				    	<!-- Staff classes  Field -->
 					<select name="form-0-student_group" id="id_form-0-student_group" multiple="multiple" tabindex=10>
 						{% for studGrup in extra_context|displayValue:'stgrps' %}
-							
-							<option value="{{studGrup.id}}" {% if studGrup in staff.getAssigendClasses %}selected="selected"{% endif %}>{{studGrup.name}}{% if studGrup.section != None %}{{studGrup.section}}{% endif %}</option>	
+
+							<option value="{{studGrup.id}}" {% if studGrup in staff.getAssigendClasses %}selected="selected"{% endif %}>{{studGrup.name}}{% if studGrup.section != None %}{{studGrup.section}}{% endif %}</option>
 						{% endfor %}
 					</select>
 				    </td>
-				    
+
 				</tr>
 		                <tr><td> &nbsp;</td></tr>
 	      			<tr><td> &nbsp;</td></tr>
@@ -188,9 +188,9 @@
                         			{{entryForm.id}}
                         			<input type="hidden" id="id_form-0-institution" name="form-0-institution" value="{{staff.institution.id}}" />
                         		</span>
-                                             	
+
                                         <input type="submit" name="save" id="id_save" value="Save" tabindex=11/>
-                                               
+
 
                                 </td>
                                    {% if not extra_context|displayValue:'replaceTrue'%}
@@ -201,40 +201,40 @@
                                         <input type="submit" name="save_and_create" id="id_save_and_create" value="Save And Create Another" tabindex=12/>
                                     </td>
 
-                               {% endif %} 
-                        </tr>        
+                               {% endif %}
+                        </tr>
                 </table>
-        {%endwith%}             
+        {%endwith%}
 </form>
 <script>
 
-$(document).ready(function(){  
-  
+$(document).ready(function(){
+
    $("#id_save").click(function(){
    	window.parent.$("#successMsgHead").hide();
         window.parent.$("#failureMsgHead").hide();
    	$("#id_form-buttonType").val('save');
    	$("#id_save").attr("disabled", "true");
    	KLP_form_submit();
-   	
+
    });
-   
+
   $("#id_save_and_continue").click(function(){
         KLP_Hide_Msg();
         parentVal = $('#institution_id').val();
         $("#id_form-buttonType").val('save and continue');
         KLP_form_submit(parentVal);
    });
-   
+
    $("#id_save_and_create").click(function(){
         KLP_Hide_Msg();
         parentVal = $('#institution_id').val();
         $("#id_form-buttonType").val('save and add another');
         KLP_form_submit(parentVal, 'institution_id');
-        
-        
+
+
    });
-    
+
    var KLP_form_submit = function(){
     	newName = $('#id_form-0-name').val();
     	replaceId =  'staff_{{staff.id}}';
@@ -243,7 +243,7 @@ $(document).ready(function(){
    	$.post(
         	$('#url').val(),
         	$("#staffForm").serialize(),
-                function(data){	
+                function(data){
                     $("#popData").html(data);
                     $("#id_save").removeAttr("disabled");
                     //NFInit();
@@ -255,7 +255,7 @@ $(document).ready(function(){
                     	window.parent.$("#successMsgHead").show();
    		    	window.parent.$("#klp_MsgTxt").html("Staff Updated Successfully")
                     	window.parent.tb_remove();
-                    	
+
                     }
                            if( buttonType=='save and add another'){
                                             $('#dyncData').html(data);
@@ -264,8 +264,8 @@ $(document).ready(function(){
                                     }
                }
            );
-   } 
-   
+   }
+
 });
 </script>
 </fieldset>

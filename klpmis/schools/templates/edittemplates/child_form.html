@@ -1,20 +1,20 @@
 {% load template_tags %}
 <div id="popData">
-<script type="text/javascript" src="/static_media/js/jquery.js"></script>
-<script language="javascript" type="text/javascript" src="/static_media/js/niceforms.js"></script>
-<script type="text/javascript" src="/static_media/js/thickbox.js" charset="utf-8"></script>
+<script type="text/javascript" src="/{{ STATIC_URL }}/js/jquery.js"></script>
+<script language="javascript" type="text/javascript" src="/{{ STATIC_URL }}/js/niceforms.js"></script>
+<script type="text/javascript" src="/{{ STATIC_URL }}/js/thickbox.js" charset="utf-8"></script>
 
 
-<link rel="stylesheet" type="text/css" media="all" href="/static_media/css/thickbox.css" charset="utf-8"/>
-<link rel="stylesheet" type="text/css" media="all" href="/static_media/css/form.css" />
-<link rel="stylesheet" type="text/css" media="all" href="/static_media/css/style.css" />
+<link rel="stylesheet" type="text/css" media="all" href="/{{ STATIC_URL }}/css/thickbox.css" charset="utf-8"/>
+<link rel="stylesheet" type="text/css" media="all" href="/{{ STATIC_URL }}/css/form.css" />
+<link rel="stylesheet" type="text/css" media="all" href="/{{ STATIC_URL }}/css/style.css" />
 <form action="." method="POST" enctype="multipart/form-data" id="childForm" onsubmit="return false;" >{% csrf_token %}
-			    
+
 			     <input type="hidden" name="url" id="id_StudUpdateUrl" value="/student/{{child.id}}/update/" />
 			     <input type="hidden" name="url" id="replace_id" value="{{child.id}}" />
-			     
+
 			     <input type="hidden" name="studentgroup" value="{{extra_context|displayValue:'studentgroup_id'}}" id="id_studentgroup" />
-			    
+
                             <input type="hidden" name="form-buttonType" id="id_form-buttonType" value="save" />
 			    <input type="hidden" id="school_id" size="15" value="{{extra_context|displayValue:'prevousId'}}" / >
 			    <input type="hidden" id="success_status" size="15" value="{{extra_context|displayValue:'showsuccess'}}" / >
@@ -86,15 +86,15 @@
 				    </td>
 				    <td align="center">
 					<input type="text" name = "form-0-fatherfirstname" id="id_form-0-fatherfirstname" value="{% if extra_context|dictValue:'form-0-fatherfirstname' %}{{extra_context|dictValue:'form-0-fatherfirstname'}}{% else %}{{child.getFather.first_name}}{% endif %}" tabindex='1' size=8/>
-					
+
 				    </td>
 				    <td align="center">
 					<input type="text" name = "form-0-fathermiddlename" id="id_form-0-fathermiddlename" value="{% if extra_context|dictValue:'form-0-fathermiddlename' %}{{extra_context|dictValue:'form-0-fathermiddlename'}}{% else %}{{child.getFather.middle_name}}{% endif %}" tabindex='1' size=8/>
-					
+
 				    </td>
 				    <td align="center">
 					<input type="text" name = "form-0-fatherlastname" id="id_form-0-fatherlastname" value="{% if extra_context|dictValue:'form-0-fatherlastname' %}{{extra_context|dictValue:'form-0-fatherlastname'}}{% else %}{{child.getFather.last_name}}{% endif %}" tabindex='1' size=8/>
-					
+
 				    </td>
 				    <td align="center">
 				    	<input type="hidden" name="counter" id="id_counter" value="{{extra_context|displayValue:'counter'}}"/>
@@ -114,7 +114,7 @@
 	                                	<span class="editErr">{{ error }}</span>
 	                                {% endfor %}
                                     </td>
-				    
+
 				    <td align="center">
                                     	{% for error in entryForm.last_name.errors %}
 	                                	<span class="editErr">{{ error }}</span>
@@ -147,14 +147,14 @@
 	                                	<span class="editErr">{{ error }}</span>
 	                                {% endfor %}
                                     </td>
-                                    
+
                                     <td align="center">&nbsp;</td>
 				</tr>
-				
-				
-				
+
+
+
 				{% endfor %}
-                                
+
 				</table>
 				<script>
   $(document).ready(function(){
@@ -175,16 +175,16 @@
    	KLP_form_submit(parentVal,'id_boundary');
    });
 
-   
+
 
 var KLP_form_submit = function(parentVal, parentId){
     $("#id_save").attr("disabled", "true");
     modelName=$('#model').val();
     replaceId =  'student_'+$('#replace_id').val()
     /* post data using post method */
-    $.post(  
-        $("#id_StudUpdateUrl").val(),  
-        $("#childForm").serialize(),  
+    $.post(
+        $("#id_StudUpdateUrl").val(),
+        $("#childForm").serialize(),
         function(data){
         	$('#popData').html(data);
 		NFInit();
@@ -197,8 +197,8 @@ var KLP_form_submit = function(parentVal, parentId){
 			window.parent.parent.$("#successMsgHead").show();
 	   		window.parent.parent.$("#klp_MsgTxt").html("Student Updated Successfully");
 	   		$("body").html("Student Updated Successfully");
-        	} 
-    	});  
+        	}
+    	});
 }
 });
 </script>

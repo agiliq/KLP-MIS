@@ -19,12 +19,12 @@
 </td>
 <td  class="tot-border1">
 	<a href="/staff/{{staff.id}}/update/?keepThis=True&TB_iframe=True&height=400&width=800" title="Edit Staff" class="thickbox">
-		<img title="Edit" src="/static_media/images/pagebuilder_edit.gif">
+		<img title="Edit" src="/{{ STATIC_URL }}/images/pagebuilder_edit.gif">
 	</a>
 </td>
 <td  class="tot-border2">
 	<span onclick="KLP_Del('{{staff.id}}', 'staff', '{{staff.first_name}} {{staff.last_name}}')" style="color: blue; cursor: pointer;">
-		<img width="11" title="Delete" src="/static_media/images/PageRow_delete.gif">
+		<img width="11" title="Delete" src="/{{ STATIC_URL }}/images/PageRow_delete.gif">
 	</span>
 </td>
 </tr>
