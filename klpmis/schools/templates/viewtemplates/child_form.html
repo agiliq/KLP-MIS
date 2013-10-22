@@ -1,14 +1,14 @@
 {% load template_tags %}
 <div id="popData1"></div>
 {% if extra_context|displayValue:'reload' == False or extra_context|displayValue:'reload' == ''%}
-<script type="text/javascript" src="/static_media/js/jquery.js"></script>
-<script language="javascript" type="text/javascript" src="/static_media/js/niceforms.js"></script>
-<script type="text/javascript" src="/static_media/js/thickbox.js" charset="utf-8"></script>
+<script type="text/javascript" src="/{{ STATIC_URL }}/js/jquery.js"></script>
+<script language="javascript" type="text/javascript" src="/{{ STATIC_URL }}/js/niceforms.js"></script>
+<script type="text/javascript" src="/{{ STATIC_URL }}/js/thickbox.js" charset="utf-8"></script>
 
 
-<link rel="stylesheet" type="text/css" media="all" href="/static_media/css/thickbox.css" charset="utf-8"/>
-<link rel="stylesheet" type="text/css" media="all" href="/static_media/css/form.css" />
-<link rel="stylesheet" type="text/css" media="all" href="/static_media/css/style.css" />
+<link rel="stylesheet" type="text/css" media="all" href="/{{ STATIC_URL }}/css/thickbox.css" charset="utf-8"/>
+<link rel="stylesheet" type="text/css" media="all" href="/{{ STATIC_URL }}/css/form.css" />
+<link rel="stylesheet" type="text/css" media="all" href="/{{ STATIC_URL }}/css/style.css" />
 {% endif %}
 <div id="popData">
 <form action="." method="POST" enctype="multipart/form-data" id="childForm" onsubmit="return false;" >{% csrf_token %}
@@ -31,25 +31,25 @@
 				<tr>
 				    <!-- Child Form Headings -->
 				    <td align="center"><label class="KLP_required">First Name:</label></td>
-				  
+
 				    <td align="center"><label>Last Name:</label></td>
-				    
-				  
+
+
 				    <td align="center"><label class="KLP_required">Gender:</label></td>
 				      <td align="center" style="min-width:200px;max-width:200px"><label class="KLP_required">Date of Birth:</label></td>
 				    <td align="center"><label class="KLP_required">Mother Tongue:</label></td>
 				    <td align="center">&nbsp;</td>
 				    <td align="center"><label class="KLP_required">Mother First Name:</label></td>
 				     <td align="center"><label class="KLP_required">Father First Name:</label></td>
-				   
+
 				    <td align="center"><label>Other Studnet Id:</label></td>
 				     <td align="center"><label>UID:</label></td>
 				       <td align="center"><label>Child Middle Name:</label></td>
 				    <td align="center"><label>Mother Middle Name:</label></td>
 				     <td align="center"><label>Father Middle Name:</label></td>
 				    <td align="center"><label>Mother Last Name:</label></td>
-				   
-				   
+
+
 				    <td align="center"><label>Father Last Name :</label></td>
 				    <td align="center">&nbsp;</td>
 				</tr>
@@ -58,12 +58,12 @@
 				    <td align="center">
 					{% render_field entryForm.first_name 'tabindex=1' %}
 				    </td>
-				   
+
 				    <td align="center">
 					{% render_field entryForm.last_name 'tabindex=1' %}
 				    </td>
-				   
-				   
+
+
 				    <td align="center">
 					{% render_field entryForm.gender 'tabindex=1' %}
 				    </td>
@@ -77,15 +77,15 @@
 					<input type="hidden" name="form-0-active" id="id_active" size="15" value="2"/>
 					<input type="hidden" name="form-0-ModelName" id = "model" value="{{extra_context|displayValue:'modelName'}}" />
 				    </td>
-				    <td align="center">&nbsp;</td> 
+				    <td align="center">&nbsp;</td>
 				    <td align="center">
 					<input type="text" name = "form-0-motherfirstname" id="id_form-0-motherfirstname" tabindex='1' size=8 value="{{extra_context|dictValue:'form-0-motherfirstname'}}" />
 				    </td>
 				       <td align="center">
 					<input type="text" name = "form-0-fatherfirstname" id="id_form-0-fatherfirstname" tabindex='1' size=8 value="{{extra_context|dictValue:'form-0-fatherfirstname'}}" />
-					
+
 				    </td>
-				    
+
 				    <td align="center">
 					<input type="text" name="form-0-otherId" id="id_form-0-otherId" value="{{extra_context|dictValue:'form-0-otherId'}}" tabindex=1 size="3"/>
 				    </td>
@@ -98,18 +98,18 @@
 				    <td align="center">
 					<input type="text" name = "form-0-mothermiddlename" id="id_form-0-mothermiddlename" tabindex='1' size=8 value="{{extra_context|dictValue:'form-0-mothermiddlename'}}" />
 				    </td>
-				   
-				 
+
+
 				    <td align="center">
 					<input type="text" name = "form-0-fathermiddlename" id="id_form-0-fathermiddlename" tabindex='1' size=8 value="{{extra_context|dictValue:'form-0-fathermiddlename'}}" />
-					
+
 				    </td>
 				     <td align="center">
 					<input type="text" name = "form-0-motherlastname" id="id_form-0-motherlastname" tabindex='1' size=8 value="{{extra_context|dictValue:'form-0-motherlastname'}}" />
 				    </td>
 				    <td align="center">
 					<input type="text" name = "form-0-fatherlastname" id="id_form-0-fatherlastname" tabindex='1' size=8 value="{{extra_context|dictValue:'form-0-fatherlastname'}}" />
-					
+
 				    </td>
 				    <td align="center">
 				    	<input type="hidden" name="counter" id="id_counter" value="{{extra_context|displayValue:'counter'}}"/>
@@ -123,14 +123,14 @@
 	                                	<span class="editErr">{{ error }}</span>
 	                                {% endfor %}
                                     </td>
-				    
+
 				    <td align="center">
                                     	{% for error in entryForm.last_name.errors %}
 	                                	<span class="editErr">{{ error }}</span>
 	                                {% endfor %}
                                     </td>
-                                  
-                                   
+
+
                                     <td align="center">
                                     	{% for error in entryForm.gender.errors %}
 	                                	<span class="editErr">{{ error }}</span>
@@ -168,19 +168,19 @@
                                     <td align="center">&nbsp;</td>
                                     <td align="center">&nbsp;</td>
                                     <td align="center">&nbsp;</td>
-                                       <td align="center">&nbsp;</td>                                   
+                                       <td align="center">&nbsp;</td>
                                     <td align="center">&nbsp;</td>
-                                          
+
 				</tr>
-				
-				
-				
+
+
+
 				{% endfor %}
-                                
+
 				</table>
 				<script>
   $(document).ready(function(){
-  
+
 
    var KLP_Hide_Msg = function(){
 	$("#successMsgHead").hide();
@@ -189,14 +189,14 @@
 
    $("#id_save").click(function(){
    	/* Clicking on save button hide all prv msgs and call form submit and pass button type is save */
-	KLP_Hide_Msg();	
+	KLP_Hide_Msg();
 	parentVal = $("#id_boundary").val();
    	$("#id_form-buttonType").val('save');
    	KLP_form_submit(parentVal,'id_boundary');
    });
-      
-    
-    
+
+
+
    var KLP_form_submit = function(parentVal,parentId ){
     var d = new Date();
 
@@ -224,7 +224,7 @@
 			    },200);
 			    //window.parent.parent.tb_init('a.thickbox, area.thickbox, input.thickbox');
 			    var successStatus = $("#success_status").val();
-			    
+
 		            if (successStatus == 'True'){
 		                var d2 = new Date();
 			            diff = (d2.getTime() - d.getTime())/1000;
@@ -252,16 +252,16 @@
 	   				window.parent.parent.$("#klp_MsgTxt").html("Student Created Successfully");
 					}
 				}
-			    /*else {      
-                                       
+			    /*else {
+
 					$("#popData").html(data);
 					//NFInit();
-				
+
 				}*/
-		}	
+		}
                });
 	    }
-   
+
 var KLP_New_Pagination = function(resPerPage,Norecords,studentgroup){
 	var lastPage = window.parent.parent.$("#id_lastPage").val();
 	var url = window.parent.parent.$("#list_url").attr('value');
@@ -278,7 +278,7 @@ var KLP_New_Pagination = function(resPerPage,Norecords,studentgroup){
 			window.parent.parent.$('#searchRes').html(data);
 			//window.parent.parent.tb_init('#id_StudentDetail a.thickbox, area.thickbox, input.thickbox');
         		return false;
-			
+
         	}
         });
    }
@@ -292,7 +292,7 @@ var KLP_New_Pagination = function(resPerPage,Norecords,studentgroup){
         });
     }*/
 
-});  
+});
 </script>
         </form>
         </div>
