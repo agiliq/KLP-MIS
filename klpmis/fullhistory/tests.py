@@ -8,8 +8,8 @@ from django.test import TestCase
 from django.db import models
 
 import fullhistory
-from models import HistoryField
-from admin import FullHistoryAdmin, FullHistory
+from models import HistoryField, FullHistory
+from admin import FullHistoryAdmin
 
 django1_1 = django.VERSION[0] == 1 and django.VERSION[1] >= 1
 
@@ -59,7 +59,6 @@ class FullHistoryTest(TestCase):
         fullhistory.register_model(Test3Model)
         fullhistory.register_model(Test2Model)
         fullhistory.register_model(Test1Model)
-
         try:
             admin.site.register(Test3Model, FullHistoryAdmin)
         except:
