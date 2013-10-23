@@ -1,13 +1,13 @@
 {% load template_tags %}
 <div id="popData">
-<script type="text/javascript" src="/{{ STATIC_URL }}/js/jquery.js"></script>
-<script language="javascript" type="text/javascript" src="/{{ STATIC_URL }}/js/niceforms.js"></script>
-<script type="text/javascript" src="/{{ STATIC_URL }}/js/thickbox.js" charset="utf-8"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.js"></script>
+<script language="javascript" type="text/javascript" src="{{ STATIC_URL }}js/niceforms.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/thickbox.js" charset="utf-8"></script>
 
 
-<link rel="stylesheet" type="text/css" media="all" href="/{{ STATIC_URL }}/css/thickbox.css" charset="utf-8"/>
-<link rel="stylesheet" type="text/css" media="all" href="/{{ STATIC_URL }}/css/form.css" />
-<link rel="stylesheet" type="text/css" media="all" href="/{{ STATIC_URL }}/css/style.css" />
+<link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/thickbox.css" charset="utf-8"/>
+<link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/form.css" />
+<link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/style.css" />
 <form action="." method="POST" enctype="multipart/form-data" id="childForm" onsubmit="return false;" >{% csrf_token %}
 
 			     <input type="hidden" name="url" id="id_StudUpdateUrl" value="/student/{{child.id}}/update/" />

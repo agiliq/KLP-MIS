@@ -1,14 +1,14 @@
 {% load template_tags %}
 <div id="popData1"></div>
 {% if extra_context|displayValue:'reload' == False or extra_context|displayValue:'reload' == ''%}
-<script type="text/javascript" src="/{{ STATIC_URL }}/js/jquery.js"></script>
-<script language="javascript" type="text/javascript" src="/{{ STATIC_URL }}/js/niceforms.js"></script>
-<script type="text/javascript" src="/{{ STATIC_URL }}/js/thickbox.js" charset="utf-8"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.js"></script>
+<script language="javascript" type="text/javascript" src="{{ STATIC_URL }}js/niceforms.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/thickbox.js" charset="utf-8"></script>
 
 
-<link rel="stylesheet" type="text/css" media="all" href="/{{ STATIC_URL }}/css/thickbox.css" charset="utf-8"/>
-<link rel="stylesheet" type="text/css" media="all" href="/{{ STATIC_URL }}/css/form.css" />
-<link rel="stylesheet" type="text/css" media="all" href="/{{ STATIC_URL }}/css/style.css" />
+<link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/thickbox.css" charset="utf-8"/>
+<link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/form.css" />
+<link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/style.css" />
 {% endif %}
 <div id="popData">
 <form action="." method="POST" enctype="multipart/form-data" id="childForm" onsubmit="return false;" >{% csrf_token %}
