@@ -174,48 +174,48 @@ def getStudentSearch(
     return queryset
 
 
-def ChildrenList(request, boundary_id):
-    ''' To display the Child details according to Pagination'''
+# def ChildrenList(request, boundary_id):
+#     ''' To display the Child details according to Pagination'''
 
-    queryset = []
-    reqlist = request.GET.items()
-    itemlist = [str(k[0]) for k in reqlist]
-    url = '/boundary/' + boundary_id + '/child/view/'
-    schools = School.objects.filter(boundary__id=boundary_id, active=2)
-    studentGroups = \
-        StudentGroup.objects.filter(content_type__model='boundary',
-                                    object_id=boundary_id, active=2)
-    if 'count' in itemlist:
-        count = request.GET['count']
-    else:
-        count = '0'
-    if 'fieldName' in itemlist or 'searchtext' in itemlist:
-        fieldName = request.GET['fieldName']
-        searchtext = request.GET['searchtext']
-        url += '?fieldName=' + fieldName + '&searchtext=' + searchtext
-        queryset = getStudentSearch(request, boundary_id, fieldName,
-                                    searchtext)
-    else:
-        studentslist = \
-            Student.objects.filter(
-                school__isnull=False).values_list('child__id', flat=True)
-        queryset = Child.objects.exclude(
-            id__in=studentslist,
-            boundary__id=boundary_id).order_by('first_name')
-    boundary = Boundary.objects.get(pk=boundary_id)
-    val = Collection(
-        queryset, permitted_methods=('GET', 'POST'),
-        responder=TemplateResponder(paginate_by=10,
-                                    template_dir='viewtemplates',
-                                    template_object_name='child',
-                                    extra_context={'url': url,
-                                                   'schools': schools,
-                                                   'count': count,
-                                                   'boundary': boundary,
-                                                   'studentGroups':
-                                                   studentGroups, }),
-        entry_class=ChoiceEntry)
-    return HttpResponse(val(request))
+#     queryset = []
+#     reqlist = request.GET.items()
+#     itemlist = [str(k[0]) for k in reqlist]
+#     url = '/boundary/' + boundary_id + '/child/view/'
+#     schools = School.objects.filter(boundary__id=boundary_id, active=2)
+#     studentGroups = \
+#         StudentGroup.objects.filter(content_type__model='boundary',
+#                                     object_id=boundary_id, active=2)
+#     if 'count' in itemlist:
+#         count = request.GET['count']
+#     else:
+#         count = '0'
+#     if 'fieldName' in itemlist or 'searchtext' in itemlist:
+#         fieldName = request.GET['fieldName']
+#         searchtext = request.GET['searchtext']
+#         url += '?fieldName=' + fieldName + '&searchtext=' + searchtext
+#         queryset = getStudentSearch(request, boundary_id, fieldName,
+#                                     searchtext)
+#     else:
+#         studentslist = \
+#             Student.objects.filter(
+#                 school__isnull=False).values_list('child__id', flat=True)
+#         queryset = Child.objects.exclude(
+#             id__in=studentslist,
+#             boundary__id=boundary_id).order_by('first_name')
+#     boundary = Boundary.objects.get(pk=boundary_id)
+#     val = Collection(
+#         queryset, permitted_methods=('GET', 'POST'),
+#         responder=TemplateResponder(paginate_by=10,
+#                                     template_dir='viewtemplates',
+#                                     template_object_name='child',
+#                                     extra_context={'url': url,
+#                                                    'schools': schools,
+#                                                    'count': count,
+#                                                    'boundary': boundary,
+#                                                    'studentGroups':
+#                                                    studentGroups, }),
+#         entry_class=ChoiceEntry)
+#     return HttpResponse(val(request))
 
 
 class StdGrpFilter(Resource):
