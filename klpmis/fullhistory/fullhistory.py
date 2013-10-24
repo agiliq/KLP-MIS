@@ -6,7 +6,9 @@ except ImportError:
     import dummy_thread as thread
 
 from django.db.models import signals
-from .models import FullHistory, Request, ContentType
+from django.contrib.contenttypes.models import ContentType
+
+from .models import FullHistory, Request
 from .signals import post_create, post_adjust
 from .utils import get_all_data
 
