@@ -5,11 +5,19 @@ from django import forms
 from django.forms.extras.widgets import SelectDateWidget
 from django.forms import ModelForm
 from django.forms.models import modelformset_factory
+from django.contrib.contenttypes.models import ContentType
 
-from models import *
+from models import Institution_Category
 from klpmis.settings import DATABASES
-from fullhistory.models import *
-from schools.models import current_academic
+from fullhistory.models import FullHistory, Request
+
+from schools.models import current_academic, Relations, Student,\
+    Moi_Type, Institution_Management, Boundary, Student_StudentGroupRelation,\
+    Boundary_Type, Institution_address, Institution, Child, StudentGroup,\
+    Academic_Year, Staff, default_end_date, Programme, Assessment, Answer,\
+    Question, UserAssessmentPermissions, Assessment_StudentGroup_Association,\
+    Assessment_Class_Association, Assessment_Institution_Association,\
+    QuestionType
 
 d = DATABASES['default']
 datebase = d['NAME']
@@ -214,7 +222,6 @@ class Child_Form(Relations_Form):
         return cleaned_data
 
     def save(self, commit=True):
-        print(self.errors, 'ERRRRRRRRRRRRRR')
         childObj = CustomizeSave(self, Child_Form)
         relationdatarequest = self.files
         childpostid = self.cleaned_data.get('id', '')
