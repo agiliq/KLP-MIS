@@ -22,18 +22,6 @@ class QueryLogMiddleware:
                 sql = query['sql']
                 queries.setdefault(sql, 0)
                 queries[sql] += 1
-            duplicates = sum([count - 1 for count in queries.values()])
-            print '------------------------------------------------------'
-            for (query, count) in queries.items():
-                if count > 1:
-                    print '%s x %s' % (count, query)
-
-                        # pass
-
-            print '------------------------------------------------------'
-            print 'Total Queries:     %s' % len(queries)
-            print 'Duplicate Queries: %s' % duplicates
-            print '------------------------------------------------------'
         return response
 
 
