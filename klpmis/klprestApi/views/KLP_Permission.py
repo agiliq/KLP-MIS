@@ -367,7 +367,7 @@ def KLP_Show_Permissions(request, boundary_id, user_id):
                                                       ).filter(Q(boundary__id=boundary_id)
                                                                | Q(boundary__parent__id=boundary_id)
                                                                | Q(boundary__parent__parent__id=boundary_id),
-                     active=2).extra(where=['''schools_institution.id in (SELECT "obj_id" FROM "public"."object_permissions_institution_perms" WHERE "user_id" = '%s' AND "Acess" = 't')'''
+                     active=2).extra(where=['''schools_institution.id in (SELECT "obj_id" FROM "public"."object_permissions_institution_perms" WHERE "user_id" = '%s' AND "Acess" = '1')'''
                                             % user_id]).only('id',
                                                              'name',
                                                              'boundary').order_by('boundary',
