@@ -1,66 +1,90 @@
-{% extends "index.html" %}  <!-- Extends Index.html -->
-{% block leftpart%}{% endblock %}	<!-- Dont Show Left side part -->
 {% block midpart %}    <!-- Middle Part Starts Here -->
-<div style="width:90%">
-    <form method="post" action="/login/" class="niceform">{% csrf_token %}
-        <table cellspacing="0" cellpadding="0" border="0" align="center" width="300">
-            <tbody>
-                <tr>
-                    <td bgcolor="#BFBF30" align="center" colspan="2"><span class="KLP_Log_Head">Login</span></td>
-                </tr>
-                <tr>
-                    <td align="center" colspan="2">&nbsp;</td>
-                </tr>
-                {% if form.non_field_errors %}
-                    {% if messages %}
-                    <ul class="messages">
-                        {% for message in messages %}
-                        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-                        {% endfor %}
-                    </ul>
-                    {% endif %}
-                    <!-- Form is not valid show message -->
-                    {% for each in form.non_field_errors %}
-                        <tr>
-                            <td colspan="2" bgcolor="#FFF8C6"><span class="editErr">{{form.non_field_errors}}</span></td>
-                        </tr>
-                    {% endfor %}
-                    <tr>
-                        <td align="center" colspan="2">&nbsp;</td>
-                    </tr>
-                {% endif %}
-                <tr>
-                    {% if form.username.errors %}
-                        <td colspan="2">{{form.username.errors}}</td>
-                    {% endif %}
-                </tr>
-                <tr>
-                    <td>User Name</td>
-                    <td>{{form.username}}</td>
-                </tr>
-                <tr><td>&nbsp;</td></tr>
-                <tr>
-                    {% if form.password.errors %}
-                        <td colspan="2">{{form.password.errors}}</td>
-                    {% endif %}
-                </tr>
-                <tr>
-                    <td>Password</td>
-                    <td>{{form.password}}</td>
-                </tr>
-                <tr>
-                    <td align="center" colspan="2">&nbsp;</td>
-                </tr>
-                <tr>
-                   <td align="center" colspan="2">
-                        <input type="hidden" value="{{next}}" name="next" />
-                        <input type="submit" value="Login" name="Submit" />&nbsp;&nbsp;
-                        <input type="reset" value="Clear" />
-                   </td>
-                </tr>
-            </tbody>
-        </table>
-    </form>
-</div>
+
+<head>
+
+    <link href="/static_media/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="/static_media/bootstrap/css/bootstrap.css" rel="stylesheet"/>
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="../../assets/js/html5shiv.js"></script>
+      <script src="../../assets/js/respond.min.js"></script>
+    <![endif]-->
+    <!-- 60px to make the container go all the way to the bottom of the topbar -->
+ <style type="text/css">
+      body {
+        padding-top: 40px;
+        padding-bottom: 40px;
+        background-color: #fff;
+      }
+
+      .form-signin {
+        max-width: 300px;
+        padding: 19px 29px 29px;
+        margin: 50px auto;
+        background-color: #f0f0f0;
+        border: 1px solid #e5e5e5;
+        -webkit-border-radius: 5px;
+           -moz-border-radius: 5px;
+                border-radius: 5px;
+        -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+           -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+                box-shadow: 0 1px 2px rgba(0,0,0,.05);
+      }
+      .form-signin .form-signin-heading,
+      .form-signin .checkbox {
+        margin-bottom: 10px;
+      }
+      .form-signin input[type="text"],
+      .form-signin input[type="password"] {
+        font-size: 16px;
+        height: auto;
+        margin-bottom: 15px;
+        padding: 7px 9px;
+      }
+
+    </style>
+
+</head>
+
+
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container">
+              <div class="navbar-header">
+                <a class="navbar-brand" href="#">Karnataka Learning Project</a>
+              </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+
+        <form action="/login/" method="post" accept-charset="utf-8" id="form" class="form-signin">
+            {% csrf_token %}
+            <h2 class="form-signin-heading">Login</h2>
+            <input name="username" id="id_username" type="text" class="form-control" placeholder="Username" required="" autofocus="">
+            {% if form.username.errors %}
+            <span class="error">{{ form.username.errors.0}}</span>
+            {% endif %}
+            <input name="password" id="id_password" type="password" class="form-control" placeholder="Password" required="">
+            {% if form.password.errors.0 %}
+                <span class="help-inline">{{ form.password.errors.0}}</span>
+            {% endif %}
+
+            {% if form.non_field_errors.0 %}
+                <span>{{ form.non_field_errors.0 }}</span>
+            {% endif %}
+
+            <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+        </form>
+
+    </div> <!-- /container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+  </body>
+
 {% endblock %}
-<!-- Middle Part Ends Here -->
