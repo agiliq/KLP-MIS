@@ -24,7 +24,7 @@ def login(request):
             django_login(request, user)
             return HttpResponseRedirect(reverse('home'))
     context['form'] = form
-    return render(request, 'login.html', context)
+    return render(request, 'accounts/login.html', context)
 
 
 def logout(request):
