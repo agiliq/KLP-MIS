@@ -34,7 +34,7 @@ def KLP_act_form(request):
         context = {'title': 'Karnataka Learning Partnership ',
                    'user': user}
         return render(request,
-                      'viewtemplates/AllidsActivate_html.html',
+                      'viewtemplates/AllidsActivate.html',
                       context)
 
 
