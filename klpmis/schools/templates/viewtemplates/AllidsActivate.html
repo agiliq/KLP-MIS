@@ -1,0 +1,95 @@
+{% extends "index.html" %}
+{% block leftpart%}{% endblock %}
+{% block midpart %}
+    <div style="width:90%; padding:5px">
+    	<div class="KLP_BreadCrumb">
+    		<span class="KLP_brCrumb">You are here: </span>
+    		<span class="KLP_BreadCrumbTxt">  Activate Records </span> >
+    		<span id="custom_BreadCrumb"><span>
+    	</div>
+    	<div id="successMsgHead" style="display:none;">
+    		<div class="shwMsg">
+    			<span >
+    				<img src="{{ STATIC_URL }}images/correct_icon.jpg" height="18"/>
+    			</span>
+    			<span style="padding:2px;" id="klp_MsgTxt">
+    				Created Successfully
+    			</span>
+    		</div>
+	</div>
+	<div id="failureMsgHead" style="display:none;">
+    		<div class="failMsg">
+    			<span >
+    				<img src="{{ STATIC_URL }}images/err_icon.jpg" height="18"/>
+    			</span>
+    			<span style="padding:2px;" id="klp_fail_MsgTxt">
+    				Failure
+    			</span>
+    		</div>
+	</div>
+	<div id="dyncData">
+		<div class="klp_admin"> <a href="/home/"> << Back To Home </a> </div>
+		<div class="klp_admin">
+			<form name="klpQueryForm" id="id_klpQueryForm" onsubmit="return false;" class="niceform">
+                        <table><tr><td align="justify">
+                                                If you activate a Boundary then you may want to activate the Boundaries/Schools/Preschools? under it.<br/><br/>
+
+If you activate a School then you may want to activate the classes under it.<br/><br/>
+
+If you activate Classes then you may want to activate the teachers & students that belong to the classes.<br/>
+You may additionally want to activate the Class-Student associations, Class-Teacher associations and Class-Assessment associations for the current year.
+<br/><br/>
+
+If you activate a Student you may want to activate the Class-Student association for the current year.<br/><br/>
+
+If you activate a Teacher you may want to activate the Class-Teacher association for the current year.<br/><br/>
+
+If you activate a Programme then you may want to activate the Assessments associated with it.<br/><br/>
+
+If you activate a Assessment you may want to activate the Questions and also Class-Assessment association for the current year.<br/><br/>
+
+If any student is deactivated ,this script will also deactivate all associated with student_studentgrouprelation   </td></tr><tr><td style="vertical-align:top">
+			          <select name="form-staging-modelname" id="id_form-modelname">
+			          <option value="boundary">Boundary</option>
+			           <option value="institution">Institution</option>
+			           <option value="studentgroup">StudentGroup</option>
+                                  <option value="student">Student</option>
+			            <option value="programme">Programme</option>
+			           <option value="question">Question</option>
+			           <option value="assessment">Assessment</option>
+			            <option value="staff">Staff</option>
+			          </select> <select name="form-staging-action" id="id_form-action">
+                                  <option value=1>Deactive</option>
+                                   <option value=2>Active</option>
+                                   </select>
+				<span><textarea name="form-staging-allids" id="id_form-staging-allids" cols="80" rows="5"></textarea></span>
+				<span class="klp_admin_note">Note: ids should be seperated by comma</span><br/>
+				<span class="klp_admin"><input type="submit" name="querySubmit" value="Active/Deactive" /></span>
+                      </td></tr></table>			</form>
+		</div>
+		<script>
+			 $(document).ready(function(){
+			 	$("#id_klpQueryForm").submit(function(){
+			 		$("#successMsgHead").hide();
+			 		$("#failureMsgHead").hide();
+			 		$.post(
+			 			'/KLP_activaterecords/',
+			 			$("#id_klpQueryForm").serialize(),
+			 			function(data){
+			 				if (data['isExecute'] == true){
+			 					$("#klp_MsgTxt").html(data['respStr'] );
+			 					$("#successMsgHead").show();
+			 				}
+			 				else{
+			 					$("#klp_fail_MsgTxt").html(data['respStr']);
+			 					$("#failureMsgHead").show();
+			 				}
+			 			}
+			 		);
+			 	});
+			 })
+
+		</script>
+	</div>
+    </div>
+{% endblock %}
