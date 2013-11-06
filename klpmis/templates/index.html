@@ -1,14 +1,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-  <title>
-    {% if title %}
-      {{title}}
-    {% else %}
-      {% block title %}Karnataka Learning Partnership{% endblock %}
-    {% endif %}
-  </title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <!-- Import js files -->
 <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.js"></script>
 <script language="javascript" type="text/javascript" src="{{ STATIC_URL }}js/niceforms.js"></script>
@@ -28,10 +22,55 @@
 <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/style.css" />
 <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/jquery.treeview.css" />
 <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/jquery.datepick.css"/>
+
+    <link href="/static_media/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="/static_media/bootstrap/css/bootstrap.css" rel="stylesheet"/>
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src=/static_media/bootstrap/js/html5shiv.js"></script>
+      <script src="/static_media/bootstrap/js/respond.min.js"></script>>
+    <![endif]-->
+    <!-- 60px to make the container go all the way to the bottom of the topbar -->
+ <style type="text/css">
+      body {
+        padding-top: 40px;
+        padding-bottom: 40px;
+        background-color: #fff;
+      }
+
+      .form-signin {
+        max-width: 300px;
+        padding: 19px 29px 29px;
+        margin: 50px auto;
+        background-color: #f0f0f0;
+        border: 1px solid #e5e5e5;
+        -webkit-border-radius: 5px;
+           -moz-border-radius: 5px;
+                border-radius: 5px;
+        -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+           -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+                box-shadow: 0 1px 2px rgba(0,0,0,.05);
+      }
+      .form-signin .form-signin-heading,
+      .form-signin .checkbox {
+        margin-bottom: 10px;
+      }
+      .form-signin input[type="text"],
+      .form-signin input[type="password"] {
+        font-size: 16px;
+        height: auto;
+        margin-bottom: 15px;
+        padding: 7px 9px;
+      }
+
+    </style>
+
 </head>
 
+
 <body>
-<script>
+
+    <script>
     /* Add loading image to body */
     $("body").append("<div id='KLP_overlay' class='KLP_overlayBG'></div>");
     $("body").append("<div id='KLP_load'><img src='{{ STATIC_URL }}images/loadingAnimation.gif' alt='Process'></div>");
@@ -143,27 +182,31 @@
     });
 </script>
 
-<div id="container">
 
-    {% if entry == "Add" %}
-    <fieldset>
-        <legend>Karnataka Learning Partnership</legend>
-    {% else %}
-    <div class="tablebg">
-    {% endif %}
-
-    {% block leftpart %}
-
-        <div class="leftPane">
-            {% if user.is_authenticated %}
-                <div class="KLP_Log">
-                    <span class="KLP_brCrumb">Welcome: </span>
-                    <span>{% if user.first_name%}{{user.first_name}}{% else %}{{user.username}}{%endif%}<span>
-                    <span class="KLP_logOut"><a href="{% url 'logout' %}" title="logout">Log out</a><span>
-                    <span class="KLP_logOut"><a href="/accounts/password/change/" title="ChangePassword">Change Password</a><span>
+ <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container">
+                <div class="navbar-header">
+                  <a class="navbar-brand" href="#">Karnataka Learning Project</a>
                 </div>
-            {% endif %}
-            <div class="addBound">
+                <div class="nav navbar-nav navbar-right">
+                  <li><a href="#"> welcome: {% firstof user.first_name user.username%}</a></li>
+                  <li><a href="{% url 'logout' %}" title="logout"> Logout</a></li>
+                  <li><a href="{% url 'accounts_password_change' %}" title="ChangePassword"> ChangePassword</a></li>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% block leftpart %}
+    <div class="col-sm-4" style="margin-top: 50px">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Admin Panel</h3>
+            </div>
+            <div class="panel-body">
+              Select the type of school
+              <div class="addBound">
                 <!-- Drop Down shows boundary types -->
                 <select id="boundary_type" name="boundary_type">
                     <option value="">----</option>
@@ -203,7 +246,8 @@
                <ul id="treeBlk" class="filetree treeview-famfamfam"></ul>
             </div>
 
-            {% if not shPerm %}
+
+     {% if not shPerm %}
                 {% if home and not filter%}
                     {% if user.is_superuser or user.is_staff %}
                     <div class="addBound" id="rootBoundary" style="display:none;">
@@ -254,10 +298,12 @@
                 </div>
                 {% endif %}
             {% endif %}
-        </div>
-    {% endblock %}
+</div>
+</div>
+</div>
+{% endblock %}
 
-    {% block midpart %}{% endblock %}
+{% block midpart %}{% endblock %}
 
     {% if entry == "Add" %}
     </fieldset>
@@ -266,7 +312,7 @@
     {% endif %}
     </div>
 
-    <script type="text/javascript">
+       <script type="text/javascript">
 
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-3982320-15']);
@@ -280,5 +326,6 @@
       })();
 
     </script>
+
 </body>
 </html>
