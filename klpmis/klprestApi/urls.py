@@ -13,7 +13,7 @@ from klprestApi.views.BoundaryApi import KLP_Boundary_View,\
 from klprestApi.views.BoundaryTypeApi import \
     template_boundary_type_view
 from klprestApi.views.ChildApi import KLP_Child_Create,\
-    KLP_Child_View, KLP_Child_Update, childsql, ChildrenList, StdGrpFilter
+    KLP_Child_View, KLP_Child_Update, childsql, StdGrpFilter  #ChildrenList
 from klprestApi.views.ConsoleApi import KLP_Admin_Console, KLP_Run_Query
 from klprestApi.views.InstitutionApi import KLP_Institution_Create,\
     KLP_Institution_View, KLP_Institution_Update, KLP_Institution_Boundary
