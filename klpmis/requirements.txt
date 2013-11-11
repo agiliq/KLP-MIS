@@ -3,3 +3,4 @@ simplejson==3.3.0
 psycopg2==2.5.1
 Unipath==1.0
 django-extensions==1.2.0
+python-dev
