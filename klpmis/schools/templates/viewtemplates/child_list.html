@@ -2,7 +2,7 @@
 <div  id="searchRes">
 {% if count != '0' %}
 <div id="insertStudent" style="font-size: 16px; font-weight: bold; background-color: green;">
-	{{count}} Students Mapped 
+	{{count}} Students Mapped
 </div>
 {% endif %}
 
@@ -29,12 +29,12 @@
 </div>
 
 <form action="." method="POST" name="mapstudents" id="mapstudents">{% csrf_token %}
-<div class="tot-border">
-<table border="0" cellpadding="0" cellspacing="0" id="id_StudentDetail" style="width:100%;overflow:hidden;text-align:center;{% if not students_list %}display:none;{% endif %}">
+<div>
+<table class="table table-bordered" ;{% if not students_list %}display:none;{% endif %}">
    <tbody>
     <tr>
     	<!-- Header row -->
-	<th class="tot-border3">First Name</th> <th class="tot-border3">Last Name</th> <th class="tot-border3"> DOB</th> <th class="tot-border3">Mother Tongue</th><th class="tot-border3">Gender</th> <th class="tot-border3">Relations</th> <th class="tot-border4">Select <span style="cursor:pointer;color:#1569C7;" onclick="checkAll()">All</span>&nbsp;/&nbsp;<span style="cursor:pointer;color:#1569C7;" onclick="unCheckAll()">None</span> </th> 
+	<th class="tot-border3">First Name</th> <th class="tot-border3">Last Name</th> <th class="tot-border3"> DOB</th> <th class="tot-border3">Mother Tongue</th><th class="tot-border3">Gender</th> <th class="tot-border3">Relations</th> <th class="tot-border4">Select <span style="cursor:pointer;color:#1569C7;" onclick="checkAll()">All</span>&nbsp;/&nbsp;<span style="cursor:pointer;color:#1569C7;" onclick="unCheckAll()">None</span> </th>
     </tr>
     {% for child in students_list %}
     {% with child.student_set.all|first as student %}
@@ -44,12 +44,12 @@
 	<td class="tot-border1">{{child.last_name}}</td>
 	<td class="tot-border1">{{child.dob|date:"d M Y" }}</td>
 	<td class="tot-border1">{{child.mt}}</td>
-	<td class="tot-border1">{{child.gender}}</td> 
-        <td class="tot-border1">{% for relation in child.getRelations %}{{relation.relation_type}}: {{relation.first_name}}<br />{% endfor %}</td> 
+	<td class="tot-border1">{{child.gender}}</td>
+        <td class="tot-border1">{% for relation in child.getRelations %}{{relation.relation_type}}: {{relation.first_name}}<br />{% endfor %}</td>
 	<td class="tot-border2">
 			<input type="checkbox" value = "{{child.id}}" name="students"/>
 	</td>
-	
+
     </tr>
     {% endwith %}
     {% endfor %}
@@ -64,11 +64,11 @@
 	<input type="hidden" name="lastPage" id="id_lastPage" value="{{pages}}" />
 	{% if pages > 1 %}
 		<!-- Links for page if there are more pages -->
-		{% for i in pages|KLPrange %}  
+		{% for i in pages|KLPrange %}
 			<span page='page_{{forloop.counter}}' onclick="Pagination(this)" style="cursor:pointer;color:blue;padding-left:10px;">{{ forloop.counter }}</span>
-		{% endfor %}  
+		{% endfor %}
 	{% endif %}
-	
+
 </div>
 
 <div id="id_No_students" style="color:black;text-align:center;font-weight:bold;{% if students_list %}display:none;{% endif %}"> No Students Found</div>
@@ -119,11 +119,11 @@ $(document).ready(function(){
 	);
 	return false;
     });
-    
+
     $("#student_Delete").click(function(){
         /* By Clicking on students bulk delete button Show Confirmation message */
         var conf = confirm("Are you sure, you want to delete selected Students");
-        if (conf==true){ 
+        if (conf==true){
                 /* If Confirmed call delete students method */
 	    	$.post(
 	    		'/deletestudents/'+{{studentgroup.id}}+'/',
@@ -137,19 +137,19 @@ $(document).ready(function(){
 						NFInit();
 						tb_init('a.thickbox, area.thickbox, input.thickbox');
 					}
-		
+
 				});
 			}
 	    	);
-	    	
+
 	}
-    	
+
     });
-    
+
     $('input:checkbox[name=students]').change(function(){
     	updateEditUrl();
     });
-    
+
     $("#student_Edit").click(function(){
     	opUrl = $("#student_Edit").attr("href");
     	tb_show('Edit', opUrl, false);
@@ -209,7 +209,7 @@ var unCheckAll = function(){
 var updateEditUrl = function(){
 	/* Update Url For Edit Students by check or uncheck check boxes */
 	checkedStuds = $('input:checkbox[name=students]:checked');
-    	
+
     	studUrl =''
     	checkedStuds.each(function(index){
        		studUrl +='students='+$(this).val();
