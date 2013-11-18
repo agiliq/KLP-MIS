@@ -3,7 +3,7 @@
 <span class="hedText"> StudentGroup Form</span>
 </div>
 
-<form action="." method="POST" enctype="multipart/form-data" id="studentgroupForm" onsubmit="return false;" class="niceform">
+<form action="." method="POST" enctype="multipart/form-data" id="studentgroupForm" onsubmit="return false;">
     {% csrf_token %}
       <input type="hidden" name="url" value="/boundary/institution/{{extra_context|displayValue:'ParentKey'}}/studentgroup/creator/" id="url" />
 
@@ -31,6 +31,7 @@
                       <span class="editErr">{{ entryForm.errors }}</span>
                   {% endif %}
               </div>
+              </br>
 
               <div style="{% if extra_context|displayValue:'group_typ'|lower == 'center' %} display:none; {% endif %} ">
                   <label for="address">Section:</label>
@@ -83,6 +84,8 @@
                   {% endfor %}
               </div>
 
+              </br>
+
               <div>
                   {% if extra_context|displayValue:'group_typ'|lower == "center" %}
                       <input type="hidden" id="id_form-0-group_type" name="form-0-group_type" value="Center" />
@@ -98,6 +101,9 @@
                           <span class="editErr">{{ error }}</span>
                       {% endfor %}
                   {% endif %}
+
+                  </br>
+
                   <button type="submit" name="save" id="id_save" value="Save" tabindex=4 class="btn btn-default">Save</button>
                   <button type="submit" name="save_and_create" id="id_save_and_create" value="Save And Create Another" tabindex=6 class="btn btn-default">Save And Create Another</button>
               </div>
