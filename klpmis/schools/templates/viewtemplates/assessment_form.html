@@ -31,7 +31,7 @@
 
             <label class="KLP_required">Start Date</label>
             <!-- Start Date Field -->
-            <input id="id_form-0-start_date" name="form-0-start_date" tabindex="2" type="text"  class="hasDatepick">
+            <input data-provide="datepicker" class="form-control" data-date-format="dd/mm/yyyy" id="id_form-0-start_date" name="form-0-start_date" tabindex="2" type="text" >
             <!-- If Start Date field has errors show errors -->
             {% for error in entryForm.start_date.errors %}
                 <span class="editErr">{{ error }}</span>
@@ -39,17 +39,11 @@
             <br>
 
             <label class="KLP_required">End Date</label>
-            <input id="id_form-0-end_date" name="form-0-end_date" tabindex="3" type="text" class="hasDatepick">
+            <input data-provide="datepicker" class="form-control" data-date-format="dd/mm/yyyy" id="id_form-0-end_date" name="form-0-end_date" tabindex="3" type="text">
             {% for error in entryForm.end_date.errors %}
                 <span class="editErr">{{ error }}</span>
             {% endfor %}
             <br>
-
-            <script>
-            /* To Show Calendar on focus on date fields */
-            $( "#id_form-0-start_date" ).datepick({dateFormat: 'dd-mm-yyyy'});
-            $( "#id_form-0-end_date" ).datepick({defaultDate: new Date("{{extra_context|displayValue:'end_date'}} {{extra_context|displayValue:'endMonth'}} {{extra_context|displayValue:'endYear'}}"), dateFormat: 'dd-mm-yyyy'});
-            </script>
 
             <label class="KLP_required">Assessment Type</label>
             <select id="id_form-0-typ" name="form-0-typ" tabindex="4" class="form-control">
@@ -62,11 +56,6 @@
             <label class="KLP_required">Double Entry</label>
             <input checked="checked" id="id_form-0-double_entry" name="form-0-double_entry" tabindex="5" type="checkbox">
             <br>
-
-
-
-
-
 
             <label >Flexi Assessment:</label>
             <input id="id_form-0-flexi_assessment" name="form-0-flexi_assessment" tabindex="6" type="checkbox">
@@ -136,6 +125,9 @@
     KLP_form_submit(parentVal);
 
    });
+
+
+   $('.datepicker').datepicker()
 
    $("#id_save_and_continue").click(function(){
     /* Clicking on save and continue button hide all prv msgs and call form submit and pass button type is save and continue */
