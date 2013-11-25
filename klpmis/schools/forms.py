@@ -395,12 +395,12 @@ class Programme_Form(ModelForm):
 
 class Assessment_Form(ModelForm):
 
-    start_date = forms.DateField(widget=forms.DateInput(format='%d-%m-%Y'),
+    start_date = forms.DateField(widget=forms.DateInput(format='%d/%m/%Y'),
                                  initial=datetime.date.today,
-                                 input_formats=['%d-%m-%Y', '%d-%m-%y'])
-    end_date = forms.DateField(widget=forms.DateInput(format='%d-%m-%Y'),
+                                 input_formats=['%d-%m-%Y', '%d-%m-%y', '%d/%m/%Y'])
+    end_date = forms.DateField(widget=forms.DateInput(format='%d/%m/%Y'),
                                initial=default_end_date,
-                               input_formats=['%d-%m-%Y', '%d-%m-%y'])
+                               input_formats=['%d-%m-%Y', '%d-%m-%y', '%d/%m/%Y'])
     active = forms.IntegerField(initial=2, widget=forms.HiddenInput)
 
     # flexi_assessment = forms.BooleanField(initial=False)
