@@ -187,7 +187,7 @@ var KLP_form_submit = function(parentVal, parentId){
         $("#childForm").serialize(),
         function(data){
         	$('#popData').html(data);
-		NFInit();
+		// NFInit();
 		$("#id_save").removeAttr("disabled");
 		var successStatus = $("#success_status").val();
 		if (successStatus == 'True'){

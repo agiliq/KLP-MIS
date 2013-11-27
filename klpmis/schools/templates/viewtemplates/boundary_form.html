@@ -2,7 +2,6 @@
 <div class="detailHead">
     <span class="hedText">Boundary Form</span>
 </div>
-
 <form action="." method="POST" enctype="multipart/form-data" class="niceform" id="boundaryForm" name="boundaryForm" onsubmit="return false;">{% csrf_token %}
     <input type="hidden" name="url" value="/boundary/creator/" id="url" />
     <input type="hidden" name="redUrl" value="{{redUrl}}" id="redUrl" />

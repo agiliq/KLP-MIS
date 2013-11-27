@@ -3,7 +3,7 @@
     <span class="hedText">Question Form</span>
 </div>
 <form action="." method="POST" enctype="multipart/form-data" class="niceform" id="questionForm" name="questionForm" onsubmit="return false;">{% csrf_token %}
-	<input type="hidden" name="url" value="/assessment/question/{{extra_context|displayValue:'referKey'}}/creator/" id="url" />   
+	<input type="hidden" name="url" value="/assessment/question/{{extra_context|displayValue:'referKey'}}/creator/" id="url" />
 	<input type="hidden" name="form-buttonType" id="id_form-buttonType" value="save" />
 	<input type="hidden" name="form-0-active" id="id_form-0-active" value="2"/>
 	<input type="hidden" name="form-0-double_entry" id="id_form-0-double_entry" value="True"/>
@@ -12,11 +12,11 @@
 	<input type="hidden" id="question_id" size="15" value="{{extra_context|displayValue:'prevousId'}}" / >
 	<input type="hidden" id="success_status" size="15" value="{{extra_context|displayValue:'showsuccess'}}" / >
 	{{form.management_form}}
-	{% with form.forms|last as entryForm %} 
+	{% with form.forms|last as entryForm %}
 		<table>
         		<tr>
       	    			<td>
-      		    			<table class="tblprofile">      			        				
+      		    			<table class="tblprofile">
       						<tr>
       				    			<td class="rightprofile"><label class="KLP_required">Question</label></td>
       							<td class="leftprofile">
@@ -28,8 +28,8 @@
                                     				{% for error in entryForm.name.errors %}
 	                                				<span class="editErr">{{ error }}</span>
 	                                			{% endfor %}
-                                    			</td> 
-      						</tr>   
+                                    			</td>
+      						</tr>
       						<tr>
       				    			<td class="rightprofile">Type</td>
       							<td class="leftprofile">
@@ -41,8 +41,8 @@
                                     				{% for error in entryForm.question_type.errors %}
 	                                				<span class="editErr">{{ error }}</span>
 	                                			{% endfor %}
-                                    			</td> 
-      						</tr> 
+                                    			</td>
+      						</tr>
       						<tr id="markTypMin">
       				    			<td class="rightprofile"><label class="KLP_required">Score Min</label></td>
       							<td class="leftprofile">
@@ -55,10 +55,10 @@
 	                                				<span class="editErr">{{ error }}</span>
 	                                			{% endfor %}
                                     			</td>
-      						</tr>    
+      						</tr>
       						<tr id="markTypMax">
       				    			<td class="rightprofile"><label class="KLP_required">Score Max</label></td>
-      							<td class="leftprofile">      							
+      							<td class="leftprofile">
       								{% render_field entryForm.score_max 'tabindex=4' %}
       								<!-- Question score max Field -->
                         				</td>
@@ -68,8 +68,8 @@
 	                                				<span class="editErr">{{ error }}</span>
 	                                			{% endfor %}
                                     			</td>
-                        				
-      						</tr> 
+
+      						</tr>
       						<tr id="gradeTyp" style="display:none;">
       				    			<td class="rightprofile"><label class="KLP_required">Grade (Eg: A,B,C)</label></td>
       							<td class="leftprofile">
@@ -83,7 +83,7 @@
 	                                				<span class="editErr">{{ error }}</span>
 	                                			{% endfor %}
                                     			</td>
-      						</tr> 
+      						</tr>
       						<tr id="gradeTyp">
       				    			<td class="rightprofile"><label class="KLP_required">Order</label></td>
       							<td class="leftprofile">
@@ -96,25 +96,25 @@
 	                                				<span class="editErr">{{ error }}</span>
 	                                			{% endfor %}
                                     			</td>
-      						</tr> 
+      						</tr>
 							{% if extra_context|displayValue:'answerAddable' %}
       						<tr id="gradeTyp" >
       				    			<td class="rightprofile"><label class="KLP_required">Answer </label></td>
       							<td class="leftprofile" >Assessment is already started .<br/>So please enter the default answer AB/UK<br/>
                             				<input type="text" value="{{extra_context|displayValue:'defaultanswer'}}" name="defaultanswer" class="aboruk">
-										</td><td>	
+										</td><td>
                             					<!-- Default answer Field -->
 												{% for error in entryForm.defaultanswer.errors %}
 	                                				<span class="editErr">{{ error }}</span>
 	                                			{% endfor %}
                         				</td>
-                        				
-      						</tr> 
+
+      						</tr>
 							{% endif %}
       						<tr><td> &nbsp;</td><td> &nbsp;</td><td> &nbsp;</td></tr>
                     				<tr><td> &nbsp;</td><td> &nbsp;</td><td> &nbsp;</td></tr>
                     				<tr><td> &nbsp;</td><td> &nbsp;</td><td> &nbsp;</td></tr>
-                    				
+
       			    			<tr>
       				    			<td>
                                     				<input type="submit" name="save" id="id_save" value="Save" tabindex=5  />
@@ -133,18 +133,18 @@
     	{% endwith %}
 </form>
 <script>
-  $(document).ready(function(){ 
-  
+  $(document).ready(function(){
+
    var qType=  $("#id_form-0-question_type").val();
-   
+
    if (qType == '2'){
    	$("#markTypMin").hide();
    	$("#markTypMax").hide();
    	$("#gradeTyp").show();
    	$('#gradeTyp').focus();
-   
+
    }
-  
+
    $("#id_form-0-question_type").change(function(){
    	/* If Value is change in question type field hide and show score min, score max and grade fields based on value */
    	quesType = $("#id_form-0-question_type").val();
@@ -154,7 +154,7 @@
    		$("#markTypMax").hide();
    		$("#gradeTyp").show();
    		$('#gradeTyp').focus();
-   		
+
    	}
    	else{
    		/* If type 1 (marks) show score min and max, hide grade field */
@@ -164,17 +164,17 @@
    		$('#markTypMin').focus();
    	}
    });
-  
-  
+
+
    $("#id_save").click(function(){
    	/* Clicking on save button hide all prv msgs and call form submit and pass button type is save */
    	KLP_Hide_Msg();
    	parentVal = $("#id_form-0-assessment").val();
    	$("#id_form-buttonType").val('save');
    	KLP_form_submit(parentVal);
-   	
+
    });
-   
+
    $("#id_save_and_continue").click(function(){
    	/* Clicking on save and continue button hide all prv msgs and call form submit and pass button type is save and continue */
    	KLP_Hide_Msg();
@@ -182,18 +182,18 @@
    	parentVal = $("#id_form-0-assessment").val();
    	KLP_form_submit(parentVal);
    });
-   
+
    $("#id_save_and_create").click(function(){
    	/* Clicking on save and add another button hide all prv msgs and call form submit and pass button type is save and add another */
    	KLP_Hide_Msg();
    	parentVal = $("#id_form-0-assessment").val();
    	$("#id_form-buttonType").val('save and add another');
    	KLP_form_submit(parentVal, 'id_form-0-assessment');
-   	
-   	
+
+
    });
-    
-    
+
+
    var KLP_form_submit = function(parentVal, parentId){
    	/* post data using post method */
    	$.post(
@@ -202,24 +202,24 @@
                 function(data){
                     /* Get Response */
                     $("#dyncData").html(data);
-                    NFInit();
+                    // NFInit();
                     $('input:visible:enabled:first').focus();
                     var successStatus = $("#success_status").val();
                     if (successStatus == 'True'){
                     	/* If It success show success msg and create new node in tree */
                     	$("#successMsgHead").show();
    		    	$("#klp_MsgTxt").html("Question Created Successfully")
-                    	
+
                     	if (parentId != null)
                     		$("#"+parentId).val(parentVal);
                     	ObjId='#assessment_'+parentVal
-            	    	Obj=$(ObjId)                          
+            	    	Obj=$(ObjId)
                     	KLP_Create_Node(Obj,'question');
                     }
                }
            );
    }
-   
-}); 
+
+});
 </script>
 

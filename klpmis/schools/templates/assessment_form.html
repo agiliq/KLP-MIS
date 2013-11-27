@@ -14,21 +14,21 @@
 		<table>
         		<tr>
       	    			<td>
-      		    			<table class="tblprofile">      			          				  				
+      		    			<table class="tblprofile">
       						<tr>
       							<td class="rightprofile"><label class="KLP_required">Name</label></td>
       							<td class="leftprofile">
                             					{% render_field entryForm.name 'tabindex=1' %}
                             					<!-- Assessment Name Field -->
                             					<input type="hidden" name="form-0-programme" id="id_form-0-programme" value="{{extra_context|displayValue:'referKey'}}" />  <!-- Programme  Id for foreign key -->
-                            					<input type="hidden" name="duplKey" id="id_duplKey" size="15" value="{{duplKey}}" />    
+                            					<input type="hidden" name="duplKey" id="id_duplKey" size="15" value="{{duplKey}}" />
                         				</td>
                         				<td>
                         					<!-- If Name field has errors show errors -->
                                     				{% for error in entryForm.name.errors %}
 	                                				<span class="editErr">{{ error }}</span>
 	                                			{% endfor %}
-                                    			</td> 
+                                    			</td>
       						</tr>
       						<tr>
       				    			<td class="rightprofile"><label class="KLP_required">Start Date</label></td>
@@ -41,7 +41,7 @@
                                     				{% for error in entryForm.start_date.errors %}
 	                                				<span class="editErr">{{ error }}</span>
 	                                			{% endfor %}
-                                    			</td> 
+                                    			</td>
       						</tr>
       						<tr>
       				    			<td class="rightprofile"><label class="KLP_required">End Date</label></td>
@@ -54,7 +54,7 @@
                                     				{% for error in entryForm.end_date.errors %}
 	                                				<span class="editErr">{{ error }}</span>
 	                                			{% endfor %}
-                                    			</td> 
+                                    			</td>
                         				<script>
                         					/* To Show Calendar on focus on date fields */
                         					$( "#id_form-0-start_date" ).datepick({dateFormat: 'dd-mm-yyyy'});
@@ -86,7 +86,7 @@
                                     				{% for error in entryForm.flexi_assessment.errors %}
 	                                				<span class="editErr">{{ error }}</span>
 	                                			{% endfor %}
-                                    			</td> 
+                                    			</td>
       						</tr>
                               <tr {% if  not entryForm.flexi_assessment.value or entryForm.flexi_assessment.value == "" %}style="display:none" {% endif %} class="flexifield">
       				    			<td class="rightprofile"><label class="KLP_required">Primary Field Name</label></td>
@@ -99,7 +99,7 @@
                                     				{% for error in entryForm.primary_field_name.errors %}
 	                                				<span class="editErr">{{ error }}</span>
 	                                			{% endfor %}
-                                    			</td> 
+                                    			</td>
       						</tr>
                                                   <tr  {% if not entryForm.flexi_assessment.value or entryForm.flexi_assessment.value == "" %}style="display:none" {% endif %} class="flexifield">
       				    			<td class="rightprofile"><label class="KLP_required">Primary Field Type</label></td>
@@ -112,16 +112,16 @@
                                     				{% for error in entryForm.primary_field_type.errors %}
 	                                				<span class="editErr">{{ error }}</span>
 	                                			{% endfor %}
-                                    			</td> 
-      						</tr>     						      						      										
-      						<tr>      				    
-      			        			
+                                    			</td>
+      						</tr>
+      						<tr>
+
                                                         <td class="leftprofile">
       			            				<input type="hidden" name="form-0-active" id="id_form-0-active" value="2"/>
       			        			</td>
       			    			</tr>
-                                              
-                                                  
+
+
                     				<tr><td> &nbsp;</td></tr>
                     				<tr><td> &nbsp;</td></tr>
       			    			<tr>
@@ -134,7 +134,7 @@
                                     			<td>
                     	    					<input type="submit" name="save_and_create" id="id_save_and_create" value="Save And Create Another" tabindex=6 />
       				    			</td>
-                                		</tr> 
+                                		</tr>
       					</table>
       				</td>
       			</tr>
@@ -142,11 +142,11 @@
     {% endwith %}
 </form>
 <script>
-  $(document).ready(function(){ 
-   
-	
+  $(document).ready(function(){
+
+
     $("#id_form-0-flexi_assessment").click(function(){
-	
+
 	 $('.flexifield').toggle();
 	});
    $("#id_save").click(function(){
@@ -159,9 +159,9 @@
    	parentVal = $("#id_form-0-programme").val();
    	$("#id_form-buttonType").val('save');
    	KLP_form_submit(parentVal);
-   	
+
    });
-   
+
    $("#id_save_and_continue").click(function(){
    	/* Clicking on save and continue button hide all prv msgs and call form submit and pass button type is save and continue */
    	KLP_Hide_Msg();
@@ -169,18 +169,18 @@
    	$("#id_form-buttonType").val('save and continue');
    	KLP_form_submit(parentVal);
    });
-   
+
    $("#id_save_and_create").click(function(){
    	/* Clicking on save and add another button hide all prv msgs and call form submit and pass button type is save and add another */
    	KLP_Hide_Msg();
    	parentVal = $("#id_form-0-programme").val();
    	$("#id_form-buttonType").val('save and add another');
    	KLP_form_submit(parentVal, 'id_form-0-programme');
-   	
-   	
+
+
    });
-    
-    
+
+
    var KLP_form_submit = function(parentVal, parentId){
         /* post data using post method */
    	$.post(
@@ -189,7 +189,7 @@
                 function(data){
                     /* Get Response */
                     $("#dyncData").html(data);
-                    NFInit();
+                    // NFInit();
                     $('input:visible:enabled:first').focus();
                     var successStatus = $("#success_status").val();
                     if (successStatus == 'True'){
@@ -197,14 +197,14 @@
                     	$("#successMsgHead").show();
    		    	$("#klp_MsgTxt").html("Assessment Created Successfully")
                     	if (parentId != null)
-                    		$("#"+parentId).val(parentVal);	
+                    		$("#"+parentId).val(parentVal);
                     	ObjId='#programme_'+parentVal
-            	    	Obj=$(ObjId)                          
+            	    	Obj=$(ObjId)
                     	KLP_Create_Node(Obj,'assessment');
-                    }	
+                    }
                }
            );
    }
-   
-}); 
+
+});
 </script>

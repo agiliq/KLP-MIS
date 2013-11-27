@@ -15,13 +15,7 @@ padding:0px !important;
 <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/form.css" />
 <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/style.css" />
 <form action="." method="POST" enctype="multipart/form-data" id="assessment_lookupForm" onsubmit="return false;" >{% csrf_token %}
-
-
-
-
-
-
-                            <input type="hidden" name="form-buttonType" id="id_form-buttonType" value="save" />
+          <input type="hidden" name="form-buttonType" id="id_form-buttonType" value="save" />
 			    <input type="hidden" id="success_status" size="15" value="{{extra_context|displayValue:'showsuccess'}}" / >
 			    <input type="hidden" id="replaceTrue" name="replaceTrue" size="15" value="True" / >
 
@@ -117,7 +111,7 @@ var KLP_form_submit = function(){
         function(data){
         	$('#popData').html(data);
 
-		NFInit();
+		// NFInit();
 		$("#id_save").removeAttr("disabled");
 		var successStatus = $("#success_status").val();
 

@@ -34,14 +34,14 @@ var KLP_TreeBLK = function(treeUrl){
 var KLP_EditEvent2=function(){
 
         lookupId=$(this).attr('id');
-                
+
                 valueTDObj=$('#'+lookupId+'_value');
                 desTDObj=$('#'+lookupId+'_des');
                 CurObj=$(this);
                 Curhtml=CurObj.html();
                 if(Curhtml=='Edit'){
-                
-                
+
+
                 valueTDObj.html('<input type="text" value="'+valueTDObj.html()+'" id="'+lookupId+'_valueinput" name="'+lookupId+'_value">');
                 desTDObj.html('<input type="text" value="'+desTDObj.html()+'" id="'+lookupId+'_desinput" name="'+lookupId+'_des">');
                 CurObj.html('Save');
@@ -50,19 +50,19 @@ var KLP_EditEvent2=function(){
                 $.post(
                 "/assessment_lookup_value/inlineedit/",
                 'lookupId='+lookupId+'&name='+$('#'+lookupId+'_valueinput').val()+'&des='+$('#'+lookupId+'_desinput').val(),
-                function(data){ 
-                        
+                function(data){
+
                         $("#"+lookupId+'_status').html(data);
                         $("#"+lookupId+'_status').show();
                         if(data=='Data Saved'){
                            valueTDObj.html($('#'+lookupId+'_valueinput').val())
                            desTDObj.html($('#'+lookupId+'_desinput').val());
                            }
-                         
+
                 CurObj.html('Edit');
-                
+
                 });
-                
+
                 }
         return false;
 }
@@ -92,7 +92,7 @@ $.ajaxSetup({
 		}else if(x.status==500){
 			$("#failureMsgHead").show();
 			//respTxt = x.responseText;
-			//var exceptionVal = $(".exception_value", respTxt).html(); 
+			//var exceptionVal = $(".exception_value", respTxt).html();
 			$("#klp_fail_MsgTxt").html("Invalid data or insufficient priviliges");
 		}else if(e=='parsererror'){
 			$("#failureMsgHead").show();
@@ -113,16 +113,16 @@ $.ajaxSetup({
 var KLP_Del = function(referKey,type, msgText){
 	KLP_Hide_Msg();
 	if (type.toLowerCase()=='class' || type.toLowerCase()=='center')
-        	nodeId = $("#studentgroup_"+referKey) 
+        	nodeId = $("#studentgroup_"+referKey)
         else
-                nodeId = $("#"+type+'_'+referKey)  
+                nodeId = $("#"+type+'_'+referKey)
         if (type=='assessmentdetail')
                 msgType = 'question'
         else
                 msgType = type
         var conf = confirm("Are you sure, you want to delete "+msgType +' '+msgText);
-        if (conf==true){                                
-                $.ajax({                    
+        if (conf==true){
+                $.ajax({
                 	url: '/delete/'+type+'/'+referKey+'/',
                 	success: function(data) {
 				if(data.match(/Successfully Deleted/g)){
@@ -141,7 +141,7 @@ var KLP_Del = function(referKey,type, msgText){
                 });
         }
 }
-        
+
 var KLP_Boundary_Add = function(thisObj){
 	KLP_Hide_Msg();
 	currentId=$(thisObj).attr('id');
@@ -149,8 +149,8 @@ var KLP_Boundary_Add = function(thisObj){
 	$.ajax({
             url: $(thisObj).attr('href'),
             success: function(data) {
-                $("#dyncData").html(data); 
-		NFInit();
+                $("#dyncData").html(data);
+		// NFInit();
 		$('input:visible:enabled:first').focus();
                 $('#id_form-0-parent').val(addId);
                 if ($(thisObj).attr('boundaryCategory')){
@@ -174,7 +174,7 @@ var KLP_View = function(thisObj){
         		if (asEntryVal == 'True'){
         			$(".KLP_Button_Header").hide();
         		}
-			NFInit();
+			// NFInit();
 			$('input:visible:enabled:first').focus();
 	        	tb_init('a.thickbox, area.thickbox, input.thickbox');
 	        	$("#subForm").html('');
@@ -212,9 +212,9 @@ var KLP_Create_Node = function(thisObj,ObjValue){
         }
         syncflag=true;
         if (ObjValues.length==2){
-        
+
           syncflag=false;
-        }  
+        }
 	newChildId = ObjValue+'_'+$('#'+ObjValue+'_id').val();
 	$.ajax({
 		url: '/createnew/'+ObjValue+'/'+ObjId+'/',
@@ -223,7 +223,7 @@ var KLP_Create_Node = function(thisObj,ObjValue){
             	success: function(data) {
             		curentHtml=currentId.html();
 		     	curId = currentId.attr('id');
-		      	Ulhas=$("#"+curId).is(":has(>ul)")     
+		      	Ulhas=$("#"+curId).is(":has(>ul)")
                       	if (curId=='treeBlk'){
                       		var topbranch = $("<li id="+newChildId+" >"+data+"</li>").appendTo("#"+curId);
                       	}
@@ -234,17 +234,17 @@ var KLP_Create_Node = function(thisObj,ObjValue){
 				addStr='<div class="hitarea hasChildren-hitarea collapsable-hitarea"></div>'
 				$("#"+curId).prepend(addStr)
                                 var topbranch = $("<ul style='display: block;'><li id='"+newChildId+"' class='collapsable'>"+data+"</li></ul>").appendTo("#"+curId);
-                                
+
                                 $("#"+curId).filter(":not(:has(>a))").find(">span").click(function(event) {
 						KLP_toggler($(this).parent());
 			        }).add( $("a", $("#"+curId)) ).hoverClass();
-                                
-                                
+
+
                                 $("#"+curId).find("div:first").click( function(event){
                                 	KLP_toggler($(this).parent());
                                 });
 		       }
-		       
+
                        $("#"+curId).treeview({
                        		add: topbranch,
                        });
@@ -253,14 +253,14 @@ var KLP_Create_Node = function(thisObj,ObjValue){
 		       KLP_BredaCrumb(newNode);
 		       }
                        return false;
-		        
+
 		}
 	});
 }
 
 
 var KLP_toggler = function(thisObj) {
-	
+
 	thisObj
 		// swap classes for hitarea
 		.find(">.hitarea")
@@ -286,13 +286,13 @@ var KLP_BredaCrumb = function(currentObj){
 		var prvSel = $("#id_prvSelNode").val();
 		if (prvSel){
 			prvAnc = $('#'+prvSel).find('a:first');
-			$(prvAnc).removeClass("KLP_selNode");			
+			$(prvAnc).removeClass("KLP_selNode");
 			$(prvAnc).addClass("KLP_treetxt");
 		}
 		$(currentObj).removeClass("KLP_treetxt");
 		$(currentObj).addClass("KLP_selNode");
 		$("#id_prvSelNode").val($(currentObj).parent().parent().attr("id"));
-				
+
        		var thisTitle = "<span class=KLP_BreadCrumbTxt> "+$(currentObj).attr('title')+" </span>";
        		do{
        			isParent = $(currentObj).parent().parent().parent().parent().is(':has(>span>a)');
@@ -318,8 +318,8 @@ var KLP_validateScript=function(formId){
 	             	$("#successMsgHead").hide();
         		$("#failureMsgHead").hide();
         		var txtFields = $(form).find("input[type=text]:visible");
-        	        DeFlag=false		
-                        
+        	        DeFlag=false
+
        			txtFields.each(function(index){
        				isDE = $(this).attr("dE");
        				tempAt = "#"+$(this).attr("id");
@@ -329,13 +329,13 @@ var KLP_validateScript=function(formId){
        					count = count + 1
        					form.validate().element(tempAt);
        				}
-       				
+
        			});
                         if ($(txtFields[0]).attr('id').indexOf('primaryvalue')!=-1)
                                 txtlength=txtFields.length-1
                         else
                               txtlength=txtFields.length
-       			if ( DeFlag==true && count == txtlength){ 
+       			if ( DeFlag==true && count == txtlength){
        			    errLength = $(form).children().find('label.error:visible').length
                             //alert(errLength);
        			    if (errLength == 0){
@@ -343,14 +343,14 @@ var KLP_validateScript=function(formId){
 			    }
 			    else{
 			    	$("#"+formId+"_submit").show();
-			    }		
+			    }
 	       		   }
 	       		else{
 	       		       KLP_post_script(form,formName)
 	       		       $("#"+formId+"_submit").show();
 	       		}
-	       		
-    		}	
+
+    		}
       });
 
 }
@@ -360,7 +360,7 @@ var KLP_post_script=function(form,formName){
 	$.post(
 		"/answer/data/entry/",
 		$(form).serialize(),
-		function(data){	
+		function(data){
 			statusObj=$("#"+formName).find('#formcounter');
 			//$("#id_Student"+statusObj.val()+"_status").html(data);
 			//$("#id_Student"+statusObj.val()+"_status").show();
@@ -372,9 +372,9 @@ var KLP_post_script=function(form,formName){
                          ansVals=successData[1].split(',');
                          $.each(ansObjs,function(index,val ){
                                 $(this).val(ansVals[index]);
-                         })  
+                         })
 
-                       }  
+                       }
 			$("#id_Student_"+$("#"+formName).find('#formcounter').val()+"_status").show();
 			var txtFields = $(form).find("input[type=text]:visible");
 			txtFields.each(function(index){
@@ -384,10 +384,10 @@ var KLP_post_script=function(form,formName){
        					$("#"+formName+"_submit").show()
        					$("#"+formName+"_submit").attr("disabled", "true");
        				}
-       			}); 
-       			 
+       			});
+
 		}
-	);    
+	);
 
 }
 

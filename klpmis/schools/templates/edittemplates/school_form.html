@@ -23,7 +23,7 @@
                 	</tr>
                 	<tr>
                 		<td><label class="KLP_required">Category:</label></td>
-                		<td>	
+                		<td>
 					<select id="id_form-0-cat" name="form-0-cat" tabindex=2>
 						{% for category in extra_context|displayValue:'categoryList' %}
 							{% if extra_context|displayValue:'selCategoryTyp' == category.id or school.cat.id == category.id %}
@@ -39,7 +39,7 @@
 	                                	<span class="editErr">{{ error }}</span>
 	                                {% endfor %}
                                 </td>
-					
+
                         </tr>
                         <tr>
                         	<td><label class="KLP_required">{{extra_context|displayValue:'schoolType'}} Type:</label></td>
@@ -129,7 +129,7 @@
                         			<input type="hidden" name="parentId" value="{{school.boundary.id}}" id="parentId" />
                         			<input type="hidden" id="id_form-0-active" name="form-0-active" value="2">
                         			{{entryForm.id}}
-                        		</span>	
+                        		</span>
                                         <input type="submit" name="save" id="id_save" value="Save" tabindex=10/>
                                 </td>
                                 <!--td>
@@ -138,49 +138,49 @@
                                 <td>
                     	    		<input type="submit" name="save_and_create" id="id_save_and_create" value="Save And Create Another" tabindex=12/>
       				</td-->
-                        </tr>        
+                        </tr>
                 </table>
-        {%endwith%}             
+        {%endwith%}
 </form>
 <script>
 
-$(document).ready(function(){  
-  
+$(document).ready(function(){
+
    $("#id_save").click(function(){
    	KLP_Hide_Msg();
    	parentVal = $("#id_form-0-boundary").val();
    	$("#id_form-buttonType").val('save');
    	KLP_form_submit(parentVal);
-   	
+
    });
-   
+
    $("#id_save_and_continue").click(function(){
    	KLP_Hide_Msg();
    	$("#id_form-buttonType").val('save and continue');
    	parentVal = $("#id_form-0-boundary").val();
    	KLP_form_submit(parentVal);
-   	
+
    });
-   
+
    $("#id_save_and_create").click(function(){
    	KLP_Hide_Msg();
    	parentVal = $("#id_form-0-boundary").val();
    	$("#id_form-buttonType").val('save and add another');
    	KLP_form_submit(parentVal, 'id_form-0-boundary');
-   	
-   	
+
+
    });
-    
-    
+
+
    var KLP_form_submit = function(parentVal, parentId){
-   	oldName = $('#id_old').val(); 
+   	oldName = $('#id_old').val();
     	newName = $('#id_form-0-name').val();
    	$.post(
         	$('#url').val(),
         	$("#schoolForm").serialize(),
                 function(data){
                     $("#dyncData").html(data);
-                    NFInit();
+                    // NFInit();
                     $('input:visible:enabled:first').focus();
                     var successStatus = $("#success_status").val();
                     if (successStatus == 'True'){
@@ -190,14 +190,14 @@ $(document).ready(function(){
                     	KLP_BredaCrumb(treeNode);
                     	$("#successMsgHead").show();
    		    	$("#klp_MsgTxt").html("{{extra_context|displayValue:'schoolType'}} Updated Successfully")
-                    
+
                     	if (parentId != null)
                     		$("#"+parentId).val(parentVal);
                     }
                }
            );
-   } 
-   
+   }
+
 });
 </script>
 

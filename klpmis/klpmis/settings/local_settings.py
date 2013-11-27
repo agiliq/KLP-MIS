@@ -12,6 +12,8 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = get_env_variable('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = get_env_variable('EMAIL_HOST_PASSWORD')
 
+REPORTMAIL_RECEIVER = ['rakesh@agiliq.com']
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',

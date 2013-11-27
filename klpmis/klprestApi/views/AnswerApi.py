@@ -110,7 +110,6 @@ class KLP_ChangeAns(Resource):
             try:
                 ansObj = ansObjs[0]  # .defer("user1","user2")[0]
             except:
-
                 ansObj = ''
 
             #AnswerForm= modelformset_factory(Answer,form=Answer_Form,extra=0)

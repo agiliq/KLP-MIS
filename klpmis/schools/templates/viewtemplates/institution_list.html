@@ -9,12 +9,12 @@
 			{%if boundary.boundary_category.boundary_category|lower == 'district' %} Blocks {% endif %}
 			{%if boundary.boundary_category.boundary_category|lower == 'block' %} Clusters {% endif %}
 			{%if boundary.boundary_category.boundary_category|lower == 'cluster'%} Institutions {% endif %}
-			  
+
 		{% endif %} Under {{boundary.name}}
 	</span>
          <div style="font-size:12px;font-weight:bold;padding:5px;">
               Note: not only assessments will be assigned but institution/boundary/class permissions if not already present will also be assigned<br/><br/>
-        
+
 </div>
 	<form name="klp_PermissionForm" id="id_klp_PermissionForm" onsubmit="return false;" class="niceform">{% csrf_token %}
 		<input type="hidden" name="permissionType" value="{{permissionType}}" />
@@ -28,15 +28,15 @@
 		{% for inst in institution_list %}
 			<span style="float:left;width:100%;color:#000;font-weight:bold;">
 				<!-- Check box to select and institution name -->
-				<input type="checkbox" name="instName" value="{{inst.id}}" /> {{inst.name}}   ({{inst.id}}) 
+				<input type="checkbox" name="instName" value="{{inst.id}}" /> {{inst.name}}   ({{inst.id}})
 			</span>
 		{% endfor %}
 		<!-- Display Boundaries -->
 		{% for boundary in boundary_list %}
 			<span style="float:left;width:100%;color:#000;font-weight:bold;">
 				<!-- Check box to select and Boundary name -->
-				<input type="checkbox" name="boundaryName" value="{{boundary.id}}" />  {{boundary.name}} 
-				
+				<input type="checkbox" name="boundaryName" value="{{boundary.id}}" />  {{boundary.name}}
+
 			</span>
 		{% endfor %}
 		</div>
@@ -66,7 +66,7 @@
 	</form>
 	<script>
 		$(document).ready(function(){
-			
+
 			$("#id_klp_PermissionForm").submit(function(){
 				/* Post Data on Form Submit */
 				KLP_Hide_Msg();
@@ -90,14 +90,14 @@
 							NFDo('start');
 						}
 					);
-					
+
 				/*	$.ajax({
 						url: $("#id_cur_Url").val(),
 						success: function(data) {
 							$("#dyncData").html(data);
 							NFInit();
 						}
-		
+
 					});*/
 				}
 			});
@@ -106,7 +106,7 @@
 			bound_cat = $("#id_BoundCat").val();
 			NFDo('stop');
 			if (bound_cat == 'circle' || bound_cat == 'cluster')
-				allCheckboxes = $('input[name=instName]:unchecked');				
+				allCheckboxes = $('input[name=instName]:unchecked');
 			else
 				allCheckboxes = $('input[name=boundaryName]:unchecked');
 			allCheckboxes.each(function(index){
@@ -126,7 +126,7 @@
 				$(this).removeAttr("checked");
 			});
 			NFDo('start');
-	
+
 		}
 	</script>
 </div>

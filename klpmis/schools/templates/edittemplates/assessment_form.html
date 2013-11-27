@@ -7,30 +7,30 @@
 <form action="." method="POST" enctype="multipart/form-data" class="niceform" id="assessmentForm" name="assessmentForm" onsubmit="return false;">{% csrf_token %}
 	<input type="hidden" name="form-buttonType" id="id_form-buttonType" value="save" />
 	<input type="hidden" id="url" value="/assessment/{{assessment.id}}/update/" />
-   
+
 	<input type="hidden" id="assessment_id" value="{{assessment.id}}" />
 	<input type="hidden" id="success_status" size="15" value="{{extra_context|displayValue:'showsuccess'}}" / >
-	{{form.management_form}} 
+	{{form.management_form}}
 	{% with form.forms|last as entryForm %}
 	<table>
         		<tr>
       	    			<td>
-      		    			<table class="tblprofile">      			          				  				
+      		    			<table class="tblprofile">
       						<tr>
       				    			<td class="rightprofile"><label class="KLP_required">Name</label></td>
       							<td class="leftprofile">
                             					{% render_field entryForm.name 'tabindex=1' %}
                             					<!-- Assessment Name Field -->
                             					<input type="hidden" name="old" id="id_old" value="{{assessment.name}}" size="15"/>
-                            					<input type="hidden" name="form-0-programme" id="id_form-0-programme" value="{{assessment.programme.id}}" />  
-                            					<input type="hidden" id="id_form-0-query" name="form-0-query" rows=4 cols=20 vale="{{assessment.query}}" />  
+                            					<input type="hidden" name="form-0-programme" id="id_form-0-programme" value="{{assessment.programme.id}}" />
+                            					<input type="hidden" id="id_form-0-query" name="form-0-query" rows=4 cols=20 vale="{{assessment.query}}" />
                         				</td>
                         				<td>
                         					<!-- If Name field has errors show errors -->
                                     				{% for error in entryForm.name.errors %}
 	                                				<span class="editErr">{{ error }}</span>
 	                                			{% endfor %}
-                                    			</td> 
+                                    			</td>
       						</tr>
       						<tr>
       				    			<td class="rightprofile"><label class="KLP_required">Start Date</label></td>
@@ -43,7 +43,7 @@
                                     				{% for error in entryForm.start_date.errors %}
 	                                				<span class="editErr">{{ error }}</span>
 	                                			{% endfor %}
-                                    			</td> 
+                                    			</td>
       						</tr>
       						<tr>
       				    			<td class="rightprofile"><label class="KLP_required">End Date</label></td>
@@ -56,7 +56,7 @@
                                     				{% for error in entryForm.end_date.errors %}
 	                                				<span class="editErr">{{ error }}</span>
 	                                			{% endfor %}
-                                    			</td> 
+                                    			</td>
                         				<script>
                         					/* To Show Calendar on focus on date fields */
                         					$( "#id_form-0-start_date" ).datepick({dateFormat: 'dd-mm-yyyy'});
@@ -72,7 +72,7 @@
                                                 </tr>
                                                     <tr >
                                                         <td class="rightprofile"><label class="KLP_required">Double Entry</label></td>
-                                                        
+
                                                         <td class="leftprofile"><br/>
                                                                 {% render_field entryForm.double_entry %}
                                                         </td>
@@ -88,7 +88,7 @@
                                     				{% for error in entryForm.flexi_assessment.errors %}
 	                                				<span class="editErr">{{ error }}</span>
 	                                			{% endfor %}
-                                    			</td> 
+                                    			</td>
       						</tr>
                               <tr {% if  not entryForm.flexi_assessment.value %}style="display:none" {% endif %} class="flexifield">
       				    			<td class="rightprofile"><label class="KLP_required">Primary Field Name</label></td>
@@ -101,7 +101,7 @@
                                     				{% for error in entryForm.primary_field_name.errors %}
 	                                				<span class="editErr">{{ error }}</span>
 	                                			{% endfor %}
-                                    			</td> 
+                                    			</td>
       						</tr>
                                                   <tr  {% if  not entryForm.flexi_assessment.value %}style="display:none" {% endif %} class="flexifield">
       				    			<td class="rightprofile"><label class="KLP_required">Primary Field Type</label></td>
@@ -114,9 +114,9 @@
                                     				{% for error in entryForm.primary_field_type.errors %}
 	                                				<span class="editErr">{{ error }}</span>
 	                                			{% endfor %}
-                                    			</td> 
-      						</tr>  
-       						<tr>      				    
+                                    			</td>
+      						</tr>
+       						<tr>
                                                             <td class="rightprofile"><label class="KLP_required">Active Status</label></td>
       			        			<td class="leftprofile">
       			            				<span  {% if 'AdminGroup' in usergroups or user.is_superuser %} syle="display:block"  {% else %} style="display:none" {% endif %}>
@@ -124,14 +124,14 @@
                                                                    <!--option value="0" {% ifequal  entryForm.active.value 0  %} selcted="selected" {% endifequal %}>Deleted</option-->
                                                                    <option value="1" {% ifequal  entryForm.active.value 1  %} selected="selected" {% endifequal %}>Inactive</option>
                                                                    <option value="2" {% ifequal  entryForm.active.value 2  %} selected="selected" {% endifequal %}>Active</option>
-                                                              </select>       
+                                                              </select>
       			            					{{entryForm.id}}
       			            				</span>
       			        			</td>
       			    			</tr>
       			    			<tr><td> &nbsp;</td></tr>
       			    			<tr><td> &nbsp;</td></tr>
-      			    			
+
       			    			<tr>
       				    			<td>
                                     				<input type="submit" name="save" id="id_save" value="Save" tabindex=4 />
@@ -150,10 +150,10 @@
     	{% endwith %}
 </form>
 <script>
-  $(document).ready(function(){   
-   	
+  $(document).ready(function(){
+
     $("#id_form-0-flexi_assessment").click(function(){
-	
+
 	 $('.flexifield').toggle();
 	});
    $("#id_save").click(function(){
@@ -165,11 +165,11 @@
 	}
    	parentVal = $("#id_form-0-programme").val();
    	$("#id_form-buttonType").val('save');
-	
+
    	KLP_form_submit(parentVal);
-   	
+
    });
-   
+
    $("#id_save_and_continue").click(function(){
    	/* Clicking on save and continue button hide all prv msgs and call form submit and pass button type is save and continue */
    	KLP_Hide_Msg();
@@ -177,20 +177,20 @@
    	$("#id_form-buttonType").val('save and continue');
    	KLP_form_submit(parentVal);
    });
-   
+
    $("#id_save_and_create").click(function(){
    	/* Clicking on save and add another button hide all prv msgs and call form submit and pass button type is save and add another */
    	KLP_Hide_Msg();
    	parentVal = $("#id_form-0-programme").val();
    	$("#id_form-buttonType").val('save and add another');
    	KLP_form_submit(parentVal, 'id_form-0-programme');
-   	
-   	
+
+
    });
-  
-  
+
+
    var KLP_form_submit = function(parentVal, parentId){
-   	oldName = $('#id_old').val();  
+   	oldName = $('#id_old').val();
    	newName = $('#id_form-0-name').val();
    	/* capture old name and new name to change values in node */
    	/* post data using post method */
@@ -200,7 +200,7 @@
                 function(data){
                     /* Get Response */
                     $("#dyncData").html(data);
-                    NFInit();
+                    // NFInit();
                     $('input:visible:enabled:first').focus();
                     var successStatus = $("#success_status").val();
                     if (successStatus == 'True'){
@@ -212,13 +212,13 @@
                     	$("#successMsgHead").show();
    		    	$("#klp_MsgTxt").html("Assessment Updated Successfully");
                     	if (parentId != null)
-                    		$("#"+parentId).val(parentVal);	
-                    }		
-                    
+                    		$("#"+parentId).val(parentVal);
+                    }
+
                }
            );
    }
-  
+
 });
 </script>
 {% else %}<span class="KLP_Form_status" style="color:red !important;display:block !important">
