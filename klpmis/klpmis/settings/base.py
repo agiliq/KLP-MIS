@@ -96,8 +96,10 @@ STATICFILES_DIRS = (
 # List of callables that know how to import templates from various sources.
 
 TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader'
+    ('django.template.loaders.cached.Loader', (
+        'django.template.loaders.filesystem.Loader',
+        'django.template.loaders.app_directories.Loader',
+    )),
 )
 
 MIDDLEWARE_CLASSES = (
@@ -135,10 +137,14 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.admin',
     'schools',
-#    'object_permissions',
+#   'object_permissions',
     'fullhistory',
     'accounts',
+    'crispy_forms',
 )
+
+
+CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
 
 def get_env_variable(var_name):
