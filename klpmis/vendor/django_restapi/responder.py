@@ -27,7 +27,7 @@ from schools.models import Assessment, Institution_address, Boundary,\
     Answer, Student_StudentGroupRelation
 from schools.forms import Assessment_Form, Question_Form, Institution_Form,\
     Staff_Form, Institution_Category_Form, Institution_Management_Form,\
-    Moi_Type_Form, Assessment_Lookup_Form, Child_Form
+    Moi_Type_Form, Assessment_Lookup_Form, Child_Form, Boundary_Form
 from fullhistory.models import User
 
 
@@ -338,9 +338,8 @@ class TemplateResponder(object):
 
     # @transaction.commit_manually
 
-    def create_form(self, request, queryset, form_class, ):
+    def create_form(self, request, queryset, form_class, form_helper=None ):
         """  Render form for creation of new collection entry. """
-
         ResourceForm = \
             modelformset_factory(queryset.model,
                                  form=form_class)  # get model formset factory based on model and form
@@ -736,14 +735,21 @@ class TemplateResponder(object):
                     form = \
                         ResourceForm(queryset=queryset.model.objects.none())
                 else:
-                    if form_class in [Institution_Category_Form,
-                                      Moi_Type_Form,
-                                      Institution_Management_Form,
-                                      Assessment_Form,
-                                      Assessment_Lookup_Form]:
+                    # if form_class in [Institution_Category_Form,
+                    #                   Moi_Type_Form,
+                    #                   Institution_Management_Form,
+                    #                   Assessment_Form,
+                    #                   Assessment_Lookup_Form,
+                    #                   Boundary_Form]:
+                    #     response = \
+                    #         '<input type=hidden id=success_status size=15 value=True /><input type=hidden value=%s id="obj_id" />' \
+                    #         % obj.id
+
+                    if form_class == Boundary_Form:
                         response = \
-                            '<input type=hidden id=success_status size=15 value=True /><input type=hidden value=%s id=obj_id />' \
+                            '<input type=hidden id=success_status size=15 value=True /><input type=hidden value=%s id="boundary_id" />' \
                             % obj.id
+
                         return response
                     return obj
             else:
@@ -786,25 +792,27 @@ class TemplateResponder(object):
                         request.POST.get('form-0-fatherlastname')
                     self.extra_context['form-0-otherId'] = \
                         request.POST.get('form-0-otherId')
-                self.extra_context['reload']=False
+                self.extra_context['reload'] = False
                 template_name = '%s/%s_form.html' % (self.template_dir,
                                                      queryset.model._meta.module_name)
                 context = {'form': form,
                            'extra_context': self.extra_context}
+                if form_helper:
+                    context['helper'] = form_helper
                 return render(request, template_name, context)
         else:
 
-        # If request method is not post get form for the model
-
+            # If request method is not post get form for the model
             form = ResourceForm(queryset=queryset.model.objects.none())
 
-            # print form
-    # Show the form
+        # Show the form
         self.extra_context['reload'] = False
         template_name = '%s/%s_form.html' % (self.template_dir,
                                              queryset.model._meta.module_name)
         context = {'form': form,
                    'extra_context': self.extra_context}
+        if form_helper:
+            context['helper'] = form_helper
         return render(request, template_name, context)
 
     def update_form(
