@@ -7,12 +7,13 @@ Boundary Api is used
 3) To update existing boundary
 """
 from django.http import HttpResponse
+from crispy_forms.layout import Submit
 
 from vendor.django_restapi.model_resource import Collection, Entry
 from vendor.django_restapi.responder import TemplateResponder
 from vendor.django_restapi.receiver import XMLReceiver
 from schools.receivers import KLP_user_Perm
-from schools.forms import Boundary_Form
+from schools.forms import Boundary_Form, BoundaryFormHelper
 from schools.models import Boundary, Boundary_Type
 
 
@@ -72,8 +73,11 @@ def KLP_Boundary_Create(request):
                          extra_context={'buttonType': buttonType}),
                      receiver=XMLReceiver())
 
+    helper = BoundaryFormHelper()
+    helper.form_tag = False
+
     response = KLP_Create_Boundary.responder.create_form(
-        request, form_class=Boundary_Form)
+        request, form_class=Boundary_Form, form_helper=helper)
 
     return HttpResponse(response)
 
