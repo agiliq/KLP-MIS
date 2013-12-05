@@ -1,43 +1,20 @@
 {% load template_tags %}
+{% load crispy_forms_tags %}
 <div class="detailHead">
     <span class="hedText">Boundary Form</span>
 </div>
-<form action="." method="POST" enctype="multipart/form-data" class="niceform" id="boundaryForm" name="boundaryForm" onsubmit="return false;">{% csrf_token %}
+
+
+<form action="." method="POST" enctype="multipart/form-data" id="boundaryForm" onsubmit="return false;">
+    {% crispy form helper %}
     <input type="hidden" name="url" value="/boundary/creator/" id="url" />
     <input type="hidden" name="redUrl" value="{{redUrl}}" id="redUrl" />
-    {{form.management_form}}
-    <input type="hidden" name="form-buttonType" id="id_form-buttonType" value="" />
     <input type="hidden" id="boundary_id" size="15" value="{{extra_context|displayValue:'prevousId'}}" / >
     <input type="hidden" id="success_status" size="15" value="{{extra_context|displayValue:'showsuccess'}}" / >
-    {% with form.forms|last as entryForm %}
-
-        <span>
-            <label class="KLP_required">Name</label>
-        </span>
-        <input type="hidden" name="form-0-parent" id="id_form-0-parent" size="15" value="1" / >
-
-        <input id="id_form-0-name" maxlength="300" name="form-0-name" tabindex="1" type="text" class="form-control"></input>
-        </br>
-
-
-        <!-- Boundary Name Field -->
-        <!-- If Name field has errors show errors -->
-        {% for error in entryForm.name.errors %}
-            <span class="editErr">{{ error }}</span>
-        {% endfor %}
-
-
-        <input type="hidden" name="form-0-active" id="id_form-0-active" value="2"/>
-        <input type="hidden" name="form-0-boundary_type" id="id_form-0-boundary_type" size="15" value="" />
-        <input type="hidden" name="form-0-boundary_category" id="id_form-0-boundary_category" size="15" value="" />
-
-        <div>
-            <input type="submit" name="save" id="id_save" value="Save" tabindex=2 class="btn btn-default"/>
-            <input type="submit" name="save_and_create" id="id_save_and_create" value="Save And Create Another" tabindex=4 class="btn btn-default"/>
-        </div>
-    {% endwith %}
+    <div class="form-actions">
+        <input type="submit" name="submit" value="Save" class="btn btn-primary" id="id_save">
+    </div>
 </form>
-
 
 <script>
   $(document).ready(function(){
@@ -45,7 +22,7 @@
    $("#id_form-0-boundary_type").val($("#boundary_type").val());
 
 
-   $("#id_save").click(function(){
+   $("#id_save").click(function(e){
     /* Clicking on save button hide all prv msgs and call form submit and pass button type is save */
     KLP_Hide_Msg();
     parentVal = $("#id_form-0-parent").val();
@@ -84,6 +61,7 @@
           $("#boundaryForm").serialize(),
                 function(data){
                     /* Get Response */
+                    console.log(data);
                     $("#dyncData").html(data);
                     // NFInit();
                     $('input:visible:enabled:first').focus();
@@ -91,7 +69,7 @@
                     if  (successStatus == 'True'){
                       /* If It success show success msg and create new node in tree */
                       ObjId='#boundary_'+parentVal
-          Obj=$(ObjId)
+                      Obj=$(ObjId)
                       KLP_Create_Node(Obj,'boundary');
                       $("#successMsgHead").show();
             $("#klp_MsgTxt").html("Boundary Created Successfully");
