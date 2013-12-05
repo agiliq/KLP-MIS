@@ -202,19 +202,19 @@ var KLP_Create_Node = function(thisObj,ObjValue){
 	ccid = currentId.attr('id');
 	ObjValues=ObjValue.split('_');
 	ObjValue=ObjValues[0];
-        if (typeof ccid=='undefined' ){
-        	currentId=$('#treeBlk');
-                ObjValue='boundary';
-                ObjId = $('#'+ObjValue+'_id').val();
-	}
-        else{
-        	ObjId = $('#'+ObjValue+'_id').val();
-        }
-        syncflag=true;
-        if (ObjValues.length==2){
+  if (typeof ccid=='undefined' ){
+    currentId=$('#treeBlk');
+    ObjValue='boundary';
+    ObjId = $('#'+ObjValue+'_id').val();
+  }
+  else{
+  	ObjId = $('#'+ObjValue+'_id').val();
+  }
+  syncflag=true;
+  if (ObjValues.length==2){
 
-          syncflag=false;
-        }
+    syncflag=false;
+  }
 	newChildId = ObjValue+'_'+$('#'+ObjValue+'_id').val();
 	$.ajax({
 		url: '/createnew/'+ObjValue+'/'+ObjId+'/',
