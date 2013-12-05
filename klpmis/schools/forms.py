@@ -1,3 +1,6 @@
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout
+
 import datetime
 import psycopg2
 
@@ -133,6 +136,24 @@ class Boundary_Form(ModelForm):
 
     class Meta:
         model = Boundary
+        widgets = {
+            'parent': forms.HiddenInput(),
+            'boundary_category': forms.HiddenInput(),
+            'boundary_type': forms.HiddenInput()
+        }
+
+
+class BoundaryFormHelper(FormHelper):
+    def __init__(self, *args, **kwargs):
+        super(BoundaryFormHelper, self).__init__(*args, **kwargs)
+
+        self.layout = Layout(
+            'parent',
+            'name',
+            'boundary_category',
+            'boundary_type'
+        )
+        self.render_required_fields = True,
 
 
 class Boundary_Type_Form(ModelForm):
