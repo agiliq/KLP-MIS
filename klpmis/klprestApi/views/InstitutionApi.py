@@ -9,6 +9,7 @@ Institution Api is used
 """
 from django.http import HttpResponse
 from django.shortcuts import render
+from crispy_forms.layout import Submit
 
 from vendor.django_restapi.model_resource import Collection
 from schools.receivers import KLP_user_Perm
@@ -16,7 +17,7 @@ from klprestApi.views.BoundaryApi import ChoiceEntry
 from vendor.django_restapi.responder import TemplateResponder
 from vendor.django_restapi.receiver import XMLReceiver
 from schools.models import Institution, Boundary, Institution_Category
-from schools.forms import Institution_Form
+from schools.forms import Institution_Form, InstitutionFormHelper
 from fullhistory.models import User
 from klprestApi.views.TreeMenu import getAssInst
 
@@ -84,8 +85,12 @@ def KLP_Institution_Create(request, referKey):
                                 'categoryList': categoryList,
                                 'selCategoryTyp': selCategoryTyp, }),
                         receiver=XMLReceiver())
+
+    helper = InstitutionFormHelper()
+    helper.form_tag = False
+
     response = KLP_Create_Institution.responder.create_form(
-        request, form_class=Institution_Form)
+        request, form_class=Institution_Form, form_helper=helper)
 
     return HttpResponse(response)
 
