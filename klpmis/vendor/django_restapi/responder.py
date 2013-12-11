@@ -749,7 +749,12 @@ class TemplateResponder(object):
                         response = \
                             '<input type=hidden id=success_status size=15 value=True /><input type=hidden value=%s id="boundary_id" />' \
                             % obj.id
+                        return response
 
+                    elif form_class == Institution_Form:
+                        response = \
+                            '<input type=hidden id=success_status size=15 value=True /><input type=hidden value=%s id="institution_id" />' \
+                            % obj.id
                         return response
                     return obj
             else:
