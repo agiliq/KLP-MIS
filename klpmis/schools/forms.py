@@ -187,6 +187,17 @@ class Institution_Form(Institution_address_Form):
         model = Institution
 
 
+class InstitutionFormHelper(FormHelper):
+    def __init__(self, *args, **kwargs):
+        super(InstitutionFormHelper, self).__init__(*args, **kwargs)
+
+        self.layout = Layout(
+            'name',
+            'languages'
+        )
+        self.render_required_fields = True,
+
+
 class Relations_Form(ModelForm):
 
     first_name = forms.CharField(required=False)
