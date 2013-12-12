@@ -185,6 +185,9 @@ class Institution_Form(Institution_address_Form):
 
     class Meta:
         model = Institution
+        widgets = {
+            'boundary': forms.HiddenInput()
+        }
 
 
 class InstitutionFormHelper(FormHelper):
@@ -193,7 +196,21 @@ class InstitutionFormHelper(FormHelper):
 
         self.layout = Layout(
             'name',
-            'languages'
+            'boundary',
+            'cat',
+            'institution_gender',
+            'dise_code',
+            'languages',
+            'mgmt',
+            'inst_address'
+            'active',
+            'address',
+            'area',
+            'pincode',
+            'landmark',
+            'instidentification',
+            'instidentification2',
+            'route_information',
         )
         self.render_required_fields = True,
 
