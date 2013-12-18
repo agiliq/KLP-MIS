@@ -185,9 +185,9 @@ class Institution_Form(Institution_address_Form):
 
     class Meta:
         model = Institution
-        widgets = {
-            'boundary': forms.HiddenInput()
-        }
+        # widgets = {
+        #     'boundary': forms.HiddenInput()
+        # }
 
 
 class InstitutionFormHelper(FormHelper):
