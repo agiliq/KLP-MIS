@@ -220,7 +220,6 @@ class TemplateResponder(object):
 
         self.template_dir = template_dir
         self.paginate_by = paginate_by
-        print extra_context
         self.template_loader = template_loader
         if not extra_context:
             extra_context = {}
@@ -228,8 +227,6 @@ class TemplateResponder(object):
             if callable(value):
                 extra_context[key] = value()
         self.extra_context = extra_context
-        print 'eeeee', self.extra_context, extra_context, \
-            'EEEEEEEEEEEEEEEEEEEEEe'
         self.allow_empty = allow_empty
         self.context_processors = context_processors
         self.template_object_name = template_object_name
@@ -290,8 +287,6 @@ class TemplateResponder(object):
                 raise Http404
 
         # Hide unexposed fields
-
-        print 'hssssssssdddddd', c
         for obj in object_list:
             self._hide_unexposed_fields(obj, self.expose_fields)
         c.update(self.extra_context)
@@ -343,7 +338,7 @@ class TemplateResponder(object):
         ResourceForm = \
             modelformset_factory(queryset.model,
                                  form=form_class)  # get model formset factory based on model and form
-        #print ResourceForm()
+
 
         self.extra_context['showsuccess'] = False  # Pass showsuccess True or false for message
         if request.POST.get('replaceTrue', None) is None:
@@ -359,7 +354,6 @@ class TemplateResponder(object):
             if Assobj.getAssessmentStatus() and Assobj.flexi_assessment:
                 answerAddable = True
         self.extra_context['answerAddable'] = answerAddable
-        print 'ASSSSSSSSSSSS', queryset.model._meta.module_name.lower()
         if request.POST:
 
         # If request method is post, post data
@@ -389,11 +383,8 @@ class TemplateResponder(object):
 
                 # IValid=False
             '''
-            print ChildTrue
             if form_class == Assessment_Form:
-                print 'SSSSSSSSSS'
                 if request.POST.get('form-0-flexi_assessment'):
-                    print request.POST.get('form-0-flexi_assessment')
                     if not request.POST.get('form-0-primary_field_name') \
                         or not \
                             request.POST.get('form-0-primary_field_type'):
@@ -430,7 +421,6 @@ class TemplateResponder(object):
             form = ResourceForm(new_data, request)  # post data to form
             Valid = form.is_valid()  # Validate form
             qvalid = True
-            print Valid, 'Valid', form.errors
             if Valid and IValid and qvalid and AssValid \
                 and \
                     DefaultAnswer and RelationValid:
@@ -450,13 +440,10 @@ class TemplateResponder(object):
                     else:
 
                         addressObj.delete()
-                    print 'OBK'
                     boundaryObj = \
                         Boundary.objects.get(pk=request.POST.get('form-0-boundary'))
                     userob = User.objects.filter(id=request.user.id)[0]
                     userob.set_perms(['Acess'], obj)
-                    print boundaryObj.boundary_category.boundary_category.lower(), \
-                        boundaryObj.boundary_type.boundary_type.lower()
                     if boundaryObj.boundary_category.boundary_category.lower() \
                         == 'circle' \
                         and boundaryObj.boundary_type.boundary_type.lower() \
@@ -464,8 +451,6 @@ class TemplateResponder(object):
                             ['anganwadi', 'preschool']:
 
                     # if boundary category is circle and boundary type is anganwadi create a class with name Anganwadi Class
-
-                        print 'inside IF'
                         newClass = \
                             StudentGroup(name='Anganwadi Class',
                                          active=2, institution_id=obj.id,
@@ -492,7 +477,6 @@ class TemplateResponder(object):
                     instutionid = request.POST.get('form-0-institution')
                     section = request.POST.get('form-0-section')
                     name = request.POST.get('form-0-name')
-                    print 'studentgroupsssssssssssssssss'
                     obj = form.save()[0]
                     '''StudentGroup(group_type=grouptype,
                             active=active, institution_id=instutionid,
@@ -528,7 +512,6 @@ class TemplateResponder(object):
                   # else save data
 
                     obj = form.save()[0]
-                    print 'OBJECT', obj.id
                 '''
                 if modulename == 'child':
 
@@ -575,7 +558,6 @@ class TemplateResponder(object):
                             AnsObj.answer_score = None
                             AnsObj.anserGrade = None
                             AnsObj.save()
-                            print 'AnsObj', AnsObj.id
                 buttonType = str(self.extra_context['buttonType'])  # get button type
                 self.extra_context['showsuccess'] = True  # make showsuccess is True
 
@@ -589,108 +571,108 @@ class TemplateResponder(object):
                     if modulename == 'child':
                         if request.POST['form-0-ModelName'] == 'student':
 
-				    # if current model is Chils and ModelName is Student
+                                    # if current model is Chils and ModelName is Student
 
-				    context['student'] = True
-				    #Move into forms.py
-				    '''
-				    # Create Student Object With as foreign key
+                                    context['student'] = True
+                                    #Move into forms.py
+                                    '''
+                                    # Create Student Object With as foreign key
 
-					    student = Student.objects.get(child=obj,
-					            other_student_id=request.POST.get('form-0-otherId'
-					            ), active=2)
-					    #student.save()
+                                            student = Student.objects.get(child=obj,
+                                                    other_student_id=request.POST.get('form-0-otherId'
+                                                    ), active=2)
+                                            #student.save()
 
-				    # Create relation ship with SG for current academic year.
+                                    # Create relation ship with SG for current academic year.
 
-					    #std_stdgrp_relation = \
-					    #    Student_StudentGroupRelation(student=student,
-					    #        student_group=self.extra_context['studentgroup'
-					    #        ], academic=current_academic(),
-					    #        active=2)
+                                            #std_stdgrp_relation = \
+                                            #    Student_StudentGroupRelation(student=student,
+                                            #        student_group=self.extra_context['studentgroup'
+                                            #        ], academic=current_academic(),
+                                            #        active=2)
 
-					    #std_stdgrp_relation.save()
-				     '''
-		                    totallengthstudent = \
-		                        Student_StudentGroupRelation.objects.filter(student_group=self.extra_context['studentgroup'
-		                            ], academic=current_academic(),
-		                            active=2).count()
-		                    if self.extra_context['mapStudent'] in [1,
-		                            '1']:
+                                            #std_stdgrp_relation.save()
+                                     '''
+                                    totallengthstudent = \
+                                        Student_StudentGroupRelation.objects.filter(student_group=self.extra_context['studentgroup'
+                                            ], academic=current_academic(),
+                                            active=2).count()
+                                    if self.extra_context['mapStudent'] in [1,
+                                            '1']:
 
-				        	# mapstudent has value 1 add row in the assessment data entry screen.
+                                                # mapstudent has value 1 add row in the assessment data entry screen.
 
-				                assessmentObj = \
-				                    Assessment.objects.get(pk=self.extra_context['assessment_id'
-				                        ])
-				                questions_list = \
-				                    Question.objects.filter(assessment=assessmentObj,
-				                        active=2)
-				                entryStr = \
-				                    '''<tr class='KLP_txt_cen'><td><form onsubmit='return false;' id='id_Student_%s' name='student_%s' class="validForm"><div style="display: none;"><input type="hidden" value="%s" name="csrfmiddlewaretoken"></div><input type='hidden' value='%s' name='programId'><input type='hidden' value='%s' name='assessmentId'><input type='hidden' value='%s' name='student'><input type='hidden' value='%s' name='student_groupId'><input type="hidden" name="formcounter" id="formcounter" value="%s"><table><tbody><tr>''' \
-				                    % (
-				                    student.id,
-				                    student.id,
-				                    request.META.get('CSRF_COOKIE',
-			None),
-				                    assessmentObj.programme.id,
-				                    self.extra_context['assessment_id'
-			],
-				                    student.id,
-				                    self.extra_context['studentgroup_id'
-			],
-				                    totallengthstudent,
-				                    )
-				                for question in questions_list:
-				                    if question.question_type == 1:
-				                        entryStr = entryStr \
-		    + '''<td class='KLP_td_height'><span style="color:#736F6E;">%s</span><br/><input type='text' class='required digits' size='3' value='' id='id_student_%s_%s' name='student_%s_%s_%s' tabindex='1' min="%s" max="%s"></td>''' \
-		    % (
-				                            question.order,
-				                            student.id,
-				                            question.id,
-				                            student.id,
-				                            question.id,
-				                            totallengthstudent,
-				                            question.score_min,
-				                            question.score_max,
-				                            )
-				                    else:
-				                        entryStr = entryStr \
-		    + '''<td class='KLP_td_height'><span style="color:#736F6E;">%s</span><br/><input type='text' class='required' size='3' value='' id='id_student_%s_%s' name='student_%s_%s_%s' tabindex='1' isinGrades="%s"></td>''' \
-		    % (
-				                            question.order,
-				                            student.id,
-				                            question.id,
-				                            student.id,
-				                            question.id,
-				                            totallengthstudent,
-				                            question.grade,
-				                            )
-				                entryStr = entryStr \
-				                    + '''<td class='KLP_td_height'> <input type='submit' value='submit' formname='id_Student_%s' url='/answer/data/entry/' tabindex='1'><script>$().ready(function() {KLP_validateScript("id_Student_%s");});</script></td></tr></tbody></table></form></td></tr>''' \
-				                    % (student.id, student.id)
-				                detailStr = \
-				                    '''<tr class='KLP_txt_cen'><td><table><tr><td class='KLP_td_width'>%s</td><td class='KLP_td_width'><span class='blue' title='Father: %s, Mother: %s, Gender: %s, MT: %s, DOB: %s'>%s&nbsp;%s</span><span class='KLP_Form_status' id='id_Student_%s_status'>Form Status</span></td></tr></table></td></tr>''' \
-				                    % (
-				                    student.id,
-				                    request.POST['form-0-fatherfirstname'
-			],
-				                    request.POST['form-0-motherfirstname'
-			],
-				                    student.child.gender,
-				                    student.child.mt,
-				                    student.child.dob.strftime('%d-%m-%Y'
-			),
-				                    student.child.first_name,
-				                    student.child.last_name,
-				                    student.id,
-				                    )
-				                mapStudenStr = {'detailStr': detailStr,
-				                        'ansEntryStr': entryStr}
-				                return HttpResponse(simplejson.dumps(mapStudenStr),
-				                        content_type='application/json; charset=utf-8'
-				                        )
+                                                assessmentObj = \
+                                                    Assessment.objects.get(pk=self.extra_context['assessment_id'
+                                                        ])
+                                                questions_list = \
+                                                    Question.objects.filter(assessment=assessmentObj,
+                                                        active=2)
+                                                entryStr = \
+                                                    '''<tr class='KLP_txt_cen'><td><form onsubmit='return false;' id='id_Student_%s' name='student_%s' class="validForm"><div style="display: none;"><input type="hidden" value="%s" name="csrfmiddlewaretoken"></div><input type='hidden' value='%s' name='programId'><input type='hidden' value='%s' name='assessmentId'><input type='hidden' value='%s' name='student'><input type='hidden' value='%s' name='student_groupId'><input type="hidden" name="formcounter" id="formcounter" value="%s"><table><tbody><tr>''' \
+                                                    % (
+                                                    student.id,
+                                                    student.id,
+                                                    request.META.get('CSRF_COOKIE',
+                        None),
+                                                    assessmentObj.programme.id,
+                                                    self.extra_context['assessment_id'
+                        ],
+                                                    student.id,
+                                                    self.extra_context['studentgroup_id'
+                        ],
+                                                    totallengthstudent,
+                                                    )
+                                                for question in questions_list:
+                                                    if question.question_type == 1:
+                                                        entryStr = entryStr \
+                    + '''<td class='KLP_td_height'><span style="color:#736F6E;">%s</span><br/><input type='text' class='required digits' size='3' value='' id='id_student_%s_%s' name='student_%s_%s_%s' tabindex='1' min="%s" max="%s"></td>''' \
+                    % (
+                                                            question.order,
+                                                            student.id,
+                                                            question.id,
+                                                            student.id,
+                                                            question.id,
+                                                            totallengthstudent,
+                                                            question.score_min,
+                                                            question.score_max,
+                                                            )
+                                                    else:
+                                                        entryStr = entryStr \
+                    + '''<td class='KLP_td_height'><span style="color:#736F6E;">%s</span><br/><input type='text' class='required' size='3' value='' id='id_student_%s_%s' name='student_%s_%s_%s' tabindex='1' isinGrades="%s"></td>''' \
+                    % (
+                                                            question.order,
+                                                            student.id,
+                                                            question.id,
+                                                            student.id,
+                                                            question.id,
+                                                            totallengthstudent,
+                                                            question.grade,
+                                                            )
+                                                entryStr = entryStr \
+                                                    + '''<td class='KLP_td_height'> <input type='submit' value='submit' formname='id_Student_%s' url='/answer/data/entry/' tabindex='1'><script>$().ready(function() {KLP_validateScript("id_Student_%s");});</script></td></tr></tbody></table></form></td></tr>''' \
+                                                    % (student.id, student.id)
+                                                detailStr = \
+                                                    '''<tr class='KLP_txt_cen'><td><table><tr><td class='KLP_td_width'>%s</td><td class='KLP_td_width'><span class='blue' title='Father: %s, Mother: %s, Gender: %s, MT: %s, DOB: %s'>%s&nbsp;%s</span><span class='KLP_Form_status' id='id_Student_%s_status'>Form Status</span></td></tr></table></td></tr>''' \
+                                                    % (
+                                                    student.id,
+                                                    request.POST['form-0-fatherfirstname'
+                        ],
+                                                    request.POST['form-0-motherfirstname'
+                        ],
+                                                    student.child.gender,
+                                                    student.child.mt,
+                                                    student.child.dob.strftime('%d-%m-%Y'
+                        ),
+                                                    student.child.first_name,
+                                                    student.child.last_name,
+                                                    student.id,
+                                                    )
+                                                mapStudenStr = {'detailStr': detailStr,
+                                                        'ansEntryStr': entryStr}
+                                                return HttpResponse(simplejson.dumps(mapStudenStr),
+                                                        content_type='application/json; charset=utf-8'
+                                                        )
 
                     # Show detail about newly create Object........
 
@@ -721,8 +703,8 @@ class TemplateResponder(object):
 
                     self.extra_context['prevousId'] = obj.id
                     '''self.extra_context['rank']=self.extra_context.get('rank',0)+1
-		    if self.extra_context.get('rank',0)>=self.extra_context.get('rankrange',0):
-					self.extra_context['rankrange']=self.extra_context.get('rank')
+                    if self.extra_context.get('rank',0)>=self.extra_context.get('rankrange',0):
+                                        self.extra_context['rankrange']=self.extra_context.get('rank')
                     '''
                     if form_class == Question_Form:
 
@@ -751,11 +733,11 @@ class TemplateResponder(object):
                             % obj.id
                         return response
 
-                    elif form_class == Institution_Form:
-                        response = \
-                            '<input type=hidden id=success_status size=15 value=True /><input type=hidden value=%s id="institution_id" />' \
-                            % obj.id
-                        return response
+                    # elif form_class == Institution_Form:
+                    #     response = \
+                    #         '<input type=hidden id=success_status size=15 value=True /><input type=hidden value=%s id="institution_id" />' \
+                    #         % obj.id
+                    #     return response
                     return obj
             else:
 
@@ -837,7 +819,6 @@ class TemplateResponder(object):
             self.extra_context['replaceTrue'] = True
         else:
             self.extra_context['replaceTrue'] = False
-        print request.POST
         editable = True
         if elem._meta.module_name.lower() == 'assessment':
                 obj = Assessment.objects.get(id=pk)
@@ -873,10 +854,8 @@ class TemplateResponder(object):
                     RelationValid = False
                     IValid = False
             '''
-            print ChildTrue
             AssValid = True
             if form_class == Assessment_Form:
-                print 'SSSSSSSSSS'
                 if request.POST.get('form-0-flexi_assessment'):
                     print request.POST.get('form-0-flexi_assessment')
                     if not request.POST.get('form-0-primary_field_name'
@@ -937,13 +916,11 @@ class TemplateResponder(object):
             # If From is valid then update data
 
                 obj1 = form.save()
-                print obj1
                 try:
                     obj = obj1[0]
                 except:
 
                     obj = queryset.model.objects.get(pk=pk)
-                print 'OOOOOOOOOOOOOOOOoOBJ',obj
                 if modelName == 'child':
 
                 # If model name is child update student data and relations data
