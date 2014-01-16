@@ -2,180 +2,166 @@
 <div class="detailHead">
 <span class="hedText">Staff Form</span>
 </div>
-<form action="." method="POST" enctype="multipart/form-data" id="staffForm" onsubmit="return false;" class="niceform">{% csrf_token %}
-                            <input type="hidden" name="url" value="{{extra_context|displayValue:'url'}}" id="url" />
-                            <input type="hidden" name="form-buttonType" id="id_form-buttonType" value="save" />
-                            <input type="hidden" id="staff_id" size="15" value="{{extra_context|displayValue:'prevousId'}}" / >
-                            <input type="hidden" name="form-0-institution" id="institution_id" size="15" value="{{extra_context|displayValue:'institution_id'}}" / >
-                            <input type="hidden" id="success_status" size="15" value="{{extra_context|displayValue:'showsuccess'}}" / >
-                    {{form.management_form}}
-                    {% with form.forms|last as entryForm %}
-                            <table class="tblprofile">
-                                <tr>
-                                    <td><label class="KLP_required">First Name:</label></td>
-                                    <td>
-                                         {% render_field entryForm.first_name 'tabindex=1' %}
-                                         <!-- Staff First Name Field -->
-                                    </td>
-                                    <td>&nbsp;</td>
-                                    <td>
-                                        <!-- If First Name field has errors show errors -->
-                                        {% for error in entryForm.first_name.errors %}
-                                        <span class="editErr">{{ error }}</span>
-                                    {% endfor %}
-                                    </td>
-                                </tr>
-                                <tr>
-                    <td><label>Middle Name:</label></td>
-                    <td>
-                                            {% render_field entryForm.middle_name 'tabindex=2' %}
-                                            <!-- Staff Middle Name Field -->
-                                        </td>
-                                        <td>&nbsp;</td>
-                                        <td>
-                                            <!-- If Middle Name field has errors show errors -->
-                                            {% for error in entryForm.middle_name.errors %}
-                                            <span class="editErr">{{ error }}</span>
-                                        {% endfor %}
-                                        </td>
+<form action="." method="POST" enctype="multipart/form-data" id="staffForm" onsubmit="return false;">{% csrf_token %}
+    <input type="hidden" name="url" value="{{extra_context|displayValue:'url'}}" id="url" />
+    <input type="hidden" name="form-buttonType" id="id_form-buttonType" value="save" />
+    <input type="hidden" id="staff_id" size="15" value="{{extra_context|displayValue:'prevousId'}}" / >
+    <input type="hidden" name="form-0-institution" id="institution_id" size="15" value="{{extra_context|displayValue:'institution_id'}}" / >
+    <input type="hidden" id="success_status" size="15" value="{{extra_context|displayValue:'showsuccess'}}" / >
+    {{form.management_form}}
+    {% with form.forms|last as entryForm %}
+        <div>
+            <label class="KLP_required"> First Name: </label>
+            <!-- Staff First Name Field -->
+            <input id="id_form-0-first_name" maxlength="50" name="form-0-first_name" tabindex="1" type="text" class="form-control">
 
+            <!-- If First Name field has errors show errors -->
+            {% for error in entryForm.first_name.errors %}
+                <span class="editErr">{{ error }}</span>
+            {% endfor %}
+            <br>
 
-                                </tr>
-                                <tr>
-                    <td><label>Last Name:</label></td>
-                    <td>
-                                            {% render_field entryForm.last_name 'tabindex=3' %}
-                                            <!-- Staff Last Name Field -->
-                                        </td>
-                                        <td>&nbsp;</td>
-                                        <td>
-                                            <!-- If Last Name field has errors show errors -->
-                                            {% for error in entryForm.last_name.errors %}
-                                            <span class="editErr">{{ error }}</span>
-                                        {% endfor %}
-                                        </td>
+            <label>Middle Name:</label>
+            <!-- Staff Middle Name Field -->
+            <input id="id_form-0-middle_name" maxlength="50" name="form-0-middle_name" tabindex="2" type="text" class="form-control">
+            <!-- If Middle Name field has errors show errors -->
+            {% for error in entryForm.middle_name.errors %}
+            <span class="editErr">{{ error }}</span>
+            {% endfor %}
+            <br>
 
+            <label>Last Name:</label>
+            <!-- Staff Last Name Field -->
+            <input id="id_form-0-last_name" maxlength="50" name="form-0-last_name" tabindex="3" type="text" class="form-control">
+            <!-- If Last Name field has errors show errors -->
+            {% for error in entryForm.last_name.errors %}
+                <span class="editErr">{{ error }}</span>
+            {% endfor %}
+            <br>
 
-                                </tr>
-                                <tr>
-                    <td><label>UID:</label></td>
-                    <td>
-                                            {% render_field entryForm.uid 'tabindex=4' %}
-                                            <!-- Staff UID Field -->
-                                        </td>
-                                        <td>&nbsp;</td>
-                                        <td>
-                                            <!-- If UID field has errors show errors -->
-                                            {% for error in entryForm.uid.errors %}
-                                            <span class="editErr">{{ error }}</span>
-                                        {% endfor %}
-                                        </td>
+            <label>UID:</label>
+            <!-- Staff UID Field -->
+            <input id="id_form-0-uid" maxlength="100" name="form-0-uid" tabindex="4" type="text" class="form-control">
+            <!-- If UID field has errors show errors -->
+            {% for error in entryForm.uid.errors %}
+                <span class="editErr">{{ error }}</span>
+            {% endfor %}
+            <br>
 
+            <label for="address">Date of Joining:</label>
+            <!-- Staff DOJ Field -->
+            <input data-provide="datepicker" class="form-control" data-date-format="dd/mm/yyyy" id="id_form-0-doj" name="form-0-doj" type="text" tabindex="5">
+            <br>
 
-                                </tr>
-                                <tr>
-                    <td><label for="address">Date of Joining:</label></td>
-                    <td>
-                    {% render_field entryForm.doj 'tabindex=5' %}
-                    <!-- Staff DOJ Field -->
-                    </td>
-                </tr>
-                <tr>
-                    <td><label class="KLP_required">Gender:</label></td>
-                    <td>
-                    {% render_field entryForm.gender 'tabindex=6' %}
-                    <!-- Staff Gender Field -->
-                    </td>
-                    <td>
-                        <!-- If gender field has errors show errors -->
-                                        {% for error in entryForm.gender.errors %}
-                                        <span class="editErr">{{ error }}</span>
-                                    {% endfor %}
-                                    </td>
-                </tr>
-                                <tr>
-                    <td><label class="KLP_required">Mother Tongue:</label></td>
-                    <td>
-                    {% render_field entryForm.mt 'tabindex=7' %}
-                    <!-- Staff Mother Tongue  Field -->
-                    </td>
-                    <td>
-                        <!-- If Mother Tongue field has errors show errors -->
-                                        {% for error in entryForm.mt.errors %}
-                                        <span class="editErr">{{ error }}</span>
-                                    {% endfor %}
-                                    </td>
-                </tr>
-                <tr>
-                    <td><label>Qualification:</label></td>
-                    <td>
-                    {% render_field entryForm.qualification 'tabindex=8' %}
-                    <!-- Staff Qualification  Field -->
-                    </td>
-                    <td>
-                        <!-- If qualification field has errors show errors -->
-                                        {% for error in entryForm.qualification.errors %}
-                                        <span class="editErr">{{ error }}</span>
-                                    {% endfor %}
-                                    </td>
-                </tr>
-                                <tr>
-                    <td><label class="KLP_required">Staff Type:</label></td>
-                    <td>
-                    <!-- Staff type  Field -->
-                    <select name="form-0-staff_type" id="id_form-0-staff_type" tabindex=9>
-                        {% for staff_type in extra_context|displayValue:'Staff_Types' %}
-                            <option value="{{staff_type.id}}">{{staff_type.staff_type}}</option>
-                        {% endfor %}
-                    </select>
-                    <input type="hidden" name="form-0-active" id="id_form-0-active" value="2" />
-                    </td>
-                    <td>
-                        <!-- If staff type field has errors show errors -->
-                                        {% for error in entryForm.staff_type.errors %}
-                                        <span class="editErr">{{ error }}</span>
-                                    {% endfor %}
-                                    </td>
-                </tr>
-                <tr style="{% if extra_context|displayValue:'institutionType' == 'Anganwadi'%}display:none;{% endif %}">
-                    <td><label>Classes:</label></td>
-                    <td>
-                       <!-- Staff classes  Field -->
-                    <select name="form-0-student_group" id="id_form-0-student_group" multiple="multiple" tabindex=10>
+            <label class="KLP_required">Gender:</label>
+            <!-- Staff Gender Field -->
+            <select id="id_form-0-gender" name="form-0-gender" tabindex="6" class="form-control">
+                <option value="male">male</option>
+                <option value="female" selected="selected">female</option>
+            </select>
+            <!-- If gender field has errors show errors -->
+            {% for error in entryForm.gender.errors %}
+                <span class="editErr">{{ error }}</span>
+            {% endfor %}
+            <br>
+
+            <label class="KLP_required">Mother Tongue:</label>
+            <!-- Staff Mother Tongue  Field -->
+            <select class="form-control" id="id_form-0-mt" name="form-0-mt" tabindex="7">
+                <option value="1">kannada</option>
+                <option value="2">urdu</option>
+                <option value="3">tamil</option>
+                <option value="4">telugu</option>
+                <option value="5">english</option>
+                <option value="6">marathi</option>
+                <option value="7">hindi</option>
+                <option value="8">konkani</option>
+                <option value="9">sindhi</option>
+                <option value="10">other</option>
+                <option value="11">gujarathi</option>
+                <option value="12">not known</option>
+                <option value="13">multi lng</option>
+                <option value="14">nepali</option>
+                <option value="15">oriya</option>
+                <option value="16">bengali</option>
+                <option value="17">malayalam</option>
+                <option value="18">sanskrit</option>
+                <option value="19">malayalam</option>
+                <option value="20">konkani</option>
+            </select>
+            <!-- If Mother Tongue field has errors show errors -->
+            {% for error in entryForm.mt.errors %}
+                <span class="editErr">{{ error }}</span>
+            {% endfor %}
+            <br>
+
+            <label>Qualification:</label>
+            <!-- Staff Qualification  Field -->
+            <select multiple="multiple" id="id_form-0-qualification" name="form-0-qualification" tabindex="8" class="form-control">
+                <option value="1">BA</option>
+                <option value="2">B.Ed</option>
+                <option value="3">Bsc</option>
+                <option value="4">M.Ed</option>
+                <option value="5">MSc</option>
+                <option value="6">MA</option>
+                <option value="7">D.Ed</option>
+                <option value="8">L.T</option>
+                <option value="9">B.T</option>
+                <option value="10">S.V</option>
+                <option value="11">C.T</option>
+                <option value="12">S.B.T</option>
+                <option value="13">SSC</option>
+                <option value="14">SSLC</option>
+                <option value="15">II PUC</option>
+                <option value="16">J.V</option>
+                <option value="17">J.B.T</option>
+                <option value="18">Ph.D</option>
+                <option value="19">Diploma</option>
+                <option value="20">Others</option>
+                <option value="21">HSc</option>
+            </select>
+            <!-- If qualification field has errors show errors -->
+            {% for error in entryForm.qualification.errors %}
+                <span class="editErr">{{ error }}</span>
+            {% endfor %}
+            <br>
+
+            <label class="KLP_required">Staff Type:</label>
+            <!-- Staff type  Field -->
+            <select name="form-0-staff_type" id="id_form-0-staff_type" tabindex=9 class="form-control">
+                {% for staff_type in extra_context|displayValue:'Staff_Types' %}
+                    <option value="{{staff_type.id}}">{{staff_type.staff_type}}</option>
+                {% endfor %}
+            </select>
+            <input type="hidden" name="form-0-active" id="id_form-0-active" value="2" />
+            <!-- If staff type field has errors show errors -->
+            {% for error in entryForm.staff_type.errors %}
+                <span class="editErr">{{ error }}</span>
+            {% endfor %}
+            <br>
+
+            <div>
+                {% if extra_context|displayValue:'institutionType' == 'Anganwadi'%} display:none;
+                    <label>Classes:</label>
+                    <!-- Staff classes  Field -->
+                    <select name="form-0-student_group" id="id_form-0-student_group" multiple="multiple" tabindex=10 class="form-control">
                         {% for studGrup in extra_context|displayValue:'stgrps' %}
                             <option value="{{studGrup.id}}" {%if studGrup.name == 'Anganwadi Class' or studGrup.name == '0'%}selected{%endif%} >{{studGrup.name}}{% if studGrup.section != None %}{{studGrup.section}}{% endif %}</option>
                         {% endfor %}
                     </select>
-                    </td>
-                    <td>
-                        <!-- If classes field has errors show errors -->
-                                        {% for error in entryForm.student_group.errors %}
-                                        <span class="editErr">{{ error }}</span>
-                                    {% endfor %}
-                                    </td>
+                    <!-- If classes field has errors show errors -->
+                    {% for error in entryForm.student_group.errors %}
+                        <span class="editErr">{{ error }}</span>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <br>
 
-                </tr>
-
-
-                                <tr><td> &nbsp;</td></tr>
-                                <tr><td> &nbsp;</td></tr>
-                                <tr><td> &nbsp;</td></tr>
-                                <tr>
-                                    <td>
-                                        <input type="submit" name="save" id="id_save" value="Save" tabindex=11/>
-                                    </td>
-                                    <!--td>
-                                        <input type="submit" name="save_and_continue" id="id_save_and_continue" value="Save And Continue" tabindex=11/>
-                                    </td-->
-                                    <td colspan="2">
-                                    <input type="submit" name="save_and_create" id="id_save_and_create" value="Save And Create Another" tabindex=12/>
-                        </td>
-                                </tr>
-                            </table>
-                            {% endwith %}
-        </form>
-        <div id="subForm">
+            <button class="btn btn-default" type="submit" name="save" id="id_save" value="Save" tabindex=11> Save </button>
+            <button class="btn btn-default" type="submit" name="save_and_create" id="id_save_and_create" value="Save And Create Another" tabindex=12> Save And Create Another </button>
         </div>
+    {% endwith %}
+</form>
 
 <script>
 $(document).ready(function(){
@@ -204,6 +190,8 @@ $(document).ready(function(){
 
 
    });
+
+   $('.datepicker').datepicker();
 
 
    var KLP_form_submit = function(parentVal, parentId){
