@@ -404,11 +404,10 @@ class Student_StudentGroupRelation_Form(ModelForm):
 
 
 class Staff_Form(ModelForm):
-    thisyear = datetime.date.today().year
-    startyear = thisyear - 40
+
     doj = \
-        forms.DateField(widget=SelectDateWidget(years=range(startyear,
-                        thisyear + 1), attrs={'tabindex': 5}),
+        forms.DateField(widget=forms.DateInput(format='%d-%m-%Y'),
+                        input_formats=['%d-%m-%Y', '%d-%m-%y'],
                         required=False)
     active = forms.IntegerField(initial=2, widget=forms.HiddenInput)
 
