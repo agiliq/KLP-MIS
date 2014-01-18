@@ -3,7 +3,7 @@
 <div class="detailHead">
     <span class="hedText">{{extra_context|displayValue:'institutionType'}} Form</span>
 </div>
-<form action="." method="POST" enctype="multipart/form-data" class="niceform" id="institutionForm" onsubmit="return false;">{% csrf_token %}
+<form action="." method="POST" enctype="multipart/form-data" id="institutionForm" onsubmit="return false;">{% csrf_token %}
     {{form.management_form}}
     <input type="hidden" name="form-buttonType" id="id_form-buttonType" value="save" />
     <input type="hidden" id="url" value="/institution/{{institution.id}}/update/" />
@@ -13,7 +13,7 @@
         <div>
             <label class="KLP_required">Name:</label>
             <!-- Name Field -->
-            <input id="id_form-0-name" maxlength="300" name="form-0-name" tabindex="1" type="text" class="form-control">
+            <input id="id_form-0-name" maxlength="300" name="form-0-name" tabindex="1" type="text" class="form-control" value="{{institution.name}}">
             <!-- If Name field has errors show errors -->
             {% for error in entryForm.name.errors %}
                 <span class="editErr">{{ error }}</span>
