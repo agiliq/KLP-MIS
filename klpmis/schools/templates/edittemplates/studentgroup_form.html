@@ -13,7 +13,7 @@
           </div>
           <label class="KLP_required">Name:</label>
           <!-- SG Name Field -->
-          <input id="id_form-0-name" maxlength="50" name="form-0-name" tabindex="1" type="text" class="form-control">
+          <input id="id_form-0-name" maxlength="50" name="form-0-name" tabindex="1" type="text" class="form-control" value="{{studentgroup.name}}">
           <!-- If Name field has errors show errors -->
           {% for error in entryForm.name.errors %}
             <span class="editErr">{{ error }}</span>
