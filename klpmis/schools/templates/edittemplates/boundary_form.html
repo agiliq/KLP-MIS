@@ -2,8 +2,8 @@
 <div class="detailHead">
   <span class="hedText">Boundary Form</span>
 </div>
-<form action="." method="POST" enctype="multipart/form-data" id="boundaryForm" name="boundaryForm" onsubmit="return false;">{% csrf_token %}
 
+<form action="." method="POST" enctype="multipart/form-data" id="boundaryForm" name="boundaryForm" onsubmit="return false;">{% csrf_token %}
 
 <form action="." method="POST" enctype="multipart/form-data" id="institutionForm" onsubmit="return false;">{% csrf_token %}
 
@@ -17,7 +17,7 @@
           <label class="KLP_required">Name</label>
         <spanclass="leftprofile">
             <!-- Boundary Name Field -->
-            <input id="id_form-0-name" maxlength="300" name="form-0-name" tabindex="1" type="text" class="form-control">
+            <input id="id_form-0-name" maxlength="300" name="form-0-name" tabindex="1" type="text" class="form-control" value="{{boundary.name}}">
             <!-- If Name field has errors show errors -->
             {% for error in entryForm.name.errors %}
                 <span class="editErr">{{ error }}</span>
