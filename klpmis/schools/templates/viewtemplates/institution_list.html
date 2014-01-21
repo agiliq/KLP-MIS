@@ -28,40 +28,41 @@
 		{% for inst in institution_list %}
 			<span style="float:left;width:100%;color:#000;font-weight:bold;">
 				<!-- Check box to select and institution name -->
-				<input type="checkbox" name="instName" value="{{inst.id}}" /> {{inst.name}}   ({{inst.id}})
+				<input type="checkbox" name="instName" value="{{inst.id}}"/> {{inst.name}}   ({{inst.id}})
 			</span>
 		{% endfor %}
 		<!-- Display Boundaries -->
 		{% for boundary in boundary_list %}
 			<span style="float:left;width:100%;color:#000;font-weight:bold;">
 				<!-- Check box to select and Boundary name -->
-				<input type="checkbox" name="boundaryName" value="{{boundary.id}}" />  {{boundary.name}}
+				<input type="checkbox" name="boundaryName" value="{{boundary.id}}"/>  {{boundary.name}}
 
 			</span>
 		{% endfor %}
 		</div>
-		<div style="float:left;width:35%;padding:20px 5px 5px 5px;">
+		<div style="float:left;width:35%;padding:20px 10px 10px 10px;">
 			<!-- Multi Select drop down for selecting users -->
 			<span style="color:#75AD0A;font-size:12px;font-weight:bold;width:100%;text-align:center;padding:5px;">Select User</span><br/>
-			<select size="20" name="assignToUser" id="id_assignToUser" multiple="true"  >
+			<select size="20" name="assignToUser" id="id_assignToUser" multiple="true" class="form-control" style="width: 99px;" >
 				{% for dEUser in users %}
 					<option value="{{dEUser.id}}">{{dEUser.username}}</option>
 				{% endfor %}
 			</select>
 		</div>
-		<div style="float:left;width:35%;padding:20px 5px 5px 5px;">
+		<div style="float:left;width:35%;padding:20px 10px 10px 10px;">
 			<span style="color:#75AD0A;font-size:12px;font-weight:bold;width:100%;text-align:center;padding:5px;">Selected Permission</span><br/>
 			<input type="hidden" name="userPermission" value="Acess" minlength=1 /> Access <br/>
 		</div>
 		{% if not assessmentId %}
 		<div style="float:left;width:20%;padding:20px 5px 5px 5px;">
-			<span style="color:#75AD0A;font-size:12px;font-weight:bold;width:100%;text-align:center;padding:5px;">Assign assessments also</span><br/>
-			<input type="checkbox" name="assessmentPerm" value="True" minlength=1 /> Access <br/>
+			<span style="color:#75AD0A;font-size:12px;font-weight:bold;width:100%;text-align:center;padding:10px;">Assign assessments also</span><br/>
+			<input type="checkbox" name="assessmentPerm" value="True" minlength=1 class="form-control" style="width: 15px; height: 15px;" /> Access <br/>
 		</div>
 		{% endif %}
 		<div style="float:left;width:100%;padding:20px 5px 5px 5px;">
 			<input type="hidden" name="cur_Url" id="id_cur_Url" value={{url}} />
-			<input type="submit" value="Assign" name="permissions"/>
+			<button type="submit" name="permissions" class="btn btn-default" value="Assign"> Assign </button>
+
 		</div>
 	</form>
 	<script>
@@ -70,9 +71,9 @@
 			$("#id_klp_PermissionForm").submit(function(){
 				/* Post Data on Form Submit */
 				KLP_Hide_Msg();
-				NFDo('stop');
+				// NFDo('stop');
 				isValid = $("#id_klp_PermissionForm").valid();
-				NFDo('start');
+				// NFDo('start');
 				if (isValid){
 					$.post(
 						'/assign/permissions/',
@@ -86,25 +87,16 @@
 								$("#failureMsgHead").show();
 								$("#klp_fail_MsgTxt").html(data['respMsg']);
 							}
-							NFDo('stop');
-							NFDo('start');
+							// NFDo('stop');
+							// NFDo('start');
 						}
 					);
-
-				/*	$.ajax({
-						url: $("#id_cur_Url").val(),
-						success: function(data) {
-							$("#dyncData").html(data);
-							NFInit();
-						}
-
-					});*/
 				}
 			});
 		});
 		var checkAll = function(){
 			bound_cat = $("#id_BoundCat").val();
-			NFDo('stop');
+			// NFDo('stop');
 			if (bound_cat == 'circle' || bound_cat == 'cluster')
 				allCheckboxes = $('input[name=instName]:unchecked');
 			else
@@ -112,12 +104,12 @@
 			allCheckboxes.each(function(index){
 				$(this).attr("checked", "true")
 			});
-			NFDo('start');
+			// NFDo('start');
 		}
 
 		var unCheckAll = function(){
 			bound_cat = $("#id_BoundCat").val();
-			NFDo('stop');
+			// NFDo('stop');
 			if (bound_cat == 'circle' || bound_cat == 'cluster')
 				allCheckboxes = $('input[name=instName]:checked')
 			else
@@ -125,7 +117,7 @@
 			allCheckboxes.each(function(index){
 				$(this).removeAttr("checked");
 			});
-			NFDo('start');
+			// NFDo('start');
 
 		}
 	</script>
