@@ -13,125 +13,91 @@
 	<input type="hidden" id="success_status" size="15" value="{{extra_context|displayValue:'showsuccess'}}" / >
 	{{form.management_form}}
 	{% with form.forms|last as entryForm %}
-		<table>
-        		<tr>
-      	    			<td>
-      		    			<table class="tblprofile">
-      						<tr>
-      				    			<td class="rightprofile"><label class="KLP_required">Question</label></td>
-      							<td class="leftprofile">
-                            					{% render_field entryForm.name 'tabindex=1' %}
-                            					<!-- Question Name Field -->
-                        				</td>
-                        				<td>
-                        					<!-- If Name field has errors show errors -->
-                                    				{% for error in entryForm.name.errors %}
-	                                				<span class="editErr">{{ error }}</span>
-	                                			{% endfor %}
-                                    			</td>
-      						</tr>
-      						<tr>
-      				    			<td class="rightprofile">Type</td>
-      							<td class="leftprofile">
-                            					{% render_field entryForm.question_type 'tabindex=2' %}
-                            					<!-- Question type Field -->
-                        				</td>
-                        				<td>
-                        					<!-- If Question type field has errors show errors -->
-                                    				{% for error in entryForm.question_type.errors %}
-	                                				<span class="editErr">{{ error }}</span>
-	                                			{% endfor %}
-                                    			</td>
-      						</tr>
-      						<tr id="markTypMin">
-      				    			<td class="rightprofile"><label class="KLP_required">Score Min</label></td>
-      							<td class="leftprofile">
-                            					{% render_field entryForm.score_min 'tabindex=3' %}
-                            					<!-- Question score min Field -->
-                        				</td>
-                        				<td>
-                        					<!-- If score_min field has errors show errors -->
-                                    				{% for error in entryForm.score_min.errors %}
-	                                				<span class="editErr">{{ error }}</span>
-	                                			{% endfor %}
-                                    			</td>
-      						</tr>
-      						<tr id="markTypMax">
-      				    			<td class="rightprofile"><label class="KLP_required">Score Max</label></td>
-      							<td class="leftprofile">
-      								{% render_field entryForm.score_max 'tabindex=4' %}
-      								<!-- Question score max Field -->
-                        				</td>
-                        				<td>
-                        					<!-- If score_max field has errors show errors -->
-                                    				{% for error in entryForm.score_max.errors %}
-	                                				<span class="editErr">{{ error }}</span>
-	                                			{% endfor %}
-                                    			</td>
+      <div>
+          <label class="KLP_required">Question</label>
+          <!-- Question Name Field -->
+          <input id="id_form-0-name" maxlength="200" name="form-0-name" tabindex="1" type="text" class="form-control">
+          <!-- If Name field has errors show errors -->
+          {% for error in entryForm.name.errors %}
+              <span class="editErr">{{ error }}</span>
+          {% endfor %}
+          <br>
 
-      						</tr>
-      						<tr id="gradeTyp" style="display:none;">
-      				    			<td class="rightprofile"><label class="KLP_required">Grade (Eg: A,B,C)</label></td>
-      							<td class="leftprofile">
-                            					{% render_field entryForm.grade 'tabindex=3' %}
-                            					<input type="hidden" name="form-0-order" value="{{extra_context|displayValue:'order'}}"/>
-                            					<!-- Question grade Field -->
-                        				</td>
-                        				<td>
-                        					<!-- If grade field has errors show errors -->
-                                    				{% for error in entryForm.grade.errors %}
-	                                				<span class="editErr">{{ error }}</span>
-	                                			{% endfor %}
-                                    			</td>
-      						</tr>
-      						<tr id="gradeTyp">
-      				    			<td class="rightprofile"><label class="KLP_required">Order</label></td>
-      							<td class="leftprofile">
-                            					<input type="text" name="form-0-order" value="{{extra_context|displayValue:'order'}}" tabindex=4/>
-                            					<!-- Question order Field -->
-                        				</td>
-                        				<td >
-                        					<!-- If order field has errors show errors -->
-                                    				{% for error in entryForm.order.errors %}
-	                                				<span class="editErr">{{ error }}</span>
-	                                			{% endfor %}
-                                    			</td>
-      						</tr>
-							{% if extra_context|displayValue:'answerAddable' %}
-      						<tr id="gradeTyp" >
-      				    			<td class="rightprofile"><label class="KLP_required">Answer </label></td>
-      							<td class="leftprofile" >Assessment is already started .<br/>So please enter the default answer AB/UK<br/>
-                            				<input type="text" value="{{extra_context|displayValue:'defaultanswer'}}" name="defaultanswer" class="aboruk">
-										</td><td>
-                            					<!-- Default answer Field -->
-												{% for error in entryForm.defaultanswer.errors %}
-	                                				<span class="editErr">{{ error }}</span>
-	                                			{% endfor %}
-                        				</td>
+          <label> Type </label>
+          <select id="id_form-0-question_type" name="form-0-question_type" tabindex="2" class="form-control">
+              <option value="1">Marks</option>
+              <option value="2" selected="selected">Grade</option>
+          </select>
+          <!-- If Question type field has errors show errors -->
+          {% for error in entryForm.question_type.errors %}
+            <span class="editErr">{{ error }}</span>
+          {% endfor %}
+          <br>
 
-      						</tr>
-							{% endif %}
-      						<tr><td> &nbsp;</td><td> &nbsp;</td><td> &nbsp;</td></tr>
-                    				<tr><td> &nbsp;</td><td> &nbsp;</td><td> &nbsp;</td></tr>
-                    				<tr><td> &nbsp;</td><td> &nbsp;</td><td> &nbsp;</td></tr>
+          <div id="markTypMin" style="{% if question.question_type == 2 %}display:none;{% endif %}">
+              <label class="KLP_required">Score Min</label>
+              <!-- Question score min Field -->
+              <input id="id_form-0-score_min" name="form-0-score_min" tabindex="3" type="text" class="form-control">
 
-      			    			<tr>
-      				    			<td>
-                                    				<input type="submit" name="save" id="id_save" value="Save" tabindex=5  />
-                                    			</td>
-                                    			<!--td>
-                                    				<input type="submit" name="save_and_continue" id="id_save_and_continue" value="Save And Continue" tabindex=6 />
-                                    			</td-->
-                                    			<td>
-                    	    					<input type="submit" name="save_and_create" id="id_save_and_create" value="Save And Create Another" tabindex=7 />
-      				    			</td>
-      						</tr>
-      					</table>
-      				</td>
-      			</tr>
-    		</table>
-    	{% endwith %}
+              <!-- If score_min field has errors show errors -->
+                {% for error in entryForm.score_min.errors %}
+                    <span class="editErr">{{ error }}</span>
+                {% endfor %}
+          </div>
+
+          <div id="markTypMax" style="{% if question.question_type == 2 %}display:none;{% endif %}">
+              <!-- Question score max Field -->
+              <label class="KLP_required">Score Max</label>
+              <!-- If score_max field has errors show errors -->
+              <input id="id_form-0-score_max" name="form-0-score_max" tabindex="4" type="text" class="form-control">
+              <!-- If score_max field has errors show errors -->
+              {% for error in entryForm.score_max.errors %}
+                  <span class="editErr">{{ error }}</span>
+              {% endfor %}
+          </div>
+
+          <div id="gradeTyp" style="{% if question.question_type == 1 %}display:none;{% endif %}">
+              <label class="KLP_required">Grade (Eg: A,B,C)</label>
+              <!-- Question grade Field -->
+              <input id="id_form-0-grade" name="form-0-grade" tabindex="3" type="text" class="form-control">
+              <!-- If grade field has errors show errors -->
+              {% for error in entryForm.grade.errors %}
+                  <span class="editErr">{{ error }}</span>
+              {% endfor %}
+          </div>
+          <br>
+
+          <label class="KLP_required">Order:</label>
+          <!-- Question order Field -->
+          <input id="id_form-0-order" name="form-0-order" tabindex="5" type="text" class="form-control">
+          <!-- If order field has errors show errors -->
+          {% for error in entryForm.order.errors %}
+              <span class="editErr">{{ error }}</span>
+          {% endfor %}
+          <br>
+
+          <div id="gradeTyp">
+              {% if extra_context|displayValue:'answerAddable'%};
+                  <label class="KLP_required">Answer </label>
+                  <!-- Default answer Field -->
+                  Assessment is already started.<br>  So please enter the default answer AB/UK
+                  <input type="text" value="{{extra_context|displayValue:'defaultanswer'}}" name="defaultanswer" class="form-control">
+                  {% for error in entryForm.defaultanswer.errors %}
+                      <span class="editErr">{{ error }}</span>
+                  {% endfor %}
+              {% endif %}
+              <br>
+          </div>
+          <br>
+
+          <button class="btn btn-default type="submit" name="save" id="id_save" value="Save" tabindex=5"> Save </button>
+          <button class="btn btn-default type="submit" name="save_and_create" id="id_save_and_create" value="Save And Create Another" tabindex=7">Save And Create Another</button>
+      </div>
+  {% endwith %}
 </form>
+
+
+
 <script>
   $(document).ready(function(){
 
