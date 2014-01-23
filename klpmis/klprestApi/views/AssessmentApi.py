@@ -74,23 +74,23 @@ def AssessmentCreate(request, referKey):
     endYear = int(now.strftime('%Y'))
     if currentMont > 4:
         endYear = endYear + 1
-        extra_context_dict = {'buttonType': buttonType,
-                              'referKey': referKey,
-                              'end_date': 30,
-                              'endYear': endYear,
-                              'endMonth': 'APRIL'}
-        t_responder = TemplateResponder(template_dir='viewtemplates',
-                                        template_object_name='assessment',
-                                        extra_context=extra_context_dict)
+    extra_context_dict = {'buttonType': buttonType,
+                          'referKey': referKey,
+                          'end_date': 30,
+                          'endYear': endYear,
+                          'endMonth': 'APRIL'}
+    t_responder = TemplateResponder(template_dir='viewtemplates',
+                                    template_object_name='assessment',
+                                    extra_context=extra_context_dict)
 
-        assessment = KLP_Assessment(queryset=Assessment.objects.filter(pk=0),
-                                    permitted_methods=('GET', 'POST'),
-                                    responder=t_responder,
-                                    receiver = XMLReceiver())
-        response = assessment.responder.create_form(request,
-                                                    form_class=Assessment_Form)
+    assessment = KLP_Assessment(queryset=Assessment.objects.filter(pk=0),
+                                permitted_methods=('GET', 'POST'),
+                                responder=t_responder,
+                                receiver = XMLReceiver())
+    response = assessment.responder.create_form(request,
+                                                form_class=Assessment_Form)
 
-        return HttpResponse(response)
+    return HttpResponse(response)
 
 
 def AssessmentLookupCreate(request, referKey):
