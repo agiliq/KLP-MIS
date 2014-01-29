@@ -215,30 +215,6 @@ function Pagination(thisObj){
 	return false;
 }
 
-
-function KLP_deform(id)
-{
-    var aid = document.getElementById("asId").value;
-    var frm = "id_Student_"+id;
-    $.ajax({
-            type: "GET",
-            url:"/klp/getanswers/",
-            data: "aid="+aid,
-            success:function(data) {
-                if(data.match(/true/g)){
-                    $('#refresh').val(1);
-                }
-            }
-    });
-    if (parseInt($('#refresh').val()) < 1){
-        return KLP_validateScript(frm);
-    } else {
-        $("#KLP_overlay").hide();
-            $('#KLP_load').hide();
-            alert('Please reload page');
-            return false;
-    }
-}
 </script>
 
 
