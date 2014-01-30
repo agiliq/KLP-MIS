@@ -5,11 +5,11 @@
 		<span class="hedText">Student Details</span>
 	</div>
 		<div class="KLP_lef_Div">
-			<table cellspacing="0" cellpadding="0" border="1" id="ans_Student_Detail">
+			<table class="table table-bordered" cellspacing="0" cellpadding="0" border="1" id="ans_Student_Detail">
 	    			<tr class="KLP_txt_cen">
 	    				<td class="KLP_Ans_Fix">
 	    					<div class="KLP_Fix_Div">
-		    					<table>
+		    					<table class="table table-bordered">
 		    						<tr>
 
 					    				<td class="KLP_td_width">S.Id</td>
@@ -28,7 +28,7 @@
 	    				<tr class="KLP_txt_cen">
 	    					<td class="KLP_Ans_Fix">
 	    						<div class="KLP_Fix_Div">
-		    						<table>
+		    						<table class="table table-bordered">
 		    							<tr>
 		    								{% with childDict|displayValue:i as cDic %}
 										<td class="KLP_td_width">{{cDic|displayValue:'studId'}}</td>
@@ -48,11 +48,11 @@
 
 		</div>
 		<div class="KLP_Scroll_Div">
-			<table cellspacing="0" cellpadding="0" border="1" width="100%" id="id_ans_data_point">
+			<table cellspacing="0" cellpadding="0" border="1" width="100%" id="id_ans_data_point" class="table table-bordered">
 	     			<tr>
 	     				<td class="KLP_Ans_Fix">
 	     					<div class="KLP_Fix_Div">
-		     					<table>
+		     					<table class="table table-bordered">
 		     						<!-- Question names row -->
 		     						<tr>
 									{% if qNamesList %}
@@ -80,7 +80,7 @@
 									<input type="hidden" name="assessmentId" value="{{assessment_id}}"/>
 									<input type="hidden" name="student" value="{{i}}"/>
 									<input type="hidden" name="formcounter" id="formcounter" value="{{forloop.counter}}"/>
-									<table>
+									<table class="table table-bordered">
 										<tr>
 										        <!-- Repeat Question -->
 											{% for qId in qIdList %}
@@ -98,22 +98,20 @@
 														<input type="hidden" class="ansIds" name="ansId_{{datadicKey}}"
 																		   id="id_ansId_{{datadicKey}}"
 																						   value="{{qDict|displayValue:'ansId'}}" size="10">
-												<input type="text"
-									   					       name="student_{{datadicKey}}"
-									   					       id="id_student_{{datadicKey}}"
-									   					       tabindex="1"
-									   					       value="{%if qDict|displayValue:'shVal' %}{{qDict|displayValue:'ansVal'}}{% endif %}"
-
-									   					       size="3"
-									   					       {% if qDict|displayValue:'qType' == 2 %}isinGrades="{{qDict|displayValue:'ansIn'}}"{% else %}min="{{qDict|displayValue:'scMin'}}" max="{{qDict|displayValue:'scMax'}}" {% endif %}
-									   					       class="required {% if qDict|displayValue:'qType' == 1 %}number{%endif%}"
-									   					       {% if qDict|displayValue:'dE'%}dE="true" sE="true"{% endif %}
+												<input type="text" name="student_{{datadicKey}}" id="id_student_{{datadicKey}}" tabindex="1" value="{%if qDict|displayValue:'shVal' %}{{qDict|displayValue:'ansVal'}}{% endif %}" size="3"
+												{% if qDict|displayValue:'qType' == 2 %}isinGrades="{{qDict|displayValue:'ansIn'}}"
+												{% else %}
+												min="{{qDict|displayValue:'scMin'}}" max="{{qDict|displayValue:'scMax'}}"
+												{% endif %}
+					   					       class="required {% if qDict|displayValue:'qType' == 1 %}number{%endif%}"
+					   					       {% if qDict|displayValue:'dE'%}dE="true" sE="true"{% endif %}
 									   					       />
 
 									   			{% endif %}
 			            							</td>
 			            							{% if forloop.last %}
-			            								<td class="KLP_td_height"> <input id="id_Student_{{i}}_submit" type="submit" tabindex="1"   value="submit"  {% if not qDict|displayValue:'iBox' %}disabled{%endif%}/>
+			            								<td class="KLP_td_height">
+			            								<input id="id_Student_{{i}}_submit" type="submit" tabindex="1"   value="submit"  {% if not qDict|displayValue:'iBox' %}disabled{%endif%}/>
 
 	            								{% if not qDict|displayValue:'ansId' == None %}
 
@@ -171,7 +169,7 @@
 </div>
 <span id ="list_url" style="display:none;" value = "{{url}}"></span>
 <div class="KLP_DE_Submit">
-	<span class="KLP_SpanButton"  id="id_ans_global_submit">Submit</span>
+	<button class="btn btn-default" id="id_ans_global_submit"> Submit </button>
 	{% if not group_typ == 'Center' %}
 	<span class="KLP_DE_AdStudent">
 		<a href="/studentgroup/{{studentgroup_id}}/student/creator/?keepThis=True&map_Student=1&assessment_id={{assessment_id}}&TB_iframe=True&height=400&width=800" title="Create New Student to Map" class="thickbox KLP_Button"> Add Student </a>
