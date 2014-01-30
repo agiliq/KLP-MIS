@@ -5,6 +5,7 @@ This file contains user defined template tags to used
 templates to render values
 """
 from django import template
+from schools.models import Answer
 
 register = template.Library()
 
@@ -105,3 +106,13 @@ def make_widget(field, attributes):
                 attr[key] = value
 
     return field.as_widget(attrs=attr)
+
+
+@register.filter(name="splitstr")
+def splitstr(value, key):
+    val1 = value.split('_')
+    ansobj = Answer.objects.filter(
+        object_id=val1[0],
+        question__assessment__id=key['aid'], user1__id=key['luser'])
+    if ansobj:
+        return {'objectval': val1[0], 'useransobj': ansobj}
