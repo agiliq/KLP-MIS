@@ -81,7 +81,6 @@ class KLP_Delete(Resource):
         }
 
         # Checking user Permissions
-
         KLP_user_Perm(request.user,
                       modelDict[model_name1.lower()]._meta.module_name,
                       'Delete')
@@ -102,19 +101,9 @@ class KLP_Delete(Resource):
                     ' has child objects.So can not delete it.\
                         First delete the child object,then try to delete it'
             else:
-                q1 = """ insert into schools_studentgroup_0(id,\
-                        institution_id, name, section, active, group_type)
-                        select id,institution_id, name, sectionagiliq
-
-            group_type from schools_studentgroup_2 where \
-            id = %s """ % (referKey)
-
-                q2 = """ delete from schools_studentgroup_2
-                    where id = %s """ % (referKey)
                 obj = modelDict[model_name1.lower()].objects.get(pk=referKey)
                 name = obj.name
-                cursor.execute(q1)
-                cursor.execute(q2)
+                obj.delete()
                 message = name + ' ' + msg
         else:
             print " This is not class or Center type "
