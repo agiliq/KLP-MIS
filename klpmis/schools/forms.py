@@ -312,34 +312,34 @@ class Child_Form(Relations_Form):
                 if relationobj:
                     relationobj.delete()
 
-            if self.cleaned_data['ModelName'] == 'student' and childpostid is None:
-                  # Create Student Object With as foreign key
+        if self.cleaned_data['ModelName'] == 'student' and childpostid is None:
+              # Create Student Object With as foreign key
 
-                studentForm = modelformset_factory(Student, form=Student_Form)
-                relationdata['form-0-other_student_id'] = \
-                    self.cleaned_data['otherId']
-                relationdata['form-0-child'] = childObj.id
-                try:
-                    studObj = childObj.getStudent()
-                    relationdata['form-0-id'] = studObj.id
-                    # studObj.other_student_id = \
-                    # self.cleaned_data['otherId']
-                except:
-                    pass
-                Studform = studentForm(relationdata, relationdatarequest)
-                studObj = Studform.save()
+            studentForm = modelformset_factory(Student, form=Student_Form)
+            relationdata['form-0-other_student_id'] = \
+                self.cleaned_data['otherId']
+            relationdata['form-0-child'] = childObj.id
+            try:
+                studObj = childObj.getStudent()
+                relationdata['form-0-id'] = studObj.id
+                # studObj.other_student_id = \
+                # self.cleaned_data['otherId']
+            except:
+                pass
+            Studform = studentForm(relationdata, relationdatarequest)
+            studObj = Studform.save()
 
-                # Create relation ship with SG for current academic year.
-                studentgroupForm = \
-                    modelformset_factory(Student_StudentGroupRelation,
-                                         form=Student_StudentGroupRelation_Form)
-                relationdata['form-0-student_group'] =\
-                    relationdatarequest.POST.get('studentgroup')
-                relationdata['form-0-student'] = studObj[0].id
-                relationdata['form-0-academic'] = current_academic().id
-                studgrprelation = studentgroupForm(relationdata,
-                                                   relationdatarequest)
-                studgrprelation.save()
+            # Create relation ship with SG for current academic year.
+            studentgroupForm = \
+                modelformset_factory(Student_StudentGroupRelation,
+                                     form=Student_StudentGroupRelation_Form)
+            relationdata['form-0-student_group'] =\
+                relationdatarequest.POST.get('studentgroup')
+            relationdata['form-0-student'] = studObj[0].id
+            relationdata['form-0-academic'] = current_academic().id
+            studgrprelation = studentgroupForm(relationdata,
+                                               relationdatarequest)
+            studgrprelation.save()
         return self.instance
 
     class Meta:
