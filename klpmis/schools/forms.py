@@ -307,7 +307,7 @@ class Child_Form(Relations_Form):
                     relationdata['form-INITIAL_FORMS'] = 0
                     relationdatarequest.POST = relationdata
                     rform = relationForm(relationdata, relationdatarequest)
-                    rform.save()
+                rform.save()
             else:
                 if relationobj:
                     relationobj.delete()
