@@ -9,6 +9,7 @@
     {% crispy form helper %}
     <input type="hidden" name="url" value="/boundary/creator/" id="url" />
     <input type="hidden" name="redUrl" value="{{redUrl}}" id="redUrl" />
+    <input type="hidden" name="form-buttonType" id="id_form-buttonType" value="save" />
     <input type="hidden" id="boundary_id" size="15" value="{{extra_context|displayValue:'prevousId'}}" / >
     <input type="hidden" id="success_status" size="15" value="{{extra_context|displayValue:'showsuccess'}}" / >
     <div class="form-actions">
