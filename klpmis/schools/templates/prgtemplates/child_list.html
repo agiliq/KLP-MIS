@@ -113,7 +113,8 @@
 			            								<td class="KLP_td_height">
 			            								<input id="id_Student_{{i}}_submit" type="submit" tabindex="1"   value="submit"  {% if not qDict|displayValue:'iBox' %}disabled{%endif%}/>
 
-	            								{% if not qDict|displayValue:'ansId' == None %}
+	            								{#
+												{% if not qDict|displayValue:'ansId' == None %}
 
 		            								<td><span class="KLP_Sub">
 		            								{% if  qDict|displayValue:'iBox' %}
@@ -127,6 +128,7 @@
             								        {% endif %}
             								        </span></td>
 	            								{% endif %}
+												#}
 
 			            								<script>
 													$().ready(function() {
