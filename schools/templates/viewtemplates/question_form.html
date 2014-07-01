@@ -1,0 +1,191 @@
+{% load template_tags %}
+<div class="detailHead">
+    <span class="hedText">Question Form</span>
+</div>
+<form action="." method="POST" enctype="multipart/form-data" class="niceform" id="questionForm" name="questionForm" onsubmit="return false;">{% csrf_token %}
+	<input type="hidden" name="url" value="/assessment/question/{{extra_context|displayValue:'referKey'}}/creator/" id="url" />
+	<input type="hidden" name="form-buttonType" id="id_form-buttonType" value="save" />
+	<input type="hidden" name="form-0-active" id="id_form-0-active" value="2"/>
+	<input type="hidden" name="form-0-double_entry" id="id_form-0-double_entry" value="True"/>
+	<input type="hidden" name="form-0-required" id="id_form-0-required" value="True"/>
+	<input type="hidden" name="form-0-assessment" id="id_form-0-assessment" value="{{extra_context|displayValue:'referKey'}}"/>
+	<input type="hidden" id="question_id" size="15" value="{{extra_context|displayValue:'prevousId'}}" / >
+	<input type="hidden" id="success_status" size="15" value="{{extra_context|displayValue:'showsuccess'}}" / >
+	{{form.management_form}}
+	{% with form.forms|last as entryForm %}
+      <div>
+          <label class="KLP_required">Question</label>
+          <!-- Question Name Field -->
+          <input id="id_form-0-name" maxlength="200" name="form-0-name" tabindex="1" type="text" class="form-control">
+          <!-- If Name field has errors show errors -->
+          {% for error in entryForm.name.errors %}
+              <span class="editErr">{{ error }}</span>
+          {% endfor %}
+          <br>
+
+          <label> Type </label>
+          <select id="id_form-0-question_type" name="form-0-question_type" tabindex="2" class="form-control">
+              <option value="1">Marks</option>
+              <option value="2" selected="selected">Grade</option>
+          </select>
+          <!-- If Question type field has errors show errors -->
+          {% for error in entryForm.question_type.errors %}
+            <span class="editErr">{{ error }}</span>
+          {% endfor %}
+          <br>
+
+          <div id="markTypMin" style="{% if question.question_type == 2 %}display:none;{% endif %}">
+              <label class="KLP_required">Score Min</label>
+              <!-- Question score min Field -->
+              <input id="id_form-0-score_min" name="form-0-score_min" tabindex="3" type="text" class="form-control">
+
+              <!-- If score_min field has errors show errors -->
+                {% for error in entryForm.score_min.errors %}
+                    <span class="editErr">{{ error }}</span>
+                {% endfor %}
+          </div>
+
+          <div id="markTypMax" style="{% if question.question_type == 2 %}display:none;{% endif %}">
+              <!-- Question score max Field -->
+              <label class="KLP_required">Score Max</label>
+              <!-- If score_max field has errors show errors -->
+              <input id="id_form-0-score_max" name="form-0-score_max" tabindex="4" type="text" class="form-control">
+              <!-- If score_max field has errors show errors -->
+              {% for error in entryForm.score_max.errors %}
+                  <span class="editErr">{{ error }}</span>
+              {% endfor %}
+          </div>
+
+          <div id="gradeTyp" style="{% if question.question_type == 1 %}display:none;{% endif %}">
+              <label class="KLP_required">Grade (Eg: A,B,C)</label>
+              <!-- Question grade Field -->
+              <input id="id_form-0-grade" name="form-0-grade" tabindex="3" type="text" class="form-control">
+              <!-- If grade field has errors show errors -->
+              {% for error in entryForm.grade.errors %}
+                  <span class="editErr">{{ error }}</span>
+              {% endfor %}
+          </div>
+          <br>
+
+          <label class="KLP_required">Order:</label>
+          <!-- Question order Field -->
+          <input id="id_form-0-order" name="form-0-order" tabindex="5" type="text" class="form-control">
+          <!-- If order field has errors show errors -->
+          {% for error in entryForm.order.errors %}
+              <span class="editErr">{{ error }}</span>
+          {% endfor %}
+          <br>
+
+          <div id="gradeTyp">
+              {% if extra_context|displayValue:'answerAddable'%};
+                  <label class="KLP_required">Answer </label>
+                  <!-- Default answer Field -->
+                  Assessment is already started.<br>  So please enter the default answer AB/UK
+                  <input type="text" value="{{extra_context|displayValue:'defaultanswer'}}" name="defaultanswer" class="form-control">
+                  {% for error in entryForm.defaultanswer.errors %}
+                      <span class="editErr">{{ error }}</span>
+                  {% endfor %}
+              {% endif %}
+              <br>
+          </div>
+          <br>
+
+          <button class="btn btn-default type="submit" name="save" id="id_save" value="Save" tabindex=5"> Save </button>
+          <button class="btn btn-default type="submit" name="save_and_create" id="id_save_and_create" value="Save And Create Another" tabindex=7">Save And Create Another</button>
+      </div>
+  {% endwith %}
+</form>
+
+
+
+<script>
+  $(document).ready(function(){
+
+   var qType=  $("#id_form-0-question_type").val();
+
+   if (qType == '2'){
+   	$("#markTypMin").hide();
+   	$("#markTypMax").hide();
+   	$("#gradeTyp").show();
+   	$('#gradeTyp').focus();
+
+   }
+
+   $("#id_form-0-question_type").change(function(){
+   	/* If Value is change in question type field hide and show score min, score max and grade fields based on value */
+   	quesType = $("#id_form-0-question_type").val();
+   	if (quesType == '2'){
+   		/* If type 2 (grade) hide score min and max, show grade field */
+   		$("#markTypMin").hide();
+   		$("#markTypMax").hide();
+   		$("#gradeTyp").show();
+   		$('#gradeTyp').focus();
+
+   	}
+   	else{
+   		/* If type 1 (marks) show score min and max, hide grade field */
+   		$("#markTypMin").show();
+   		$("#markTypMax").show();
+   		$("#gradeTyp").hide();
+   		$('#markTypMin').focus();
+   	}
+   });
+
+
+   $("#id_save").click(function(){
+   	/* Clicking on save button hide all prv msgs and call form submit and pass button type is save */
+   	KLP_Hide_Msg();
+   	parentVal = $("#id_form-0-assessment").val();
+   	$("#id_form-buttonType").val('save');
+   	KLP_form_submit(parentVal);
+
+   });
+
+   $("#id_save_and_continue").click(function(){
+   	/* Clicking on save and continue button hide all prv msgs and call form submit and pass button type is save and continue */
+   	KLP_Hide_Msg();
+   	$("#id_form-buttonType").val('save and continue');
+   	parentVal = $("#id_form-0-assessment").val();
+   	KLP_form_submit(parentVal);
+   });
+
+   $("#id_save_and_create").click(function(){
+   	/* Clicking on save and add another button hide all prv msgs and call form submit and pass button type is save and add another */
+   	KLP_Hide_Msg();
+   	parentVal = $("#id_form-0-assessment").val();
+   	$("#id_form-buttonType").val('save and add another');
+   	KLP_form_submit(parentVal, 'id_form-0-assessment');
+
+
+   });
+
+
+   var KLP_form_submit = function(parentVal, parentId){
+   	/* post data using post method */
+   	$.post(
+        	$('#url').val(),
+        	$("#questionForm").serialize(),
+                function(data){
+                    /* Get Response */
+                    $("#dyncData").html(data);
+                    // NFInit();
+                    $('input:visible:enabled:first').focus();
+                    var successStatus = $("#success_status").val();
+                    if (successStatus == 'True'){
+                    	/* If It success show success msg and create new node in tree */
+                    	$("#successMsgHead").show();
+   		    	$("#klp_MsgTxt").html("Question Created Successfully")
+
+                    	if (parentId != null)
+                    		$("#"+parentId).val(parentVal);
+                    	ObjId='#assessment_'+parentVal
+            	    	Obj=$(ObjId)
+                    	KLP_Create_Node(Obj,'question');
+                    }
+               }
+           );
+   }
+
+});
+</script>
+

@@ -1,0 +1,89 @@
+{% load template_tags %}
+{% if  extra_context|displayValue:'replaceTrue'%}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>{{title}}</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.js"></script>
+{# <script language="javascript" type="text/javascript" src="{{ STATIC_URL }}js/niceforms.js"></script> #}
+<script type="text/javascript" src="{{ STATIC_URL }}js/thickbox.js" charset="utf-8"></script>
+
+
+<link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/thickbox.css" charset="utf-8"/>
+<link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/form.css" />
+<link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/style.css" />
+</head>
+
+<body>
+<div id="container">
+
+{% if entry == "Add" %}
+<fieldset>
+    <legend>{{legend}}</legend>
+{% else %}
+<div class="tablebg">
+<div id="popData">
+{% endif %}
+{% endif %}
+<form action="." method="POST" enctype="multipart/form-data" class="form-control" name="catForm" id="catForm" onsubmit="return false;">{% csrf_token %}
+	<input type="hidden" name="form-buttonType" id="id_form-buttonType" value="create" />
+	<input type="hidden" id="success_status" size="15" value="{{extra_context|displayValue:'showsuccess'}}" />
+	<input type="hidden" id="replaceTrue" name="replaceTrue" size="15" value="True" / >
+	{{form.management_form}}
+	{% with form.forms|last as entryForm %}
+  <div>
+
+      		                <span class="rightprofile"><label class="KLP_required">{% if extra_context|displayValue:'category_type' == '1'%}Institution{% else %}Anganwadi{% endif %} Category</label></span>
+      		                <span class="leftprofile">
+      		                    <!-- Category Name Field -->
+                              <input type="hidden" name="form-0-category_type" value="{{extra_context|displayValue:'category_type'}}" class="form-control"/>
+                              <input id="id_form-0-name" maxlength="50" name="form-0-name" tabindex="1" type="text" class="form-control">
+
+      		                </span>
+      		                <span>
+      		                	<!-- If Name field has errors show errors -->
+                                	{% for error in entryForm.name.errors %}
+	                            		<span class="editErr">{{ error }}</span>
+	                           	{% endfor %}
+                                </span>
+
+
+      					    <span class="rightprofile">
+                    		    <input type="submit" value="Add {% if extra_context|displayValue:'category_type' == '1'%}Institution{% else %}Anganwadi{% endif %} Category" id="#sub_load" tabindex=2  class="form-control"/>
+      				        </span>
+      				    </div>
+
+        {% endwith %}
+</form>
+<script>
+	$(document).ready(function(){
+		setTimeout(function(){
+        		$('input:visible:enabled:first').focus();
+    		},200);
+		$("#catForm").submit(function(){
+			/* Post data and get reponse on form submit */
+   			newlyAdded = $("#id_form-0-name").val();
+   			$.post(
+        			'/institution-category/creator/',
+        			$("#catForm").serialize(),
+                		function(data){
+                			/* Get Reponse */
+                			$("#popData").html(data);
+                			// NFInit();
+                    			$('input:visible:enabled:first').focus();
+                    			var successStatus = $("#success_status").val();
+                    			if (successStatus == 'True'){
+                    				idVal = $("#obj_id").val();
+                    				$("#id_form-0-cat", window.parent.document).append("<option value="+idVal+">"+newlyAdded+"</option>");
+                    				window.parent.tb_remove();
+                    			}
+               			}
+           		);
+       		});
+	});
+</script>
+</div>
+</div>
+</body>
+</html>

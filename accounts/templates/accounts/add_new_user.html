@@ -1,0 +1,47 @@
+{% extends "index.html" %}
+{% load i18n %}
+{% block leftpart%}{% endblock %}
+{% block midpart %}
+    <form action="" method="post">{% csrf_token %}
+        <div style="padding-top: 60px;">
+        <span class="hedText"> Add New User </span>
+        <br>
+
+        <label for="id_old_password" class="KLP_required">{% trans 'Username:' %}</label>
+        <input id="id_username" maxlength="30" name="username" type="text" class="form-control" style="width: 300px;">
+        {% for error in form.username.errors %}
+            <span class="editErr">{{ error }}</span>
+        {% endfor %}
+        <br>
+
+        <label for="id_new_password1" class="KLP_required" >{% trans 'Password:' %}</label>
+        <input id="id_password1" name="password1" type="password" class="form-control" style="width: 300px;">
+        {% for error in form.password1.errors %}
+            <span class="editErr">{{ error }}</span>
+        {% endfor %}
+        <br>
+
+        <label for="id_new_password2" class="KLP_required">{% trans 'Password (again):' %}</label>
+        <input id="id_password2" name="password2" type="password" class="form-control" style="width: 300px;">
+        {% for error in form.password2.errors %}
+            <span class="editErr">{{ error }}</span>
+        {% endfor %}
+        <br>
+
+        <label for="id_new_password2" class="KLP_required">{% trans 'Groups :' %}</label>
+        <select multiple="multiple" id="id_groups" name="groups" class="form-control" style="width: 300px;">
+            <option value="1">Data Entry Executive</option>
+        </select>
+        {% for error in form.groups.errors %}
+            <span class="editErr">{{ error }}</span>
+        {% endfor %}
+        <br>
+
+        <button class="btn btn-default" name="form.button.PROCEED" type="submit"> {% trans 'Add User' %} </button>
+        <br>
+        <span class="editErr">Field marked with <span>*</span> are mandatory</span>
+        <a href="{% if user.is_superuser %}/home/ {% else %}/home/?respType=userpermissions {% endif %}"> << Click Here to go Back </a>
+
+    </form>
+{% endblock %}
+
