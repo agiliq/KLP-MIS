@@ -3,3 +3,6 @@
 *.csv
 *.s*
 *.log
+
+#collected_static
+klpmis/collected_static/
