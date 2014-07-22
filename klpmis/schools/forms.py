@@ -142,6 +142,14 @@ class Boundary_Form(ModelForm):
             'boundary_type': forms.HiddenInput()
         }
 
+    def save(self, commit=True):
+        boundary = super(Boundary_Form, self).save(commit=False)
+        if not self.cleaned_data.get('parent'):
+            boundary.parent = Boundary.objects.get(id=1)
+        if commit:
+            boundary.save()
+        return boundary
+
 
 class BoundaryFormHelper(FormHelper):
     def __init__(self, *args, **kwargs):
