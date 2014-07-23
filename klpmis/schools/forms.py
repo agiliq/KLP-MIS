@@ -150,6 +150,20 @@ class Boundary_Form(ModelForm):
             boundary.save()
         return boundary
 
+    def clean(self):
+        try:
+            # Check if there is any boundary already exists with same parent
+            parent = self.cleaned_data.get('parent')
+            name = self.cleaned_data.get('name')
+            if parent == None:
+                parent = Boundary.objects.get(id=1)
+            boundary = Boundary.objects.get(name=name, parent=parent)
+            raise ValidationError("Boundary already exists")
+        except Boundary.DoesNotExist:
+            return self.cleaned_data
+        except Boundary.MultipleObjectsReturned:
+            return ValidationError("Boundary with name exists")
+
 
 class BoundaryFormHelper(FormHelper):
     def __init__(self, *args, **kwargs):
