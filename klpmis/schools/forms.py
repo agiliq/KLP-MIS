@@ -429,7 +429,8 @@ class Staff_Form(ModelForm):
 
     doj = \
         forms.DateField(widget=forms.DateInput(format='%d-%m-%Y'),
-                        input_formats=['%d-%m-%Y', '%d-%m-%y'],
+                        input_formats=['%d-%m-%Y', '%d-%m-%y',
+                            '%d/%m/%Y', '%d/%m/%y'],
                         required=False)
     active = forms.IntegerField(initial=2, widget=forms.HiddenInput)
 
