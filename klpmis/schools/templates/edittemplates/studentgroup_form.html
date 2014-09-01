@@ -20,7 +20,7 @@
           {% endfor %}
           <br>
 
-          <span style="{% if extra_context|displayValue:'group_typ'|lower == 'center' and extra_context|displayValue:'sch_typ'|lower == 'circle'%} display:none; {% endif %} ">
+          <span style="{% if extra_context|displayValue:'group_type'|lower == 'center' and extra_context|displayValue:'sch_typ'|lower == 'circle'%} display:none; {% endif %}">
               <label for="address">Section:</label>
               <!-- SG section Field -->
               <select id="id_form-0-section" name="form-0-section" tabindex="2" class="form-control">
