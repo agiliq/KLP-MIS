@@ -15,7 +15,8 @@ IGNORABLE_404_ENDS = ('.css', '.html', 'favicon.ico')
 ADMINS = (('Sree', 'sree@mahiti.org'),
           ('RamaKrishna', 'ramakrishna.marouthu@mahiti.org'),
           ('Shivangi', 'shivangi@klp.org.in'),
-          ('Megha', 'megha@klp.org.in'))
+          ('Megha', 'megha@klp.org.in'),
+          ('Dev', 'dev@klp.org.in'))
           # ('Your Name', 'your_email@domain.com'),
 
 MANAGERS = ADMINS
@@ -93,6 +94,8 @@ STATICFILES_DIRS = (
     Path(PROJECT_ROOT, 'static_media'),
 )
 
+STATIC_ROOT = Path(PROJECT_ROOT, 'collected_static')
+
 # List of callables that know how to import templates from various sources.
 
 TEMPLATE_LOADERS = (
@@ -137,7 +140,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.admin',
     'schools',
-#   'object_permissions',
+#    'object_permissions',
     'fullhistory',
     'accounts',
     'crispy_forms',

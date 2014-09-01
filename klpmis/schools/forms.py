@@ -142,6 +142,28 @@ class Boundary_Form(ModelForm):
             'boundary_type': forms.HiddenInput()
         }
 
+    def save(self, commit=True):
+        boundary = super(Boundary_Form, self).save(commit=False)
+        if not self.cleaned_data.get('parent'):
+            boundary.parent = Boundary.objects.get(id=1)
+        if commit:
+            boundary.save()
+        return boundary
+
+    def clean(self):
+        try:
+            # Check if there is any boundary already exists with same parent
+            parent = self.cleaned_data.get('parent')
+            name = self.cleaned_data.get('name')
+            if parent == None:
+                parent = Boundary.objects.get(id=1)
+            boundary = Boundary.objects.get(name=name, parent=parent)
+            raise ValidationError("Boundary already exists")
+        except Boundary.DoesNotExist:
+            return self.cleaned_data
+        except Boundary.MultipleObjectsReturned:
+            return ValidationError("Boundary with name exists")
+
 
 class BoundaryFormHelper(FormHelper):
     def __init__(self, *args, **kwargs):
@@ -407,7 +429,8 @@ class Staff_Form(ModelForm):
 
     doj = \
         forms.DateField(widget=forms.DateInput(format='%d-%m-%Y'),
-                        input_formats=['%d-%m-%Y', '%d-%m-%y'],
+                        input_formats=['%d-%m-%Y', '%d-%m-%y',
+                            '%d/%m/%Y', '%d/%m/%y'],
                         required=False)
     active = forms.IntegerField(initial=2, widget=forms.HiddenInput)
 
