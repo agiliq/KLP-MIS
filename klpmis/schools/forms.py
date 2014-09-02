@@ -205,6 +205,10 @@ class Institution_Form(Institution_address_Form):
 
     active = forms.IntegerField(initial=2, widget=forms.HiddenInput)
 
+    def __init__(self, *args, **kwargs):
+        super(Institution_Form, self).__init__(*args, **kwargs)
+        self.fields['boundary'].queryset = Boundary.objects.filter(active=2)
+
     class Meta:
         model = Institution
         # widgets = {
