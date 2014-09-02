@@ -13,6 +13,10 @@
 <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/thickbox.css" charset="utf-8"/>
 <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/form.css" />
 <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/style.css" />
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css">
+<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script src="//code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
 </head>
 
 <body>
@@ -231,9 +235,14 @@ $(document).ready(function(){
         parentVal = $('#institution_id').val();
         $("#id_form-buttonType").val('save and add another');
         KLP_form_submit(parentVal, 'institution_id');
-
-
    });
+
+   $(function() {
+        var picker_option = {
+            dateFormat:"dd/mm/yy"
+        };
+        $("#id_form-0-doj").datepicker(picker_option);
+    });
 
    var KLP_form_submit = function(){
     	newName = $('#id_form-0-name').val();
